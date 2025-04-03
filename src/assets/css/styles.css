@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #fafcfa;
+    color: #333;
+    margin-top: 80px;
+}
+
+main{
+    flex: 1;
+}
+
+footer{
+    margin-top: 10vh;
+    margin-bottom: 0px;
+    padding: 2vh;
+    background-color: #c5c5c5;
+}
+
+.logo-title {
+    color: #00d600;
+    font-size: 30px;
+}
+
+.navbar-brand{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.nav-link{
+    font-weight: bold;
+}
+
+.acc-action{
+
+    float:right;
+}
+
+.acc-action ul li a{
+    color: #059900;
+}
+
+
+.search-bar{
+    margin-top: 1vh;
+    padding: 10px;
+    height: 15vh;
+    border-radius: 2vh;
+    ;
+}
+
+.search-bar form{
+    gap: 2vh;
+}
+
+.search-bar form button{
+    width: max-content;
+    white-space: nowrap;
+}
+
+.search-bar form *{
+    border-radius: 2vh;
+    min-height: 5vh;
+}
+
+.row{
+    row-gap: 20px;
+}
+
+.card{
+    border-radius: 2vh;
+    transition: all 0.1s linear;
+}
+
+.card:hover{
+    box-shadow: 2px 2px 10px #c5c5c5;
+}
+
+.card-body{
+    padding: 5px;
+}
+
+.card-body *{
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-title{
+    margin-bottom: 30px;
+}
+
+.job-title{
+    text-decoration: none;
+    color: #1b1b1b;
+    font-weight: bold;
+    transition: all 0.1s linear;
+}
+
+.job-title:hover{
+    color:#007e00;
+}
+
+.location, 
+.job-field, 
+.job-type,
+.salary{
+    font-weight: bold;
+    color: #696969;
+}
+
+
+.location i{
+    color: red;
+}
+
+.job-field i{
+ color: green;
+}
+
+
+.job-type i{
+    color: blue;
+}
+
+.salary i{
+    color: #00ce00;
+}
+
+.card-body .btn {
+    background-color: #007e00;
+    border: none;
+    font-weight: bold;
+}
+
+.card-body .btn:hover{
+    background-color: #00b900;
+}
+
+.italic{
+    font-style: italic;
+}
+
+/*Login section*/
+
+.login{
+    padding: 20px;
+    margin-top: 50px;
+}
+
+.login div{
+    margin-top: 10px;
+    margin-bottom: 2vh;
+}
+
+.login .form-control{
+    border-style: none;
+}
+
+.login .input-group{
+    border-bottom: 1px solid #059900;
+}
+
+input:focus, button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input::placeholder {
+    transition: opacity 0.1s ease-in-out;
+}
+
+input:focus::placeholder {
+    opacity: 0;
+}
+
+.login i{
+    color:#00b900;
+}
+
+.btn-action{
+    background-color: #007e00;
+    color: #FFF;
+    font-weight: bold;
+    border-radius: 20vh;
+    border-style: none;
+    padding: 10px 50px;
+    transition: all 0.1s ease-in-out;
+}
+
+.btn-action:hover{
+    background-color: #00ce00;
+    color: #FFF;
+    font-weight: bold;
+}
+
+/* .btn-action:focus, .btn-action:active{
+    background-color: #00b400;
+    color: #FFF;
+    font-weight: bold;
+} */
+
+.emphasis{
+    text-decoration: none;
+    font-weight: bold;
+    color:#007e00
+}
+
+
+/*sidebar*/
+
+.side-bar{
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+
+
+/*detail*/
+
+.detail{
+    background-color: #FFF;
+    border-radius: 2vh;
+    padding: 50px;
+}
+
+.title{
+    font-weight: bold;
+}
+
+.tag{
+    gap: 10px;
+}
+
+.tags{
+    background-color: #e2e2e2;
+    padding: 0px 15px;
+    border-radius: 0px 50px 50px 0px;
+    color: #969696;
+    font-weight: 600;
+}
+
+.heading{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.content{
+    text-align: justify;
+}
+
+/*avatar*/
+.job-info .card{
+    padding: 10px;
+}
+
+.avatar-small{
+    max-width: 100px;
+}
+
+.company-info p{
+    font-weight: 500;
+}
+
+
+/*  */
+
+.account-container{
+    height: 70vh;
+    width: inherit;
+    padding:20px;
+    border-radius: 2vh;
+}
+
+.nav-pills .nav-link {
+    color: #0a8605; /* Màu cam đậm khi active */
+}
+
+.nav-pills .nav-link.active {
+    background-color: #006b12; /* Màu cam đậm khi active */
+}
+
+.nav-pills .danger.active {
+    background-color: #6b0000; /* Màu cam đậm khi active */
+}
+
+/*  */
+.manage-container{
+    padding: 20px;
+    border-radius: 2vh;
+    margin-top: 80px;
+}
+
+.info .form-control{
+    border-style: none;
+}
+
+.info .input-group{
+    border-bottom: 1px solid #059900;
+    margin: 20px 0px
+}
+
+input:focus, button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input::placeholder {
+    transition: opacity 0.1s ease-in-out;
+}
+
+input:focus::placeholder {
+    opacity: 0;
+}
+
+.info label{
+    font-weight: bold;
+}
+
+#editor-1,
+#editor-2,
+#editor-3 {
+    min-height: 100px;
+    font-family: 'Nunito', sans-serif;
+    font-size: inherit;
+}
+
+.btn-action-wide{
+   width: 50px;
+}
+
+.danger{
+    background-color: #6b0000;
+}
+
+.danger:hover{
+    background-color: #a10000;
+}
