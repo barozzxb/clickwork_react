@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
+:root {
+    --primary-color: #169716;
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -11,7 +15,6 @@ body {
     font-family: 'Nunito', sans-serif;
     background-color: #fafcfa;
     color: #333;
-    margin-top: 80px;
 }
 
 main{
@@ -26,13 +29,15 @@ footer{
 }
 
 .logo-title {
-    color: #00d600;
+    color: var(--primary-color);
     font-size: 30px;
 }
 
 .navbar-brand{
     font-weight: bold;
     font-size: 25px;
+    text-decoration: none;
+    color: #000;
 }
 
 .nav-link{
@@ -45,7 +50,7 @@ footer{
 }
 
 .acc-action ul li a{
-    color: #059900;
+    color: var(--primary-color);
 }
 
 
@@ -131,7 +136,7 @@ footer{
 }
 
 .salary i{
-    color: #00ce00;
+    color: var(--primary-color);
 }
 
 .card-body .btn {
@@ -186,19 +191,17 @@ input:focus::placeholder {
 }
 
 .btn-action{
-    background-color: #007e00;
-    color: #FFF;
-    font-weight: bold;
-    border-radius: 20vh;
-    border-style: none;
-    padding: 10px 50px;
-    transition: all 0.1s ease-in-out;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-radius: 2px;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .btn-action:hover{
-    background-color: #00ce00;
+    background-color: rgba(3, 99, 3, 0.8) !important;
     color: #FFF;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 /* .btn-action:focus, .btn-action:active{
