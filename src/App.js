@@ -10,6 +10,7 @@ import Register from './components/common/register.js';
 
 import './components/assets/css/styles.css';
 import PostJob from './components/employer/PostJob.jsx';
+import ManageJobs from './components/employer/ManageJobs.jsx';
 
 function App() {
   return (
@@ -29,7 +30,8 @@ function App() {
       <EmployerNavbar/>
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/post-job" element={<PostJob />} />
+        {/* <Route path="/post-job" element={<PostJob />} /> */}
+        <Route path="/manage-job" element={<ManageJobs />} />
       </Routes>
     </Router>
   );
