@@ -343,3 +343,9 @@ input:focus::placeholder {
 .danger:hover{
     background-color: #a10000;
 }
+
+.profile_img img{
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 5px 0 15px;
+}
