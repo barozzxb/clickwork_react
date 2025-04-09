@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { green, orange, red, yellow } from '@mui/material/colors';
+import DehazeIcon from '@mui/icons-material/Dehaze';
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 const ManageJobs = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -28,22 +33,29 @@ const ManageJobs = () => {
   };
 
   const jobs = [
-    { id: 1, title: "Công việc 1", company: "Công ty A" },
-    { id: 2, title: "Công việc 2", company: "Công ty B" },
-    { id: 3, title: "Công việc 3", company: "Công ty C" },
+    { id: 1, title: "Công việc 1", company: "Công ty A", location:"Vị trí 1", field:"Lĩnh vực", type:"Loại công việc", countApplicant:"5" },
+    { id: 2, title: "Công việc 2", company: "Công ty B", location:"Vị trí 2", field:"Lĩnh vực", type:"Loại công việc", countApplicant:"5" },
+    { id: 3, title: "Công việc 3", company: "Công ty C", location:"Vị trí 3", field:"Lĩnh vực", type:"Loại công việc", countApplicant:"5" },
+    { id: 1, title: "Công việc 1", company: "Công ty A", location:"Vị trí 1", field:"Lĩnh vực", type:"Loại công việc", countApplicant:"5" },
+    { id: 2, title: "Công việc 2", company: "Công ty B", location:"Vị trí 2", field:"Lĩnh vực", type:"Loại công việc", countApplicant:"5" }
   ];
 
   return (
     <div className='container'>
       <div className='fs-2 text-center mb-3'>Quản lý công việc</div>
-      <div className="row">
+      <div className="row mt-4">
         {jobs.map((job, index) => (
-          <div className="col-md-6" key={job.id}>
+          <div className="col-md-4" key={job.id}>
             <div className="card-job">
               <div className="card-body">
+                <p class="text-secondary italic">x days ago</p>
                 <h5 className="card-title">{job.title}</h5>
-                <p className="card-text">{job.company}</p>
-                <a href="#" className="btn-action">Xem chi tiết</a>
+                <p className="card-text location">{job.company}</p>
+                <p className="card-text location"> <LocationOnIcon sx={{color: red[400]}}/> {job.location}</p>
+                <p className="card-text job-field"><DehazeIcon sx={{color: green[400]}}/> {job.field}</p>
+                <p className="card-text job-type"><EqualizerIcon color='primary'/> {job.type}</p>
+                <p className="card-text job-type"><SupervisorAccountIcon sx={{color: orange[400]}}/> {job.countApplicant}</p>
+                <a href="/view-detail-job" className="btn-action">Xem chi tiết</a>
                 <span className="btn-active">Đang hoạt động</span>
                 <div 
                   className='menu-job'
@@ -71,6 +83,7 @@ const ManageJobs = () => {
           horizontal: 'right',
         }}
       >
+        <MenuItem onClick={handleHideJob}>Chỉnh sửa công việc</MenuItem>
         <MenuItem onClick={handleHideJob}>Ẩn công việc</MenuItem>
         <MenuItem onClick={handleDeleteJob}>Xóa công việc</MenuItem>
       </Menu>

@@ -351,31 +351,18 @@ input:focus::placeholder {
     margin: 0 5px 0 15px;
 }
 
-/* Đảm bảo loại bỏ viền và outline cho tất cả các nút */
+
 button {
     background-color: white;
     border: none !important;
     outline: none !important;
   }
-  
-  /* Loại bỏ outline khi focus */
+
   button:focus {
     outline: none !important;
     border: none !important;
   }
-  
-  /* Nếu bạn dùng Material-UI, có thể cần ghi đè kiểu của icon button */
-  .MuiIconButton-root {
-    border: none !important;
-    outline: none !important;
-  }
-  
-  .MuiIconButton-root:focus {
-    outline: none !important;
-    border: none !important;
-  }
-  
-  /* Đảm bảo nút trạng thái không có viền */
+
   .status-button {
     border: none !important;
     outline: none !important;

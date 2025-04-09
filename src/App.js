@@ -11,28 +11,30 @@ import Register from './components/common/register.js';
 import './components/assets/css/styles.css';
 import PostJob from './components/employer/PostJob.jsx';
 import ManageJobs from './components/employer/ManageJobs.jsx';
+import ViewDetailJob from './components/employer/ViewDetailJob.jsx';
 
 function App() {
   return (
     <Router>
-      {/* <NavBar /> */}
+      <NavBar />
       
-      {/* <main>
+      <main>
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
-      </main> */}
+      </main>
 
-      {/* <Footer /> */}
         {/* Trang danh cho nguoi tuyen dung */}
-      <EmployerNavbar/>
+      {/* <EmployerNavbar/> */}
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        {/* <Route path="/post-job" element={<PostJob />} /> */}
+        <Route path="/post-job" element={<PostJob />} />
         <Route path="/manage-job" element={<ManageJobs />} />
+        <Route path="/view-detail-job" element={<ViewDetailJob />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
