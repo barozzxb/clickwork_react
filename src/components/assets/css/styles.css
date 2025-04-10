@@ -202,6 +202,12 @@ input:focus::placeholder {
     font-weight: bold;
 }
 
+.btn-action:disabled{
+    background-color: #c5c5c5;
+    color: #FFF;
+    font-weight: bold;
+}
+
 /* .btn-action:focus, .btn-action:active{
     background-color: #00b400;
     color: #FFF;
