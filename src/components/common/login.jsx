@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import React, {useContext, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+
 
 const localhost = 'http://localhost:9000/api';
 
 const Login = () => {
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decoded = jwtDecode(token);
+            const role = decoded.role;
+        }
+      }, []);
+      
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const [redirectTo, setRedirectTo] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
 
+    const navigate = useNavigate();
+    
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -20,32 +34,39 @@ const Login = () => {
             const response = await axios.post(localhost + '/auth/login', {
                 username,
                 password,
-                remember,
             }, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
 
-            const { role, message: responseMessage } = response.data.body || {};
-            setMessage(responseMessage || 'Đăng nhập thành công.');
+            if (response.data.status === true) {
 
-            if (role) {
-                localStorage.setItem('role', role);
-
-                console.log(`Đăng nhập thành công với vai trò: ${role}`);
-                
-                localStorage.setItem('username', username);
-
-                if (role === 'ADMIN') {
-                    setRedirectTo('/admin/dashboard');
-                } else if (role === 'APPLICANT') {
-                    setRedirectTo('/employee');
-                } else {
-                    setRedirectTo('/employer');
+                const {token, message: responseMessage } = response.data.body || {};
+                if (token) {
+                    localStorage.setItem('token', token);
                 }
-            } else {
-                setMessage('Không thể xác định vai trò người dùng.');
+    
+                setMessage(responseMessage || 'Đăng nhập thành công.');
+                
+                const decoded = jwtDecode(token);
+                const role = decoded.role;
+
+                if (role) {
+    
+                    console.log(`Đăng nhập thành công với vai trò: ${role}`);
+                    
+
+                    if (role === 'ADMIN') {
+                        navigate('/admin/dashboard');
+                    } else if (role === 'APPLICANT') {
+                        navigate('/employee');
+                    } else {
+                        navigate('/employer');
+                    }
+                } else {
+                    setMessage('Không thể xác định vai trò người dùng.');
+                }
             }
 
         } catch (error) {
@@ -56,9 +77,9 @@ const Login = () => {
     };
 
     // Điều hướng nếu cần
-    if (redirectTo) {
-        return <Navigate to={redirectTo} />;
-    }
+    // if (redirectTo) {
+    //     return <Navigate to={redirectTo} />;
+    // }
 
     return (
         <main className="d-flex container justify-content-center align-items-center">

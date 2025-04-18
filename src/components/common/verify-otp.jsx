@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const VerifyOTP = () => {
@@ -11,79 +11,60 @@ const VerifyOTP = () => {
     const [message, setMessage] = useState('');
     const [time, setTime] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [redirectTo, setRedirectTo] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        let timer;
-        if (time > 0) {
-            timer = setTimeout(() => {
-                setTime(time - 1);
-            }, 1000);
-        }
-        return () => clearTimeout(timer);
+        const e = localStorage.getItem('email');
+        if (!e) return navigate('/register');
+        setEmail(e);
+        resend();    // gọi hàm gửi OTP
+      }, []);
+
+
+    useEffect(() => {
+        if (time <= 0) return;
+        const t = setTimeout(() => setTime(t => t - 1), 1000);
+        return () => clearTimeout(t);
     }, [time]);
 
-    const handleResendOTP = async () => {
-        const gotEmail = localStorage.getItem('email');
+    const resend = async () => {
+        setLoading(true);
         try {
-            const response = await axios.post(localhost + '/api/send', {
-                email: gotEmail
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            const { status } = response.data.status;
-            if (status === true) {
-                setMessage('Mã OTP đã được gửi lại.');
-                setTime(60); // bắt đầu đếm ngược lại
-            } else {
-                setMessage('Không thể gửi lại mã OTP. Vui lòng thử lại sau.');
-            }
-        } catch (err) {
-            setMessage('Lỗi khi gửi lại mã OTP.');
+          const { status, message } = (await axios.post(localhost + '/api/auth/sendotp', { email })).data;
+          setMessage(message);
+          if (status) setTime(60);
+        } catch {
+          setMessage('Không thể gửi OTP. Thử lại sau.');
+        } finally {
+          setLoading(false);
         }
-    };
+      };
     
 
-    const handleVerify = async (e) => {
+      const verify = async e => {
         e.preventDefault();
         setLoading(true);
         try {
-            const gotEmail = localStorage.getItem('email');
-            const response = await axios.post(localhost + '/api/verify', {
-                email: gotEmail,
-                otp
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            const { message: responseMessage } = response.data.body || {};
-            setMessage(responseMessage);
-
-            const { status } = response.data.status;
-            if (status === true) {
-                setRedirectTo('/login');
-                localStorage.removeItem('email'); // Xóa email sau khi xác thực thành công
-            }
-        } catch (error) {
-            setMessage('Xác thực OTP thất bại. Vui lòng kiểm tra lại mã OTP.');
+          const { status, message } = (await axios.post(localhost + '/api/auth/verifyotp', { email, otp })).data;
+          setMessage(message);
+          if (status) {
+            localStorage.removeItem('email');
+            navigate('/login');
+          }
+        } catch {
+          setMessage('Xác thực thất bại.');
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    }
-
-    if (redirectTo){
-        return <Navigate to={redirectTo} />;
-    }
+      };
+    
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="col-md-4 card p-4">
                 <h2 className="text-center mb-4">Xác thực OTP</h2>
-                <form className='text-center' onSubmit={handleVerify}>
+                <form className='text-center' onSubmit={verify}>
                     <div className="mb-3">
                         <label htmlFor="otp" className="form-label m-3">Nhập mã OTP đã gửi đến email của bạn:</label>
                         <input 
@@ -106,7 +87,7 @@ const VerifyOTP = () => {
                         <span> Gửi lại mã sau {time} giây</span>
                     ) : (
                         <button 
-                            onClick={handleResendOTP} 
+                            onClick={resend} 
                             className="btn btn-link p-0 ms-2" 
                             style={{ textDecoration: 'underline' }}
                         >
