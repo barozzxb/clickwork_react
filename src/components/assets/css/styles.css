@@ -193,6 +193,7 @@ input:focus::placeholder {
     border-style: none;
     padding: 10px 50px;
     transition: all 0.1s ease-in-out;
+    text-decoration: none;
 }
 
 .btn-action:hover{
