@@ -6,10 +6,12 @@ import Footer from './components/common/footer.jsx';
 import Homepage from './components/common/homepage.jsx';
 import Login from './components/common/login.jsx';
 import Register from './components/common/register.jsx';
-import Employee from './components/employee/employee.jsx';
+import Employee from './components/applicant/employee.jsx';
 import Employer from './components/employer/employer.jsx';
 import Admin from './components/admin/admin.jsx';
 import VerifyOTP from './components/common/verify-otp.jsx';
+import ApplicantProfile from './components/applicant/profile.jsx';
+
 import './components/assets/css/styles.css';
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
           <Route path="/employer" element={<Employer />} />
           <Route path="/admin/dashboard" element={<Admin />} />
           <Route path="/verify" element={<VerifyOTP />} />
+          <Route path="/applicant/profile" element={<ApplicantProfile />} />
+
         </Routes>
       </main>
 

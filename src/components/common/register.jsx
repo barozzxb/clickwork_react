@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Register = () => {
@@ -22,11 +22,26 @@ const Register = () => {
     const [role, setRole] = useState('APPLICANT'); // Mặc định là ứng viên
     const [acceptTerm, setAcceptTerm] = useState(false);
 
+    const navigate = useNavigate();
+
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
+    
+        if (!acceptTerm) {
+            setMessage("You must accept the terms and conditions.");
+            setLoading(false);
+            return;
+        }
+    
+        if (password !== confirmPassword) {
+            setMessage("Passwords do not match.");
+            setLoading(false);
+            return;
+        }
+    
         try {
-            const response = await axios.post(localhost + '/api/auth/register', {
+            const response = await axios.post(`${localhost}/api/auth/register`, {
                 username,
                 password,
                 email,
@@ -36,35 +51,26 @@ const Register = () => {
                     'Content-Type': 'application/json',
                 }
             });
-
-            const { message: responseMessage } = response.data.message || {};
+    
+            const responseMessage = response.data.message;
             setMessage(responseMessage);
-
-            const { status } = response.data.status;
+    
+            const status = response.data.status;
             if (status === true) {
                 localStorage.setItem('email', email);
-                const sended = await axios.post(localhost + '/api/send', {
-                    email
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                const { status: sendedStatus } = sended.data.status;
-                if (sendedStatus === true) {
-                    setRedirectTo('/verify');
-                }
+                navigate('/verify');
             }
         } catch (error) {
-            setMessage('Failed');
+            if (error.response?.data?.message) {
+                setMessage(error.response.data.message);
+            } else {
+                setMessage('Registration failed. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
-    }
-
-    if (redirectTo) {
-        return <Navigate to={redirectTo} />;
-    }
+    };
+    
 
 
     return (
