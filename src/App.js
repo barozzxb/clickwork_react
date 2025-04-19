@@ -17,15 +17,15 @@ import './components/assets/css/styles.css';
 import PostJob from './components/employer/PostJob.jsx';
 import ManageJobs from './components/employer/ManageJobs.jsx';
 import ViewDetailJob from './components/employer/ViewDetailJob.jsx';
+import ManageSavedJobs from './components/applicant/ManageSavedJobs.jsx';
+import ViewAppliedHistory from './components/applicant/ViewAppliedHistory.jsx';
+
 
 function App() {
   return (
     <Router>
-
-    
-
       <NavBar />
-      
+
       <main>
         <Routes>
           <Route path="/" element={<Homepage />} />
@@ -36,18 +36,19 @@ function App() {
           <Route path="/admin/dashboard" element={<Admin />} />
           <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
+          
+          {/* Các Route dành cho nhà tuyển dụng */}
+          <Route path="/post-job" element={<PostJob />} />
+          <Route path="/manage-job" element={<ManageJobs />} />
+          <Route path="/view-detail-job" element={<ViewDetailJob />} />
 
-        </Routes>
+          {/* Route dành cho người tìm việc */}
+          <Route path="/manage-saved-jobs" element={<ManageSavedJobs />} />
+          <Route path="/view-applied-history" element={<ViewAppliedHistory/>} />
+
+          </Routes>
       </main>
 
-        {/* Trang danh cho nguoi tuyen dung */}
-      {/* <EmployerNavbar/> */}
-      <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/post-job" element={<PostJob />} />
-        <Route path="/manage-job" element={<ManageJobs />} />
-        <Route path="/view-detail-job" element={<ViewDetailJob />} />
-      </Routes>
       <Footer />
     </Router>
   );
