@@ -7,7 +7,7 @@ const VerifyOTP = () => {
     const localhost = 'http://localhost:9000';
 
     const [email, setEmail] = useState('');
-    const [otp, setOtp] = useState('');
+    const [inputOtp, setInputOtp] = useState('');
     const [message, setMessage] = useState('');
     const [time, setTime] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -18,9 +18,11 @@ const VerifyOTP = () => {
         const e = localStorage.getItem('email');
         if (!e) return navigate('/register');
         setEmail(e);
-        resend();    // gọi hàm gửi OTP
       }, []);
 
+    useEffect(() => {
+      if (email) resend();
+    }, [email]);
 
     useEffect(() => {
         if (time <= 0) return;
@@ -34,7 +36,8 @@ const VerifyOTP = () => {
           const { status, message } = (await axios.post(localhost + '/api/auth/sendotp', { email })).data;
           setMessage(message);
           if (status) setTime(60);
-        } catch {
+        } catch (error) {
+          console.error(error);
           setMessage('Không thể gửi OTP. Thử lại sau.');
         } finally {
           setLoading(false);
@@ -46,13 +49,14 @@ const VerifyOTP = () => {
         e.preventDefault();
         setLoading(true);
         try {
-          const { status, message } = (await axios.post(localhost + '/api/auth/verifyotp', { email, otp })).data;
+          const { status, message } = (await axios.post(localhost + '/api/auth/verifyotp', { email, inputOtp })).data;
           setMessage(message);
           if (status) {
             localStorage.removeItem('email');
             navigate('/login');
           }
-        } catch {
+        } catch (error) {
+          console.error(error);
           setMessage('Xác thực thất bại.');
         } finally {
           setLoading(false);
@@ -72,8 +76,8 @@ const VerifyOTP = () => {
                             className="form-control" 
                             id="otp" 
                             placeholder="Nhập mã OTP" 
-                            value={otp} 
-                            onChange={(e) => setOtp(e.target.value)} 
+                            value={inputOtp} 
+                            onChange={(e) => setInputOtp(e.target.value)} 
                             required 
                         />
                     </div>
