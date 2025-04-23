@@ -16,7 +16,7 @@ const Homepage = () => {
                 const response = await axios.get(host + '/jobs', {
                    
                 });
-                setJobs(response.data.body);
+                setJobs(response.data.body || []);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
             } finally {

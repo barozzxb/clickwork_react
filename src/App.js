@@ -14,6 +14,7 @@ import Admin from './components/admin/admin.jsx';
 import VerifyOTP from './components/common/verify-otp.jsx';
 import ApplicantProfile from './components/applicant/profile.jsx';
 import JobDetail from './components/common/jobdetail.jsx';
+import JobList from './components/common/listjobs.jsx';
 
 import './components/assets/css/styles.css';
 import PostJob from './components/employer/PostJob.jsx';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
           <Route path="/jobs/:id" element={<JobDetail />} />
+          <Route path="/jobs" element={<JobList />} />
           
           {/* Các Route dành cho nhà tuyển dụng */}
           <Route path="/post-job" element={<PostJob />} />
