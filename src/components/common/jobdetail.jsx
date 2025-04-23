@@ -1,7 +1,30 @@
-const JobDetail = ({ job }) => {
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
-    
+const JobDetail = () => {
 
+    const { id } = useParams(); // id sẽ là '123'
+    const [job, setJob] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const host = 'http://localhost:9000/api';
+
+    useEffect(() => {
+        const fetchJob = async () => {
+            try {
+                const res = await axios.get(`${host}/jobs/id=${id}`);
+                setJob(res.data.body);
+            } catch (err) {
+                console.error("Lỗi khi fetch job detail", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchJob();
+    }, [id]);
+
+    if (loading) return <p>Đang tải dữ liệu...</p>;
+    if (!job) return <p>Không tìm thấy công việc</p>;
     return (
         <main className="container">
             {/* Search Bar */}
@@ -15,7 +38,7 @@ const JobDetail = ({ job }) => {
             {/* Chi tiết công việc */}
             <div className="row mt-4">
                 <div className="col detail">
-                    <p className="h2 title">{job?.title || "Tên công việc"}</p>
+                    <p className="h2 title">{job?.name || "Tên công việc"}</p>
                     <p className="text-secondary italic">{job?.postedAgo || "x ngày trước"}</p>
                     <p className="card-text location"><i className="fa fa-location-dot" />&emsp;{job?.location || "Địa điểm làm việc"}</p>
                     <p className="card-text job-field"><i className="fa fa-bars" />&emsp;{job?.field || "Lĩnh vực"}</p>
@@ -26,27 +49,6 @@ const JobDetail = ({ job }) => {
                         {(job?.tags || ["tag 1", "tag 2", "tag 3"]).map((tag, index) => (
                             <p key={index} className="tags">{tag}</p>
                         ))}
-                    </div>
-
-                    <hr />
-
-                    {/* Carousel ảnh */}
-                    <div id="jobPhoto" className="carousel slide carousel-fade mb-5">
-                        <div className="carousel-inner">
-                            {(job?.images || ["/images/1.png", "/images/2.png", "/images/3.png"]).map((img, index) => (
-                                <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                                    <img src={img} className="d-block w-100" alt={`job-img-${index}`} />
-                                </div>
-                            ))}
-                        </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#jobPhoto" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#jobPhoto" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
                     </div>
 
                     <hr />
@@ -62,7 +64,7 @@ const JobDetail = ({ job }) => {
                     {/* Kỹ năng */}
                     <div className="col job-info">
                         <p className="heading">Yêu cầu kỹ năng</p>
-                        <p className="content">{job?.requirements || "Chưa có thông tin kỹ năng."}</p>
+                        <p className="content">{job?.requiredskill || "Chưa có thông tin kỹ năng."}</p>
                     </div>
 
                     <hr />
@@ -70,7 +72,7 @@ const JobDetail = ({ job }) => {
                     {/* Lợi ích */}
                     <div className="col job-info">
                         <p className="heading">Lợi ích khi làm việc</p>
-                        <p className="content">{job?.benefits || "Chưa có thông tin lợi ích."}</p>
+                        <p className="content">{job?.benefit || "Chưa có thông tin lợi ích."}</p>
                     </div>
 
                     <hr />
@@ -80,12 +82,12 @@ const JobDetail = ({ job }) => {
                         <p className="heading">Về công ty</p>
                         <div className="col-md-8 mx-auto d-flex flex-column card">
                             <div className="container d-flex justify-content-center">
-                                <img className="avatar-small" src={job?.company?.avatar || "../images/user-default.png"} alt="Company Avatar" />
+                                <img className="avatar-small" src={job?.employer.avatar || "../images/user-default.png"} alt="Company Avatar" />
                             </div>
                             <div className="company-info d-flex flex-column text-center">
-                                <p>{job?.company?.name || "Tên công ty"}</p>
+                                <p>{job?.employer.fullname || "Chưa cập nhật tên"}</p>
                                 <p>{job?.company?.field || "Lĩnh vực"}</p>
-                                <p>{job?.company?.founded || "Ngày thành lập"}</p>
+                                <p>{job?.company?.datefounded || "Ngày thành lập"}</p>
                             </div>
                         </div>
                     </div>
