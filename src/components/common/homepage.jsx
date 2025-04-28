@@ -16,7 +16,7 @@ const Homepage = () => {
                 const response = await axios.get(host + '/jobs', {
                    
                 });
-                setJobs(response.data.body);
+                setJobs(response.data.body || []);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
             } finally {
@@ -79,7 +79,7 @@ const Homepage = () => {
                         <div className="card p-3">
                             <div className="card-body">
                                 <p className="text-secondary italic">{job.created_at}</p>
-                                <h5 className="card-title"><Link to={`/api/jobs/id=${job.id}`} className="job-title">{job.name}</Link></h5>
+                                <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                 <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                 <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
                                 <p className="card-text job-type"><i className="fa fa-suitcase">&emsp;</i>{job.jobtype}</p>

@@ -37,7 +37,7 @@ const NavBar = () => {
                             <Link className="nav-link active" to="/">Trang chủ</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="#">Tất cả việc làm</Link>
+                            <Link className="nav-link" to="/jobs">Tất cả việc làm</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="#">Trang dành cho Nhà tuyển dụng</Link>
