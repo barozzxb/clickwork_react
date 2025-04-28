@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../styles/admin-dashboard.css';
 
 export default function SupportUser() {
     const [searchTerm, setSearchTerm] = useState('');

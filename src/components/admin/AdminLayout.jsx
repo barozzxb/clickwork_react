@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
-import '../styles/admin-dashboard.css';
 
 export default function AdminLayout() {
     // Thêm Bootstrap CSS và JS qua CDN

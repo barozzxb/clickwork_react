@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import '../styles/admin-dashboard.css';
 
 export default function SendEmail() {
     const [emailType, setEmailType] = useState("single");

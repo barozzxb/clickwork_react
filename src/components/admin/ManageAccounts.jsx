@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import '../styles/admin-dashboard.css';
 
 export default function ManageAccounts() {
     const [searchTerm, setSearchTerm] = useState('');
