@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { EditIcon, EyeIcon, PlusIcon, SearchIcon, TrashIcon, UserPlusIcon } from 'lucide-react';
 import '../styles/admin-dashboard.css';
 
 export default function ManageAccounts() {
@@ -21,67 +20,143 @@ export default function ManageAccounts() {
         (selectedRole === null || user.role === selectedRole)
     );
 
+    // Helper function để hiển thị badge với màu sắc phù hợp
+    const getBadgeClass = (status) => {
+        switch (status) {
+            case 'active': return 'bg-success';
+            case 'inactive': return 'bg-secondary';
+            case 'pending': return 'bg-warning';
+            default: return 'bg-info';
+        }
+    };
+
+    const getRoleBadgeClass = (role) => {
+        switch (role) {
+            case 'admin': return 'bg-danger';
+            case 'employer': return 'bg-primary';
+            case 'jobseeker': return 'bg-info';
+            default: return 'bg-secondary';
+        }
+    };
+
     return (
-        <div className="grid">
-            <div className="card">
-                <div className="card-header">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <h2 className="card-title">Manage User Accounts</h2>
-                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>View and manage all user accounts</p>
+        <div className="container-fluid p-0">
+            <div className="card shadow-sm">
+                <div className="card-header bg-white py-3">
+                    <div className="row align-items-center">
+                        <div className="col-12 col-md-6 mb-3 mb-md-0">
+                            <h2 className="card-title h5 fw-bold mb-1">Manage User Accounts</h2>
+                            <p className="text-muted small mb-0">View and manage all user accounts</p>
                         </div>
-                        <button className="button sm:self-end"><UserPlusIcon className="h-4 w-4" /> Add New User</button>
+                        <div className="col-12 col-md-6 text-md-end">
+                            <button className="btn btn-primary">
+                                <i className="bi bi-person-plus me-2"></i>
+                                Add New User
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div className="card-content">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-                            <SearchIcon className="h-4 w-4" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
-                            <input className="input" style={{ paddingLeft: '40px' }} placeholder="Search users..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+
+                <div className="card-body">
+                    <div className="row mb-4 align-items-center">
+                        <div className="col-12 col-md-6 mb-3 mb-md-0">
+                            <div className="input-group">
+                                <span className="input-group-text bg-light border-end-0">
+                                    <i className="bi bi-search"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    className="form-control bg-light border-start-0"
+                                    placeholder="Search users..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div className="tabs-list">
-                        <button className={`tab-trigger ${selectedRole === null ? 'tab-trigger-active' : ''}`} onClick={() => setSelectedRole(null)}>All Users</button>
-                        <button className={`tab-trigger ${selectedRole === 'jobseeker' ? 'tab-trigger-active' : ''}`} onClick={() => setSelectedRole('jobseeker')}>Job Seekers</button>
-                        <button className={`tab-trigger ${selectedRole === 'employer' ? 'tab-trigger-active' : ''}`} onClick={() => setSelectedRole('employer')}>Employers</button>
-                        <button className={`tab-trigger ${selectedRole === 'admin' ? 'tab-trigger-active' : ''}`} onClick={() => setSelectedRole('admin')}>Admins</button>
+
+                    <div className="nav nav-tabs mb-4">
+                        <button
+                            className={`nav-link ${selectedRole === null ? 'active' : ''}`}
+                            onClick={() => setSelectedRole(null)}
+                        >
+                            All Users
+                        </button>
+                        <button
+                            className={`nav-link ${selectedRole === 'jobseeker' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('jobseeker')}
+                        >
+                            Job Seekers
+                        </button>
+                        <button
+                            className={`nav-link ${selectedRole === 'employer' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('employer')}
+                        >
+                            Employers
+                        </button>
+                        <button
+                            className={`nav-link ${selectedRole === 'admin' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('admin')}
+                        >
+                            Admins
+                        </button>
                     </div>
-                    <table className="table">
-                        <thead className="table-header">
-                            <tr className="table-row">
-                                <th className="table-cell">User</th>
-                                <th className="table-cell">Role</th>
-                                <th className="table-cell">Status</th>
-                                <th className="table-cell">Join Date</th>
-                                <th className="table-cell">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredUsers.map((user) => (
-                                <tr key={user.id} className="table-row">
-                                    <td className="table-cell">
-                                        <div className="flex items-center gap-2">
-                                            <img className="h-8 w-8 rounded-full" src={user.avatar || 'https://via.placeholder.com/40'} alt={user.name} />
-                                            <div>
-                                                <div className="font-medium">{user.name}</div>
-                                                <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>{user.email}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="table-cell"><span className={`badge badge-${user.status}`}>{user.role}</span></td>
-                                    <td className="table-cell"><span className={`badge badge-${user.status}`}>{user.status}</span></td>
-                                    <td className="table-cell">{user.joinDate}</td>
-                                    <td className="table-cell">
-                                        <div className="flex gap-1">
-                                            <button className="button"><EyeIcon className="h-4 w-4" /></button>
-                                            <button className="button"><EditIcon className="h-4 w-4" /></button>
-                                            <button className="button"><TrashIcon className="h-4 w-4" /></button>
-                                        </div>
-                                    </td>
+
+                    <div className="table-responsive">
+                        <table className="table table-hover align-middle">
+                            <thead className="table-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Join Date</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filteredUsers.map((user) => (
+                                    <tr key={user.id}>
+                                        <td>
+                                            <div className="d-flex align-items-center">
+                                                <div className="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center"
+                                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}>
+                                                    {user.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <div className="fw-medium">{user.name}</div>
+                                                    <div className="text-muted small">{user.email}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className={`badge ${getRoleBadgeClass(user.role)}`}>
+                                                {user.role}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={`badge ${getBadgeClass(user.status)}`}>
+                                                {user.status}
+                                            </span>
+                                        </td>
+                                        <td>{user.joinDate}</td>
+                                        <td>
+                                            <div className="btn-group">
+                                                <button className="btn btn-sm btn-secondary">
+                                                    <i className="bi bi-eye"></i>
+                                                </button>
+                                                <button className="btn btn-sm btn-secondary">
+                                                    <i className="bi bi-pencil"></i>
+                                                </button>
+                                                <button className="btn btn-sm btn-outline-danger">
+                                                    <i className="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

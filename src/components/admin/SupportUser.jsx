@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { EyeIcon, FilterIcon, SearchIcon } from 'lucide-react';
 import '../styles/admin-dashboard.css';
 
 export default function SupportUser() {
@@ -15,69 +14,164 @@ export default function SupportUser() {
     ];
 
     const filteredTickets = supportTickets.filter(ticket =>
-        (searchTerm === '' || ticket.issue.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.user.name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (searchTerm === '' || ticket.issue.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            ticket.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            ticket.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (statusFilter === null || ticket.status === statusFilter)
     );
 
+    // Helper function để hiển thị badge với màu sắc phù hợp
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case 'pending': return 'bg-warning text-dark';
+            case 'in_progress': return 'bg-info text-white';
+            case 'resolved': return 'bg-success';
+            case 'urgent': return 'bg-danger';
+            case 'closed': return 'bg-secondary';
+            default: return 'bg-light text-dark';
+        }
+    };
+
     return (
-        <div className="grid">
-            <div className="card">
-                <div className="card-header">
-                    <h2 className="card-title">Support Tickets</h2>
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>View and manage user support tickets</p>
+        <div className="container-fluid p-0">
+            <div className="card shadow-sm">
+                <div className="card-header bg-white py-3">
+                    <h2 className="card-title h5 fw-bold mb-1">Support Tickets</h2>
+                    <p className="text-muted small mb-0">View and manage user support tickets</p>
                 </div>
-                <div className="card-content">
-                    <div className="flex flex-col md:flex-row justify-between mb-4 gap-4">
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '384px' }}>
-                            <SearchIcon className="h-4 w-4" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
-                            <input className="input" style={{ paddingLeft: '40px' }} placeholder="Search by ID, user, or issue..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+
+                <div className="card-body">
+                    <div className="row mb-4">
+                        <div className="col-md-6 mb-3 mb-md-0">
+                            <div className="input-group">
+                                <span className="input-group-text bg-light border-end-0">
+                                    <i className="bi bi-search"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    className="form-control bg-light border-start-0"
+                                    placeholder="Search by ID, user, or issue..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
                         </div>
-                        <div className="flex gap-2">
-                            <button className="button"><FilterIcon className="h-4 w-4" /> Filter</button>
-                            <button className="button">Create Ticket</button>
+                        <div className="col-md-6 text-md-end">
+                            <button className="btn btn-secondary me-2">
+                                <i className="bi bi-funnel me-1"></i> Filter
+                            </button>
+                            <button className="btn btn-primary">
+                                <i className="bi bi-plus-circle me-1"></i> Create Ticket
+                            </button>
                         </div>
                     </div>
-                    <div className="tabs-list">
-                        <button className={`tab-trigger ${statusFilter === null ? 'tab-trigger-active' : ''}`} onClick={() => setStatusFilter(null)}>All</button>
-                        <button className={`tab-trigger ${statusFilter === 'pending' ? 'tab-trigger-active' : ''}`} onClick={() => setStatusFilter('pending')}>Pending</button>
-                        <button className={`tab-trigger ${statusFilter === 'in_progress' ? 'tab-trigger-active' : ''}`} onClick={() => setStatusFilter('in_progress')}>In Progress</button>
-                        <button className={`tab-trigger ${statusFilter === 'resolved' ? 'tab-trigger-active' : ''}`} onClick={() => setStatusFilter('resolved')}>Resolved</button>
-                        <button className={`tab-trigger ${statusFilter === 'urgent' ? 'tab-trigger-active' : ''}`} onClick={() => setStatusFilter('urgent')}>Urgent</button>
-                    </div>
-                    <table className="table">
-                        <thead className="table-header">
-                            <tr className="table-row">
-                                <th className="table-cell">ID</th>
-                                <th className="table-cell">User</th>
-                                <th className="table-cell">Issue</th>
-                                <th className="table-cell">Status</th>
-                                <th className="table-cell">Date</th>
-                                <th className="table-cell">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredTickets.map((ticket) => (
-                                <tr key={ticket.id} className="table-row">
-                                    <td className="table-cell">{ticket.id}</td>
-                                    <td className="table-cell">
-                                        <div className="flex items-center gap-2">
-                                            <img className="h-7 w-7 rounded-full" src="https://via.placeholder.com/28" alt={ticket.user.name} />
-                                            <div>
-                                                <div className="font-medium">{ticket.user.name}</div>
-                                                <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>{ticket.user.email}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="table-cell">{ticket.issue}</td>
-                                    <td className="table-cell"><span className={`badge badge-${ticket.status}`}>{ticket.status}</span></td>
-                                    <td className="table-cell">{ticket.date}</td>
-                                    <td className="table-cell">
-                                        <button className="button"><EyeIcon className="h-4 w-4" /></button>
-                                    </td>
+
+                    <ul className="nav nav-tabs mb-4">
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${statusFilter === null ? 'active' : ''}`}
+                                onClick={() => setStatusFilter(null)}
+                            >
+                                All
+                            </button>
+                        </li>
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${statusFilter === 'pending' ? 'active' : ''}`}
+                                onClick={() => setStatusFilter('pending')}
+                            >
+                                Pending
+                            </button>
+                        </li>
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${statusFilter === 'in_progress' ? 'active' : ''}`}
+                                onClick={() => setStatusFilter('in_progress')}
+                            >
+                                In Progress
+                            </button>
+                        </li>
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${statusFilter === 'resolved' ? 'active' : ''}`}
+                                onClick={() => setStatusFilter('resolved')}
+                            >
+                                Resolved
+                            </button>
+                        </li>
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${statusFilter === 'urgent' ? 'active' : ''}`}
+                                onClick={() => setStatusFilter('urgent')}
+                            >
+                                <span className="text-danger">Urgent</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div className="table-responsive">
+                        <table className="table table-hover align-middle">
+                            <thead className="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Issue</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filteredTickets.map((ticket) => (
+                                    <tr key={ticket.id}>
+                                        <td><strong>{ticket.id}</strong></td>
+                                        <td>
+                                            <div className="d-flex align-items-center">
+                                                <div className="avatar-circle bg-primary text-white me-2 d-flex align-items-center justify-content-center"
+                                                    style={{ width: '32px', height: '32px', borderRadius: '50%' }}>
+                                                    {ticket.user.name[0]}
+                                                </div>
+                                                <div>
+                                                    <div className="fw-medium">{ticket.user.name}</div>
+                                                    <div className="text-muted small">{ticket.user.email}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="text-truncate" style={{ maxWidth: '300px' }}>
+                                                {ticket.issue}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className={`badge ${getStatusBadgeClass(ticket.status)}`}>
+                                                {ticket.status.replace('_', ' ')}
+                                            </span>
+                                        </td>
+                                        <td>{ticket.date}</td>
+                                        <td>
+                                            <button className="btn btn-sm btn-primary">
+                                                <i className="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav aria-label="Ticket navigation" className="mt-4">
+                        <ul className="pagination justify-content-center">
+                            <li className="page-item disabled">
+                                <a className="page-link" href="#" tabIndex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li className="page-item active"><a className="page-link" href="#">1</a></li>
+                            <li className="page-item"><a className="page-link" href="#">2</a></li>
+                            <li className="page-item"><a className="page-link" href="#">3</a></li>
+                            <li className="page-item">
+                                <a className="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
