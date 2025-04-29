@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
@@ -16,6 +16,17 @@ const NavBar = () => {
         username = jwtDecode(token).sub;
     }
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            const currentTime = Date.now() / 1000; // Convert to seconds
+            if (decodedToken.exp < currentTime) {
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
+        }
+    } ,[navigate]);
 
 
     return (
