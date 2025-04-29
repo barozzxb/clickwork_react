@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill from 'react-quill-new';
 const PostJob = () => {
     const [job, setJob] = useState({
         title: '',
