@@ -8,7 +8,7 @@ const Homepage = () => {
     const [loading, setLoading] = useState(false);
     const host = 'http://localhost:9000/api';
     const [jobs, setJobs] = useState([]);
-
+    
     useEffect(() => {
         const loadJobs = async () => {
             setLoading(true);
@@ -65,29 +65,29 @@ const Homepage = () => {
 
                 <p className="h2">Được đề xuất cho bạn</p>
 
-            {jobs.length === 0 ? (
-                <div className="col-md-4">
-                    <div className="card p-3">
-                        <div className="card-body">
-                            <h5 className="card-title">Không có công việc nào được đề xuất</h5>
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                jobs.map((job) => (
-                    <div className="col-md-4" key={job.id}>
+                {jobs.length === 0 ? (
+                    <div className="col-md-4">
                         <div className="card p-3">
                             <div className="card-body">
-                                <p className="text-secondary italic">{job.created_at}</p>
-                                <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
-                                <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
-                                <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
-                                <p className="card-text job-type"><i className="fa fa-suitcase">&emsp;</i>{job.jobtype}</p>
+                                <h5 className="card-title">Không có công việc nào được đề xuất</h5>
                             </div>
                         </div>
                     </div>
-                ))
-            )}
+                ) : (
+                    jobs.map((job) => (
+                        <div className="col-md-4" key={job.id}>
+                            <div className="card p-3">
+                                <div className="card-body">
+                                    <p className="text-secondary italic">{job.created_at}</p>
+                                    <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
+                                    <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
+                                    <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
+                                    <p className="card-text job-type"><i className="fa fa-suitcase">&emsp;</i>{job.jobtype}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
             <div class="row mt-4">
