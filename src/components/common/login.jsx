@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+import { toast } from 'react-toastify';
 
 
 const localhost = 'http://localhost:9000/api';
@@ -21,7 +22,6 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
-    const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -42,13 +42,14 @@ const Login = () => {
 
             if (response.data.status === true) {
 
-                const {token, message: responseMessage } = response.data.body || {};
+                const {token} = response.data.body || {};
                 if (token) {
                     localStorage.setItem('token', token);
                 }
-    
-                setMessage(responseMessage || 'Đăng nhập thành công.');
                 
+                const message = response.data.message || 'Đăng nhập thành công';
+                toast.success(message);
+
                 const decoded = jwtDecode(token);
                 const role = decoded.role;
 
@@ -64,28 +65,27 @@ const Login = () => {
                     } else {
                         navigate('/employer');
                     }
-                } else {
-                    setMessage('Không thể xác định vai trò người dùng.');
-                }
+                } 
+            }
+            else {
+                const message = response.data.message || 'Đăng nhập thất bại';
+                toast.error(message);
             }
 
         } catch (error) {
-            setMessage('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+            console.error('Đăng nhập thất bại:', error);
+            const message = "Error occurred while logging in";
+            toast.error(message);
         } finally {
             setLoading(false);
         }
     };
 
-    // Điều hướng nếu cần
-    // if (redirectTo) {
-    //     return <Navigate to={redirectTo} />;
-    // }
-
     return (
         <main className="d-flex container justify-content-center align-items-center">
             <div className="col-md-6 bg-white login">
                 <p className="h3 text-center">Đăng nhập</p>
-                {message && <p className="text-center text-danger">{message}</p>}
+                {/* {message && <p className="text-center text-danger">{message}</p>} */}
                 <form className="form-control login" onSubmit={handleLogin}>
                     <div className="input-group d-flex align-items-center">
                         <label htmlFor="email"><i className="fa fa-user">&emsp;</i></label>

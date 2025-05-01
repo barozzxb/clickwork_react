@@ -8,6 +8,7 @@ const Homepage = () => {
     const [loading, setLoading] = useState(false);
     const host = 'http://localhost:9000/api';
     const [jobs, setJobs] = useState([]);
+    const [newJobs, setNewJobs] = useState([]);
     
     useEffect(() => {
         const loadJobs = async () => {
@@ -19,12 +20,25 @@ const Homepage = () => {
                 setJobs(response.data.body || []);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
+            } 
+        };
+
+        const loadNewJobs = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(host + '/jobs/newjobs', {
+                   
+                });
+                setNewJobs(response.data.body || []);
+            } catch (err) {
+                console.error("Lỗi fetch jobs", err);
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
         loadJobs();
+        loadNewJobs();
 
     }, []);
 
@@ -78,7 +92,7 @@ const Homepage = () => {
                         <div className="col-md-4" key={job.id}>
                             <div className="card p-3">
                                 <div className="card-body">
-                                    <p className="text-secondary italic">{job.created_at}</p>
+                                    <p className="text-secondary italic">{job.createdat}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                     <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                     <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
@@ -93,19 +107,29 @@ const Homepage = () => {
             <div class="row mt-4">
                 <p className="h2">Mới nhất</p>
                 
-                <div class="col-md-4">
-                    <div class="card p-3">
-                        <div class="card-body">
-                            <p class="text-secondary italic">x days ago</p>
-                            <h5 className="card-title"><Link to="#" className="job-title">Công việc 1</Link></h5>
-                            <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>Địa điểm làm việc</p>
-                            <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>Lĩnh vực</p>
-                            <p className="card-text job-type"><i className="fa fa-suitcase">&emsp;</i>Loại công việc</p>
+                {newJobs.length === 0 ? (
+                    <div className="col-md-4">
+                        <div className="card p-3">
+                            <div className="card-body">
+                                <h5 className="card-title">Không có công việc nào được đề xuất</h5>
+                            </div>
                         </div>
-
                     </div>
-                </div>
-
+                ) : (
+                    newJobs.map((job) => (
+                        <div className="col-md-4" key={job.id}>
+                            <div className="card p-3">
+                                <div className="card-body">
+                                    <p className="text-secondary italic">{job.createdat}</p>
+                                    <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
+                                    <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
+                                    <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
+                                    <p className="card-text job-type"><i className="fa fa-suitcase">&emsp;</i>{job.jobtype}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
         </main>

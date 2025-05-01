@@ -36,6 +36,9 @@ import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const queryClient = new QueryClient();
 
 function AppContent() {
@@ -45,6 +48,18 @@ function AppContent() {
   return (
     <>
       {!isAdminRoute && <NavBar />}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnHover
+        draggable
+      />
+
       <main>
         <Routes>
           <Route path="/" element={<Homepage />} />
