@@ -22,14 +22,14 @@ const NavBar = () => {
                         <Link className="nav-link active" to="/">Trang chủ</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="#">Tất cả việc làm</Link>
+                        <Link className="nav-link" to="/employer/manage-job">Quản lý công việc</Link>
                     </li>
                 </ul>
 
                 <div className="ms-auto">
                     <ul className="navbar-nav d-flex">
                         <li className="nav-item">
-                            <Link className="nav-link btn-action" to="/post-job">Đăng tuyển</Link>
+                            <Link className="nav-link btn-action" to="/employer/post-job">Đăng tuyển</Link>
                         </li>
                         <a href="" className='profile_img'>
                             <img src="https://kynguyenlamdep.com/wp-content/uploads/2022/08/meme-meo-like.jpg" alt="" />

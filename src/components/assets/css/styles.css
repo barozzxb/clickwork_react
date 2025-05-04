@@ -358,6 +358,7 @@ button {
     outline: none !important;
   }
 
+<<<<<<< Updated upstream
   button:focus {
     outline: none !important;
     border: none !important;
@@ -394,3 +395,17 @@ button {
     top: 0;
     margin: 10px;
   }
+=======
+/* End of Loading effect + spinner */
+
+
+.profile_img img{
+    height: 45px;
+    border-radius: 50%;
+    margin: 0 0 0 15px;
+}
+
+.menu-job {
+    
+}
+>>>>>>> Stashed changes
