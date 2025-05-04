@@ -1,26 +1,77 @@
 import { useQuery } from '@tanstack/react-query';
+import JobCategoryChart from './JobCategoryChart';
+import UserStatisticsChart from './UserStatisticsChart';
+import moment from 'moment';
 
 export default function Dashboard() {
-    const { data: dashboardData, isLoading } = useQuery({
+    const { data: dashboardResponse, isLoading, error } = useQuery({
         queryKey: ['/api/admin/dashboard'],
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 60 * 5, // Cache 5 phút
+        queryFn: async () => {
+            const token = localStorage.getItem('jwt-token');
+            if (!token) {
+                throw new Error('Không tìm thấy JWT token. Vui lòng đăng nhập lại.');
+            }
+
+            const response = await fetch('/api/admin/dashboard', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(
+                    errorData.message || `Lỗi ${response.status}: Không thể tải dữ liệu dashboard`
+                );
+            }
+
+            const data = await response.json();
+            if (!data.status || !data.data) {
+                throw new Error(data.message || 'Dữ liệu dashboard không hợp lệ');
+            }
+
+            return data.data; // Trả về dashboardData trực tiếp từ data.data
+        },
+        onError: (err) => {
+            console.error('Lỗi khi lấy dữ liệu dashboard:', err.message);
+        },
     });
 
-    const adminUser = { name: "Admin User", role: "Super Admin" };
-    const supportTickets = [
-        { id: "#12345", user: { name: "John Smith" }, issue: "Cannot access account after password reset", status: "pending", date: "Today, 10:30 AM" },
-        { id: "#12344", user: { name: "Sara Wilson" }, issue: "Job application submission error", status: "urgent", date: "Today, 9:15 AM" },
-        { id: "#12342", user: { name: "Mark Johnson" }, issue: "Payment issue for premium listing", status: "resolved", date: "Yesterday, 3:45 PM" },
-    ];
-    const activities = [
-        { icon: <i className="bi bi-person-fill" />, color: "bg-primary", title: "New user registered", time: "30 minutes ago" },
-        { icon: <i className="bi bi-briefcase-fill" />, color: "bg-success", title: "15 new jobs were posted", time: "1 hour ago" },
-        { icon: <i className="bi bi-file-text-fill" />, color: "bg-danger", title: "System alert: Backup completed", time: "2 hours ago" },
-    ];
-    const userStats = { newUsers: "+1,240", activeUsers: "8,192", conversion: "24.3%" };
+    // Dữ liệu mặc định khi đang tải hoặc lỗi
+    const defaultData = {
+        activeUsers: 0,
+        jobListings: 0,
+        applications: 0,
+        supportTickets: 0,
+        recentTickets: [],
+        jobCategories: [],
+        userRegistrations: [],
+    };
+
+    const {
+        activeUsers,
+        jobListings,
+        applications,
+        supportTickets,
+        recentTickets,
+        jobCategories,
+        userRegistrations,
+    } = isLoading || error ? defaultData : dashboardResponse || defaultData;
+
+    // Dữ liệu admin (giả định lấy từ token hoặc API)
+    const adminUser = { name: 'Admin User', role: 'Super Admin' };
 
     return (
         <div className="container-fluid p-0">
+            {/* Hiển thị lỗi nếu có */}
+            {error && (
+                <div className="alert alert-danger" role="alert">
+                    Lỗi: {error.message}
+                </div>
+            )}
+
             {/* Welcome Banner */}
             <div className="row mb-4">
                 <div className="col-12">
@@ -46,7 +97,7 @@ export default function Dashboard() {
                             <div className="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h6 className="text-muted mb-1">Active Users</h6>
-                                    <h3 className="fw-bold mb-0">12,489</h3>
+                                    <h3 className="fw-bold mb-0">{isLoading ? '...' : activeUsers.toLocaleString()}</h3>
                                     <span className="badge bg-success">+12%</span>
                                 </div>
                                 <div className="bg-light rounded p-3">
@@ -62,7 +113,7 @@ export default function Dashboard() {
                             <div className="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h6 className="text-muted mb-1">Job Listings</h6>
-                                    <h3 className="fw-bold mb-0">3,427</h3>
+                                    <h3 className="fw-bold mb-0">{isLoading ? '...' : jobListings.toLocaleString()}</h3>
                                     <span className="badge bg-success">+8%</span>
                                 </div>
                                 <div className="bg-light rounded p-3">
@@ -78,7 +129,7 @@ export default function Dashboard() {
                             <div className="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h6 className="text-muted mb-1">Applications</h6>
-                                    <h3 className="fw-bold mb-0">8,372</h3>
+                                    <h3 className="fw-bold mb-0">{isLoading ? '...' : applications.toLocaleString()}</h3>
                                     <span className="badge bg-success">+17%</span>
                                 </div>
                                 <div className="bg-light rounded p-3">
@@ -94,7 +145,7 @@ export default function Dashboard() {
                             <div className="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h6 className="text-muted mb-1">Support Tickets</h6>
-                                    <h3 className="fw-bold mb-0">24</h3>
+                                    <h3 className="fw-bold mb-0">{isLoading ? '...' : supportTickets.toLocaleString()}</h3>
                                     <span className="badge bg-danger">+5</span>
                                 </div>
                                 <div className="bg-light rounded p-3">
@@ -114,39 +165,53 @@ export default function Dashboard() {
                             <h5 className="card-title mb-0">Recent Support Tickets</h5>
                         </div>
                         <div className="card-body">
-                            <div className="table-responsive">
-                                <table className="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>User</th>
-                                            <th>Issue</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {supportTickets.map((ticket) => (
-                                            <tr key={ticket.id}>
-                                                <td>{ticket.id}</td>
-                                                <td>{ticket.user.name}</td>
-                                                <td className="text-truncate" style={{ maxWidth: '200px' }}>{ticket.issue}</td>
-                                                <td>
-                                                    <span className={`badge ${ticket.status === 'pending' ? 'bg-warning' :
-                                                        ticket.status === 'urgent' ? 'bg-danger' :
-                                                            ticket.status === 'resolved' ? 'bg-success' : 'bg-secondary'
-                                                        }`}>
-                                                        {ticket.status}
-                                                    </span>
-                                                </td>
-                                                <td>{ticket.date}</td>
+                            {isLoading ? (
+                                <p>Loading...</p>
+                            ) : recentTickets.length === 0 ? (
+                                <p>Không có phiếu hỗ trợ nào.</p>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>User</th>
+                                                <th>Issue</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+                                        <tbody>
+                                            {recentTickets.map((ticket) => (
+                                                <tr key={ticket.id}>
+                                                    <td>#{ticket.id}</td>
+                                                    <td>{ticket.applicantEmail || ticket.employerEmail || 'Unknown'}</td>
+                                                    <td className="text-truncate" style={{ maxWidth: '200px' }}>
+                                                        {ticket.content}
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            className={`badge ${ticket.status === 'NO_RESPOND'
+                                                                    ? 'bg-warning'
+                                                                    : ticket.status === 'RESPONDED'
+                                                                        ? 'bg-success'
+                                                                        : 'bg-secondary'
+                                                                }`}
+                                                        >
+                                                            {ticket.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>{moment(ticket.sendat).format('YYYY-MM-DD HH:mm')}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                             <div className="text-end pt-3">
-                                <a href="#" className="btn btn-sm btn-primary">View All Tickets</a>
+                                <a href="/support" className="btn btn-sm btn-primary">
+                                    View All Tickets
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -160,12 +225,12 @@ export default function Dashboard() {
                             <div className="d-grid gap-2 mb-4">
                                 <div className="row g-2">
                                     <div className="col-6">
-                                        <a href="#" className="btn btn-primary w-100">
+                                        <a href="/users/add" className="btn btn-primary w-100">
                                             <i className="bi bi-person-plus me-2"></i>Add User
                                         </a>
                                     </div>
                                     <div className="col-6">
-                                        <a href="#" className="btn btn-primary w-100">
+                                        <a href="/jobs/add" className="btn btn-primary w-100">
                                             <i className="bi bi-briefcase-plus me-2"></i>New Job
                                         </a>
                                     </div>
@@ -174,19 +239,39 @@ export default function Dashboard() {
 
                             <h6 className="fw-bold mb-3">Recent Activity</h6>
                             <ul className="list-group list-group-flush">
-                                {activities.map((activity, index) => (
-                                    <li key={index} className="list-group-item px-0 py-2 border-0">
-                                        <div className="d-flex align-items-center">
-                                            <div className={`${activity.color} me-3 p-2 rounded-circle text-white`}>
-                                                {activity.icon}
-                                            </div>
-                                            <div>
-                                                <p className="mb-0 fw-medium">{activity.title}</p>
-                                                <small className="text-muted">{activity.time}</small>
-                                            </div>
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-primary me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-person-fill" />
                                         </div>
-                                    </li>
-                                ))}
+                                        <div>
+                                            <p className="mb-0 fw-medium">New user registered</p>
+                                            <small className="text-muted">30 minutes ago</small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-success me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-briefcase-fill" />
+                                        </div>
+                                        <div>
+                                            <p className="mb-0 fw-medium">15 new jobs were posted</p>
+                                            <small className="text-muted">1 hour ago</small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-danger me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-file-text-fill" />
+                                        </div>
+                                        <div>
+                                            <p className="mb-0 fw-medium">System alert: Backup completed</p>
+                                            <small className="text-muted">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -204,21 +289,19 @@ export default function Dashboard() {
                             <div className="row mb-4 g-3">
                                 <div className="col-4 text-center">
                                     <h6 className="text-muted mb-1">New Users</h6>
-                                    <h5 className="fw-bold">{userStats.newUsers}</h5>
+                                    <h5 className="fw-bold">{isLoading ? '...' : userRegistrations.reduce((sum, month) => sum + month.count, 0)}</h5>
                                 </div>
                                 <div className="col-4 text-center">
                                     <h6 className="text-muted mb-1">Active Users</h6>
-                                    <h5 className="fw-bold">{userStats.activeUsers}</h5>
+                                    <h5 className="fw-bold">{isLoading ? '...' : activeUsers.toLocaleString()}</h5>
                                 </div>
                                 <div className="col-4 text-center">
                                     <h6 className="text-muted mb-1">Conversion Rate</h6>
-                                    <h5 className="fw-bold">{userStats.conversion}</h5>
+                                    <h5 className="fw-bold">{isLoading ? '...' : '24.3%'}</h5>
                                 </div>
                             </div>
-                            <div className="text-center p-4">
-                                <div className="bg-light p-5 rounded-3">
-                                    <p className="mb-0">Chart placeholder (requires chart library)</p>
-                                </div>
+                            <div className="p-4">
+                                <UserStatisticsChart chartType="bar" height={300} data={userRegistrations} />
                             </div>
                         </div>
                     </div>
@@ -231,12 +314,10 @@ export default function Dashboard() {
                         <div className="card-body">
                             <div className="text-center mb-4">
                                 <h6 className="text-muted mb-1">Total Jobs</h6>
-                                <h4 className="fw-bold">3,427</h4>
+                                <h4 className="fw-bold">{isLoading ? '...' : jobListings.toLocaleString()}</h4>
                             </div>
-                            <div className="text-center p-4">
-                                <div className="bg-light p-5 rounded-3">
-                                    <p className="mb-0">Chart placeholder (requires chart library)</p>
-                                </div>
+                            <div className="p-4">
+                                <JobCategoryChart height={250} showLegend={true} data={jobCategories} />
                             </div>
                         </div>
                     </div>

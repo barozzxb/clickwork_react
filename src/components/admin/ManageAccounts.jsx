@@ -44,13 +44,13 @@ export default function ManageAccounts() {
                 <div className="card-header bg-white py-3">
                     <div className="row align-items-center">
                         <div className="col-12 col-md-6 mb-3 mb-md-0">
-                            <h2 className="card-title h5 fw-bold mb-1">Manage User Accounts</h2>
+                            <h2 className="card-title h5 fw-bold mb-1">Manage Accounts</h2>
                             <p className="text-muted small mb-0">View and manage all user accounts</p>
                         </div>
                         <div className="col-12 col-md-6 text-md-end">
                             <button className="btn btn-primary">
                                 <i className="bi bi-person-plus me-2"></i>
-                                Add New User
+                                Add New Admin
                             </button>
                         </div>
                     </div>

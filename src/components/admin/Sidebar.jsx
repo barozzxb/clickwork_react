@@ -11,7 +11,7 @@ export default function Sidebar() {
     return (
         <div className={`sidebar-wrapper ${collapsed ? 'collapsed' : ''}`}>
             <div className="sidebar-header py-3 px-2 d-flex justify-content-between align-items-center">
-                <span className="fs-4 fw-bold text-primary">Job Admin</span>
+                <span className="fs-4 fw-bold text-primary">ClickWork</span>
                 <button className="btn btn-sm d-md-none" onClick={toggleSidebar}>
                     <i className="bi bi-list"></i>
                 </button>
