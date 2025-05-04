@@ -4,13 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import OverlayLoading from '../effects/Loading';
 import { jwtDecode } from 'jwt-decode';
 
+import {API_ROOT} from '../../config.js';
+
 // import banner1 from '../assets/banner1.jpg';
 // import banner2 from '../assets/banner2.jpg';
 
 const Homepage = () => {
 
     const [loading, setLoading] = useState(false);
-    const host = 'http://localhost:9000/api';
     const [jobs, setJobs] = useState([]);
     const [newJobs, setNewJobs] = useState([]);
     const navigate = useNavigate();
@@ -28,10 +29,11 @@ const Homepage = () => {
         const loadJobs = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(host + '/jobs', {
+                const response = await axios.get(`${API_ROOT}/jobs`, {
                    
                 });
                 setJobs(response.data.body || []);
+                console.log(process.env.REACT_APP_API_HOST);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
             } 
@@ -40,20 +42,19 @@ const Homepage = () => {
         const loadNewJobs = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(host + '/jobs/newjobs', {
+                const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
                    
                 });
                 setNewJobs(response.data.body || []);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
-            } finally {
-                setLoading(false);
             }
+                
         }
 
         loadJobs();
         loadNewJobs();
-
+        setLoading(false);
     }, []);
 
     const handleLoading = (token) => {
@@ -69,7 +70,7 @@ const Homepage = () => {
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (role === 'APPLICANT') {
-                    navigate('/employee');
+                    navigate('/applicant');
                 } else {
                     navigate('/employer');
                 }
