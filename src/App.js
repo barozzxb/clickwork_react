@@ -22,7 +22,7 @@ import ManageJobs from './components/employer/ManageJobs.jsx';
 import ViewDetailJob from './components/employer/ViewDetailJob.jsx';
 import ManageSavedJobs from './components/applicant/ManageSavedJobs.jsx';
 import ViewAppliedHistory from './components/applicant/ViewAppliedHistory.jsx';
-
+import RequestSupport from './components/common/RequestSupport.jsx';
 
 function App() {
   return (
@@ -50,6 +50,7 @@ function App() {
           {/* Route dành cho người tìm việc */}
           <Route path="/manage-saved-jobs" element={<ManageSavedJobs />} />
           <Route path="/view-applied-history" element={<ViewAppliedHistory/>} />
+          <Route path="/request-support" element={<RequestSupport/>} />
 
           </Routes>
       </main>
