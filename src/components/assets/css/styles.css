@@ -202,6 +202,12 @@ input:focus::placeholder {
     font-weight: bold;
 }
 
+.btn-action:disabled{
+    background-color: #c5c5c5;
+    color: #FFF;
+    font-weight: bold;
+}
+
 /* .btn-action:focus, .btn-action:active{
     background-color: #00b400;
     color: #FFF;
@@ -345,29 +351,50 @@ input:focus::placeholder {
     background-color: #a10000;
 }
 
-.profile_img img{
-    height: 40px;
-    border-radius: 50%;
-    margin: 0 5px 0 15px;
+
+/* Loading effect + spinner */
+
+/* styles/OverlayLoading.css */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);  /* Màu nền mờ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;  /* Đảm bảo overlay ở trên cùng */
 }
 
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
 
-button {
-    background-color: white;
-    border: none !important;
-    outline: none !important;
-  }
+.loading-text {
+    color: white;
+    margin-top: 10px;
+    font-size: 16px;
+}
 
-<<<<<<< Updated upstream
+/* Animation cho spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
   button:focus {
     outline: none !important;
     border: none !important;
   }
 
-  .status-button {
-    border: none !important;
-    outline: none !important;
-  }
+
 
   .card-job {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -408,4 +435,25 @@ button {
 .menu-job {
     
 }
->>>>>>> Stashed changes
+
+/*  Term modal */
+.term-container {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.term-section {
+    margin-bottom: 24px;
+}
+
+.term-header {
+    margin-bottom: 32px;
+}
+
+.term-footer {
+    margin-top: 40px;
+    font-size: 0.9em;
+    text-align: center;
+    color: #666;
+}
