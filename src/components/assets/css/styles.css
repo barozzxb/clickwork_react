@@ -390,3 +390,26 @@ input:focus::placeholder {
 }
 
 /* End of Loading effect + spinner */
+
+
+/*  Term modal */
+.term-container {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.term-section {
+    margin-bottom: 24px;
+}
+
+.term-header {
+    margin-bottom: 32px;
+}
+
+.term-footer {
+    margin-top: 40px;
+    font-size: 0.9em;
+    text-align: center;
+    color: #666;
+}
