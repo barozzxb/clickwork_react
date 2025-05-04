@@ -52,6 +52,11 @@ const JobDetail = () => {
                     </div>
 
                     <hr />
+                    <div className="d-flex justify-content-around align-items-center">
+                        <button className="btn-action btn-primary">Ứng tuyển ngay</button>
+                        <button className="btn btn-secondary">Lưu công việc</button>
+                        </div>
+                    <hr />
 
                     {/* Mô tả */}
                     <div className="col job-info">

@@ -17,6 +17,7 @@ import Employee from './components/applicant/employee.jsx';
 import Employer from './components/employer/employer.jsx';
 import VerifyOTP from './components/common/verify-otp.jsx';
 import ApplicantProfile from './components/applicant/profile.jsx';
+import ForgotPassword from './components/common/forgotpassword.jsx';
 
 import JobDetail from './components/common/jobdetail.jsx';
 import JobList from './components/common/listjobs.jsx';
@@ -36,6 +37,9 @@ import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const queryClient = new QueryClient();
 
 function AppContent() {
@@ -45,6 +49,18 @@ function AppContent() {
   return (
     <>
       {!isAdminRoute && <NavBar />}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnHover
+        draggable
+      />
+
       <main>
         <Routes>
           <Route path="/" element={<Homepage />} />
@@ -54,6 +70,9 @@ function AppContent() {
           <Route path="/employer" element={<Employer />} />
           <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          {/* Các Route dành cho ứng viên */}
 
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/jobs" element={<JobList />} />
