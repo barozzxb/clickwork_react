@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+import {API_ROOT} from '../../config.js';
+
 const JobDetail = () => {
 
     const { id } = useParams(); // id sẽ là '123'
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
-    const host = 'http://localhost:9000/api';
 
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const res = await axios.get(`${host}/jobs/id=${id}`);
+                const res = await axios.get(`${API_ROOT}/jobs/id=${id}`);
                 setJob(res.data.body);
             } catch (err) {
                 console.error("Lỗi khi fetch job detail", err);
