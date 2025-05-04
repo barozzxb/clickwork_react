@@ -17,6 +17,7 @@ import Employee from './components/applicant/employee.jsx';
 import Employer from './components/employer/employer.jsx';
 import VerifyOTP from './components/common/verify-otp.jsx';
 import ApplicantProfile from './components/applicant/profile.jsx';
+import ForgotPassword from './components/common/forgotpassword.jsx';
 
 import JobDetail from './components/common/jobdetail.jsx';
 import JobList from './components/common/listjobs.jsx';
@@ -69,6 +70,9 @@ function AppContent() {
           <Route path="/employer" element={<Employer />} />
           <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          {/* Các Route dành cho ứng viên */}
 
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/jobs" element={<JobList />} />

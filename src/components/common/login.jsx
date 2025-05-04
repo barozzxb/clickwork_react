@@ -1,7 +1,8 @@
-import React, {useContext, useState, useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+
 
 import { toast } from 'react-toastify';
 
@@ -10,13 +11,14 @@ const localhost = 'http://localhost:9000/api';
 
 const Login = () => {
 
+    const navigate = useNavigate();
+    
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            const decoded = jwtDecode(token);
-            const role = decoded.role;
+            handleLoading(token);
         }
-      }, []);
+      }, [navigate]);
       
 
     const [username, setUsername] = useState('');
@@ -25,12 +27,18 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const navigate = useNavigate();
+    
     
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
+
+            if (!username || !password || username.trim() === '' || password.trim() === '') {
+                toast.error('Vui lòng điền tất cả các trường');
+                return;
+            }
+
             const response = await axios.post(localhost + '/auth/login', {
                 username,
                 password,
@@ -50,26 +58,13 @@ const Login = () => {
                 const message = response.data.message || 'Đăng nhập thành công';
                 toast.success(message);
 
-                const decoded = jwtDecode(token);
-                const role = decoded.role;
-
-                if (role) {
-    
-                    console.log(`Đăng nhập thành công với vai trò: ${role}`);
-                    
-
-                    if (role === 'ADMIN') {
-                        navigate('/admin/dashboard');
-                    } else if (role === 'APPLICANT') {
-                        navigate('/employee');
-                    } else {
-                        navigate('/employer');
-                    }
-                } 
+                handleLoading(token);
+                
             }
             else {
                 const message = response.data.message || 'Đăng nhập thất bại';
                 toast.error(message);
+                return;
             }
 
         } catch (error) {
@@ -80,6 +75,28 @@ const Login = () => {
             setLoading(false);
         }
     };
+
+
+    const handleLoading = (token) => {
+        if (token) {
+            const decoded = jwtDecode(token);
+            const role = decoded.role;
+
+            if (role) {
+
+                console.log(`Đăng nhập thành công với vai trò: ${role}`);
+                
+
+                if (role === 'ADMIN') {
+                    navigate('/admin/dashboard');
+                } else if (role === 'APPLICANT') {
+                    navigate('/employee');
+                } else {
+                    navigate('/employer');
+                }
+            } 
+        }
+    }
 
     return (
         <main className="d-flex container justify-content-center align-items-center">
@@ -97,7 +114,7 @@ const Login = () => {
                             name="email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            required
+                         
                         />
                     </div>
 
@@ -111,7 +128,7 @@ const Login = () => {
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            required
+                          
                         />
                         <button 
                             type="button" 
@@ -123,7 +140,7 @@ const Login = () => {
                     </div>
 
                     <div className="d-flex justify-content-end align-items-center">
-                        <label htmlFor="forgot">&emsp;<Link to="" className="emphasis">Quên mật khẩu?</Link></label>
+                        <label htmlFor="forgot">&emsp;<Link to="/forgot-password" className="emphasis">Quên mật khẩu?</Link></label>
                     </div>
 
                     <div className="d-flex align-items-center">
