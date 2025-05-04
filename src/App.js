@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ProtectedRoute from './components/ProtectedRoutes.jsx';
 import './App.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -37,6 +38,9 @@ import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
 
+import NotFound from './components/error/404.jsx';
+import Error403 from './components/error/403.jsx';
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -66,33 +70,48 @@ function AppContent() {
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/employee" element={<Employee />} />
-          <Route path="/employer" element={<Employer />} />
-          <Route path="/verify" element={<VerifyOTP />} />
-          <Route path="/applicant/profile" element={<ApplicantProfile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Các Route dành cho ứng viên */}
-
+          <Route path="/verify" element={<VerifyOTP />} />
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/jobs" element={<JobList />} />
+
+
+
+          {/* Các Route dành cho ứng viên */}
+          <Route element={<ProtectedRoute allowedRoles={[ 'APPLICANT' ]} />}>
+            <Route path="/applicant" element={<Employee />} />
+            <Route path="/applicant/profile" element={<ApplicantProfile />} />
+          </Route>
+
           
           {/* Các Route dành cho nhà tuyển dụng */}
-
-          <Route path="/post-job" element={<PostJob />} />
-          <Route path="/manage-job" element={<ManageJobs />} />
-          <Route path="/view-detail-job" element={<ViewDetailJob />} />
-          <Route path="/manage-saved-jobs" element={<ManageSavedJobs />} />
-          <Route path="/view-applied-history" element={<ViewAppliedHistory />} />
+          <Route element={<ProtectedRoute allowedRoles={[ 'EMPLOYER' ]} />}>
+            <Route path="/employer" element={<Employer />} /> 
+            <Route path="/post-job" element={<PostJob />} />
+            <Route path="/manage-job" element={<ManageJobs />} />
+            <Route path="/view-detail-job" element={<ViewDetailJob />} />
+            <Route path="/manage-saved-jobs" element={<ManageSavedJobs />} />
+            <Route path="/view-applied-history" element={<ViewAppliedHistory />} />
+          </Route>
 
           {/* Các route dành cho admin */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="send-email" element={<SendEmail />} />
-            <Route path="manage-accounts" element={<ManageAccounts />} />
-            <Route path="support-user" element={<SupportUser />} />
-            <Route path="view-reports" element={<ViewReports />} />
+          <Route element={<ProtectedRoute allowedRoles={[ 'ADMIN' ]} />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="send-email" element={<SendEmail />} />
+              <Route path="manage-accounts" element={<ManageAccounts />} />
+              <Route path="support-user" element={<SupportUser />} />
+              <Route path="view-reports" element={<ViewReports />} />
+            </Route>
           </Route>
+
+          {/* Route 403 */}
+          <Route path="/403" element={<Error403 />} />
+
+          {/* Route 404 */}
+          <Route path="/404" element={<NotFound />} />
+
         </Routes>
       </main>
       {!isAdminRoute && <Footer />}
