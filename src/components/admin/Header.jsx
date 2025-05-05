@@ -24,7 +24,7 @@ export default function Header() {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
-                    <div className="d-flex flex-grow-1">
+                    {/* <div className="d-flex flex-grow-1">
                         <form className="d-flex w-100 me-3">
                             <div className="input-group">
                                 <span className="input-group-text bg-light border-0">
@@ -38,7 +38,7 @@ export default function Header() {
                                 />
                             </div>
                         </form>
-                    </div>
+                    </div> */}
 
                     <div className="d-flex align-items-center">
                         <div className="dropdown me-3 position-relative">
