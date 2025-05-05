@@ -360,7 +360,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="col-lg-4">
+                {/* <div className="col-lg-4">
                     <div className="card h-100">
                         <div className="card-header bg-white">
                             <h5 className="card-title mb-0">Quick Actions</h5>
@@ -419,7 +419,7 @@ export default function Dashboard() {
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             {/* User Stats and Job Category Stats */}

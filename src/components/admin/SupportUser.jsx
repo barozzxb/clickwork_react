@@ -9,11 +9,17 @@ export default function SupportUser() {
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [inputValue, setInputValue] = useState('');
     const [statusFilter, setStatusFilter] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [sortBy, setSortBy] = useState('id');
     const [sortDir, setSortDir] = useState('DESC');
     const ticketsPerPage = 5;
+
+    const handleSearch = () => {
+        setSearchTerm(inputValue);
+        setCurrentPage(0);
+    };
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -144,6 +150,12 @@ export default function SupportUser() {
         setCurrentPage(0);
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
     if (!token) {
         return (
             <div className="container-fluid p-5 text-center">
@@ -188,12 +200,17 @@ export default function SupportUser() {
                                             type="text"
                                             className="form-control bg-light border-start-0"
                                             placeholder="Search by ID, user, title, or content..."
-                                            value={searchTerm}
-                                            onChange={(e) => {
-                                                setSearchTerm(e.target.value);
-                                                setCurrentPage(0);
-                                            }}
+                                            value={inputValue}
+                                            onChange={(e) => setInputValue(e.target.value)}
+                                            onKeyPress={handleKeyPress}
                                         />
+                                        <button
+                                            className="btn btn-primary"
+                                            type="button"
+                                            onClick={handleSearch}
+                                        >
+                                            Search
+                                        </button>
                                     </div>
                                 </div>
                                 <div className="col-md-6 text-md-end">
