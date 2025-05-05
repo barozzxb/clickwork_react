@@ -37,6 +37,7 @@ import SendEmail from './components/admin/SendEmail.jsx';
 import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
+import SupportDetail from './components/admin/SupportDetail.jsx';
 
 import NotFound from './components/error/404.jsx';
 import Error403 from './components/error/403.jsx';
@@ -79,15 +80,15 @@ function AppContent() {
 
 
           {/* Các Route dành cho ứng viên */}
-          <Route element={<ProtectedRoute allowedRoles={[ 'APPLICANT' ]} />}>
+          <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
             <Route path="/applicant" element={<Employee />} />
             <Route path="/applicant/profile" element={<ApplicantProfile />} />
           </Route>
 
-          
+
           {/* Các Route dành cho nhà tuyển dụng */}
-          <Route element={<ProtectedRoute allowedRoles={[ 'EMPLOYER' ]} />}>
-            <Route path="/employer" element={<Employer />} /> 
+          <Route element={<ProtectedRoute allowedRoles={['EMPLOYER']} />}>
+            <Route path="/employer" element={<Employer />} />
             <Route path="/post-job" element={<PostJob />} />
             <Route path="/manage-job" element={<ManageJobs />} />
             <Route path="/view-detail-job" element={<ViewDetailJob />} />
@@ -96,13 +97,14 @@ function AppContent() {
           </Route>
 
           {/* Các route dành cho admin */}
-          <Route element={<ProtectedRoute allowedRoles={[ 'ADMIN' ]} />}>
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="send-email" element={<SendEmail />} />
               <Route path="manage-accounts" element={<ManageAccounts />} />
               <Route path="support-user" element={<SupportUser />} />
               <Route path="view-reports" element={<ViewReports />} />
+              <Route path="support-user/support/:id" element={<SupportDetail />} />
             </Route>
           </Route>
 

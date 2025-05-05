@@ -103,7 +103,7 @@ export default function Dashboard() {
         recentTickets,
         jobCategories,
         userRegistrations,
-    } = isLoading || error ? defaultData : dashboardResponse || defaultData;
+    } = dashboardResponse || defaultData;
 
     const adminUser = token ? (() => {
         try {
@@ -133,37 +133,106 @@ export default function Dashboard() {
         );
     }
 
+    // Loading indicator component for individual sections
+    const LoadingIndicator = ({ height = '100px' }) => (
+        <div className="d-flex justify-content-center align-items-center" style={{ height }}>
+            <Spinner animation="border" size="sm" className="me-2" />
+            <span>Đang tải...</span>
+        </div>
+    );
+
+    // Skeleton for metric cards
+    const MetricSkeleton = () => (
+        <div className="card h-100">
+            <div className="card-body">
+                <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 className="text-muted mb-1">Loading...</h6>
+                        <div className="bg-light rounded" style={{ height: '30px', width: '80px' }}></div>
+                        <div className="bg-light rounded mt-2" style={{ height: '20px', width: '40px' }}></div>
+                    </div>
+                    <div className="bg-light rounded p-3">
+                        <div style={{ height: '24px', width: '24px' }}></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="container-fluid p-0">
-            {isLoading && (
-                <div className="text-center my-5">
-                    <Spinner animation="border" />
-                </div>
-            )}
             {error && (
                 <div className="alert alert-danger" role="alert">
-                    Lỗi: {error.message}
+                    <h5>Lỗi khi tải dữ liệu dashboard:</h5>
+                    <p>{error.message}</p>
+                    <div className="mt-3">
+                        <button
+                            className="btn btn-sm btn-outline-primary me-2"
+                            onClick={() => window.location.reload()}
+                        >
+                            Tải lại trang
+                        </button>
+                        <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                navigate('/login');
+                            }}
+                        >
+                            Đăng nhập lại
+                        </button>
+                    </div>
                 </div>
             )}
-            {!isLoading && (
-                <>
-                    <div className="row mb-4">
-                        <div className="col-12">
-                            <div className="card bg-light">
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h2 className="card-title fw-bold">Welcome back, {adminUser.name}!</h2>
-                                            <p className="text-muted">Here's an overview of your admin dashboard.</p>
-                                        </div>
-                                        <a href="#" className="btn btn-primary">View Site</a>
-                                    </div>
+
+            {/* Welcome Banner - Always show */}
+            <div className="row mb-4">
+                <div className="col-12">
+                    <div className="card bg-light">
+                        <div className="card-body">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h2 className="card-title fw-bold">Welcome back, {adminUser.name}!</h2>
+                                    <p className="text-muted">Here's an overview of your admin dashboard.</p>
                                 </div>
+                                {/* <div>
+                                    <a href="#" className="btn btn-primary me-2">View Site</a>
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        onClick={() => {
+                                            localStorage.removeItem('token');
+                                            navigate('/login');
+                                        }}
+                                    >
+                                        Đăng xuất
+                                    </button>
+                                </div> */}
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div className="row mb-4">
+            {/* Metrics */}
+            <div className="row mb-4">
+                {isLoading ? (
+                    // Show skeletons while loading
+                    <>
+                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                            <MetricSkeleton />
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                            <MetricSkeleton />
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                            <MetricSkeleton />
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                            <MetricSkeleton />
+                        </div>
+                    </>
+                ) : (
+                    <>
                         <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
                             <div className="card h-100">
                                 <div className="card-body">
@@ -228,133 +297,143 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </>
+                )}
+            </div>
 
-                    <div className="row mb-4">
-                        <div className="col-lg-8 mb-4 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-header bg-white">
-                                    <h5 className="card-title mb-0">Recent Support Tickets</h5>
+            {/* Support Tickets and Quick Actions */}
+            <div className="row mb-4">
+                <div className="col-lg-8 mb-4 mb-lg-0">
+                    <div className="card h-100">
+                        <div className="card-header bg-white">
+                            <h5 className="card-title mb-0">Recent Support Tickets</h5>
+                        </div>
+                        <div className="card-body">
+                            {isLoading ? (
+                                <LoadingIndicator height="200px" />
+                            ) : recentTickets.length === 0 ? (
+                                <p>Không có phiếu hỗ trợ nào.</p>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>User</th>
+                                                <th>Issue</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {recentTickets.map((ticket) => (
+                                                <tr key={ticket.id}>
+                                                    <td>#{ticket.id}</td>
+                                                    <td>{ticket.applicantEmail || ticket.employerEmail || 'Unknown'}</td>
+                                                    <td className="text-truncate" style={{ maxWidth: '200px' }}>
+                                                        {ticket.content}
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            className={`badge ${ticket.status === 'NO_RESPOND'
+                                                                ? 'bg-warning'
+                                                                : ticket.status === 'RESPONDED'
+                                                                    ? 'bg-success'
+                                                                    : 'bg-secondary'
+                                                                }`}
+                                                        >
+                                                            {ticket.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>{moment(ticket.sendat).format('YYYY-MM-DD HH:mm')}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div className="card-body">
-                                    {recentTickets.length === 0 ? (
-                                        <p>Không có phiếu hỗ trợ nào.</p>
-                                    ) : (
-                                        <div className="table-responsive">
-                                            <table className="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>User</th>
-                                                        <th>Issue</th>
-                                                        <th>Status</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {recentTickets.map((ticket) => (
-                                                        <tr key={ticket.id}>
-                                                            <td>#{ticket.id}</td>
-                                                            <td>{ticket.applicantEmail || ticket.employerEmail || 'Unknown'}</td>
-                                                            <td className="text-truncate" style={{ maxWidth: '200px' }}>
-                                                                {ticket.content}
-                                                            </td>
-                                                            <td>
-                                                                <span
-                                                                    className={`badge ${ticket.status === 'NO_RESPOND'
-                                                                        ? 'bg-warning'
-                                                                        : ticket.status === 'RESPONDED'
-                                                                            ? 'bg-success'
-                                                                            : 'bg-secondary'
-                                                                        }`}
-                                                                >
-                                                                    {ticket.status}
-                                                                </span>
-                                                            </td>
-                                                            <td>{moment(ticket.sendat).format('YYYY-MM-DD HH:mm')}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-                                    <div className="text-end pt-3">
-                                        <a href="/admin/support-user" className="btn btn-sm btn-primary">
-                                            View All Tickets
+                            )}
+                            <div className="text-end pt-3">
+                                <a href="/admin/support-user" className="btn btn-sm btn-primary">
+                                    View All Tickets
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-4">
+                    <div className="card h-100">
+                        <div className="card-header bg-white">
+                            <h5 className="card-title mb-0">Quick Actions</h5>
+                        </div>
+                        <div className="card-body">
+                            <div className="d-grid gap-2 mb-4">
+                                <div className="row g-2">
+                                    <div className="col-6">
+                                        <a href="/users/add" className="btn btn-primary w-100">
+                                            <i className="bi bi-person-plus me-2"></i>Add User
+                                        </a>
+                                    </div>
+                                    <div className="col-6">
+                                        <a href="/jobs/add" className="btn btn-primary w-100">
+                                            <i className="bi bi-briefcase-plus me-2"></i>New Job
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-lg-4">
-                            <div className="card h-100">
-                                <div className="card-header bg-white">
-                                    <h5 className="card-title mb-0">Quick Actions</h5>
-                                </div>
-                                <div className="card-body">
-                                    <div className="d-grid gap-2 mb-4">
-                                        <div className="row g-2">
-                                            <div className="col-6">
-                                                <a href="/users/add" className="btn btn-primary w-100">
-                                                    <i className="bi bi-person-plus me-2"></i>Add User
-                                                </a>
-                                            </div>
-                                            <div className="col-6">
-                                                <a href="/jobs/add" className="btn btn-primary w-100">
-                                                    <i className="bi bi-briefcase-plus me-2"></i>New Job
-                                                </a>
-                                            </div>
+
+                            <h6 className="fw-bold mb-3">Recent Activity</h6>
+                            <ul className="list-group list-group-flush">
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-primary me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-person-fill" />
+                                        </div>
+                                        <div>
+                                            <p className="mb-0 fw-medium">New user registered</p>
+                                            <small className="text-muted">30 minutes ago</small>
                                         </div>
                                     </div>
-
-                                    <h6 className="fw-bold mb-3">Recent Activity</h6>
-                                    <ul className="list-group list-group-flush">
-                                        <li className="list-group-item px-0 py-2 border-0">
-                                            <div className="d-flex align-items-center">
-                                                <div className="bg-primary me-3 p-2 rounded-circle text-white">
-                                                    <i className="bi bi-person-fill" />
-                                                </div>
-                                                <div>
-                                                    <p className="mb-0 fw-medium">New user registered</p>
-                                                    <small className="text-muted">30 minutes ago</small>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li className="list-group-item px-0 py-2 border-0">
-                                            <div className="d-flex align-items-center">
-                                                <div className="bg-success me-3 p-2 rounded-circle text-white">
-                                                    <i className="bi bi-briefcase-fill" />
-                                                </div>
-                                                <div>
-                                                    <p className="mb-0 fw-medium">15 new jobs were posted</p>
-                                                    <small className="text-muted">1 hour ago</small>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li className="list-group-item px-0 py-2 border-0">
-                                            <div className="d-flex align-items-center">
-                                                <div className="bg-danger me-3 p-2 rounded-circle text-white">
-                                                    <i className="bi bi-file-text-fill" />
-                                                </div>
-                                                <div>
-                                                    <p className="mb-0 fw-medium">System alert: Backup completed</p>
-                                                    <small className="text-muted">2 hours ago</small>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                                </li>
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-success me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-briefcase-fill" />
+                                        </div>
+                                        <div>
+                                            <p className="mb-0 fw-medium">15 new jobs were posted</p>
+                                            <small className="text-muted">1 hour ago</small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item px-0 py-2 border-0">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-danger me-3 p-2 rounded-circle text-white">
+                                            <i className="bi bi-file-text-fill" />
+                                        </div>
+                                        <div>
+                                            <p className="mb-0 fw-medium">System alert: Backup completed</p>
+                                            <small className="text-muted">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div className="row">
-                        <div className="col-lg-6 mb-4 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-header bg-white">
-                                    <h5 className="card-title mb-0">User Statistics</h5>
-                                </div>
-                                <div className="card-body">
+            {/* User Stats and Job Category Stats */}
+            <div className="row">
+                <div className="col-lg-6 mb-4 mb-lg-0">
+                    <div className="card h-100">
+                        <div className="card-header bg-white">
+                            <h5 className="card-title mb-0">User Statistics</h5>
+                        </div>
+                        <div className="card-body">
+                            {isLoading ? (
+                                <LoadingIndicator height="350px" />
+                            ) : (
+                                <>
                                     <div className="row mb-4 g-3">
                                         <div className="col-4 text-center">
                                             <h6 className="text-muted mb-1">New Users</h6>
@@ -372,15 +451,21 @@ export default function Dashboard() {
                                     <div className="p-4">
                                         <UserStatisticsChart chartType="bar" height={300} data={userRegistrations} />
                                     </div>
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
-                        <div className="col-lg-6">
-                            <div className="card h-100">
-                                <div className="card-header bg-white">
-                                    <h5 className="card-title mb-0">Job Categories</h5>
-                                </div>
-                                <div className="card-body">
+                    </div>
+                </div>
+                <div className="col-lg-6">
+                    <div className="card h-100">
+                        <div className="card-header bg-white">
+                            <h5 className="card-title mb-0">Job Categories</h5>
+                        </div>
+                        <div className="card-body">
+                            {isLoading ? (
+                                <LoadingIndicator height="350px" />
+                            ) : (
+                                <>
                                     <div className="text-center mb-4">
                                         <h6 className="text-muted mb-1">Total Jobs</h6>
                                         <h4 className="fw-bold">{jobListings.toLocaleString()}</h4>
@@ -388,12 +473,12 @@ export default function Dashboard() {
                                     <div className="p-4">
                                         <JobCategoryChart height={250} showLegend={true} data={jobCategories} />
                                     </div>
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
                     </div>
-                </>
-            )}
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,11 +1,26 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 
 export default function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
 
     const toggleSidebar = () => {
         setCollapsed(!collapsed);
+    };
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
+        if (confirmLogout) {
+            // Xoá token và thông tin người dùng
+            localStorage.removeItem("token");
+            // localStorage.removeItem("user");
+
+            // Chuyển hướng về trang login
+            navigate("/login");
+        }
     };
 
     return (
@@ -61,10 +76,10 @@ export default function Sidebar() {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="#" className="nav-link">
+                        <span className="nav-link" onClick={handleLogout} style={{ cursor: 'pointer' }}>
                             <i className="bi bi-box-arrow-right me-2"></i>
                             <span>Logout</span>
-                        </NavLink>
+                        </span>
                     </li>
                 </ul>
             </div>
