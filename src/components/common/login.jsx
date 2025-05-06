@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -6,19 +6,20 @@ import { jwtDecode } from 'jwt-decode';
 
 import { toast } from 'react-toastify';
 
-import {API_ROOT} from '../../config.js';
+// import {API_ROOT} from '../../config.js';
+const API_ROOT = 'http://localhost:9000/api';
 
 const Login = () => {
 
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             handleLoading(token);
         }
-      }, [navigate]);
-      
+    }, [navigate]);
+
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -26,8 +27,8 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    
-    
+
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -49,16 +50,16 @@ const Login = () => {
 
             if (response.data.status === true) {
 
-                const {token} = response.data.body || {};
+                const { token } = response.data.body || {};
                 if (token) {
                     localStorage.setItem('token', token);
                 }
-                
+
                 const message = response.data.message || 'Đăng nhập thành công';
                 toast.success(message);
 
                 handleLoading(token);
-                
+
             }
             else {
                 const message = response.data.message || 'Đăng nhập thất bại';
@@ -84,7 +85,7 @@ const Login = () => {
             if (role) {
 
                 console.log(`Đăng nhập thành công với vai trò: ${role}`);
-                
+
 
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
@@ -93,7 +94,7 @@ const Login = () => {
                 } else {
                     navigate('/employer');
                 }
-            } 
+            }
         }
     }
 
@@ -113,7 +114,7 @@ const Login = () => {
                             name="email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                         
+
                         />
                     </div>
 
@@ -127,11 +128,11 @@ const Login = () => {
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                          
+
                         />
-                        <button 
-                            type="button" 
-                            className="btn border-0" 
+                        <button
+                            type="button"
+                            className="btn border-0"
                             id="togglePassword"
                             onClick={() => setShowPassword(!showPassword)}>
                             <i className={showPassword ? "fa fa-eye-slash" : "fa fa-eye"}></i>

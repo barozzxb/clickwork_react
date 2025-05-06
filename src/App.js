@@ -50,6 +50,7 @@ import Error403 from './components/error/403.jsx';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminProfile from './components/admin/AdminProfile.jsx';
 
 const queryClient = new QueryClient();
 
@@ -59,12 +60,12 @@ function AppContent() {
 
   return (
     <>
-    {/* //{!isAdminRoute && <EmployerNavbar />} */}
-    {!isAdminRoute && (
-      location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
-    )}
+      {/* //{!isAdminRoute && <EmployerNavbar />} */}
+      {!isAdminRoute && (
+        location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
+      )}
 
-    {/* <> */}
+      {/* <> */}
       {!isAdminRoute && <NavBar />}
 
       <ToastContainer
@@ -120,6 +121,7 @@ function AppContent() {
               <Route path="support-user" element={<SupportUser />} />
               <Route path="view-reports" element={<ViewReports />} />
               <Route path="support-user/support/:id" element={<SupportDetail />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
           </Route>
 
