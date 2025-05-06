@@ -1,1 +1,1 @@
-export const API_ROOT = process.env.REACT_APP_API_HOST|| 'http://localhost:3000/api';
+export const API_ROOT = process.env.REACT_APP_API_HOST;
