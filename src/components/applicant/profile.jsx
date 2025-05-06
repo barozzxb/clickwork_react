@@ -6,6 +6,7 @@ import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
 
 import { API_ROOT } from '../../config';
+import { BACK_END_HOST } from '../../config';
 
 const ApplicantProfile = () => {
   const token = localStorage.getItem('token');
@@ -103,7 +104,7 @@ const ApplicantProfile = () => {
           <div className="d-flex flex-column align-items-center">
             {avatar ? (
               <Image
-                src={`${API_ROOT}${avatar}`}
+                src={`${BACK_END_HOST}/${avatar}`}
                 roundedCircle
                 fluid
                 style={{ width: 150, height: 150, objectFit: 'cover' }}
