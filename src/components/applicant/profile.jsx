@@ -104,7 +104,7 @@ const ApplicantProfile = () => {
           <div className="d-flex flex-column align-items-center">
             {avatar ? (
               <Image
-                src={`${BACK_END_HOST}/${avatar}`}
+                src={`${BACK_END_HOST}${avatar}`}
                 roundedCircle
                 fluid
                 style={{ width: 150, height: 150, objectFit: 'cover' }}
