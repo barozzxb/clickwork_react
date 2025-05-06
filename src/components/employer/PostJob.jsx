@@ -1,6 +1,7 @@
-<<<<<<< Updated upstream
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill-new';
+import axios from 'axios';
+
 const PostJob = () => {
     const [job, setJob] = useState({
         title: '',
@@ -10,10 +11,7 @@ const PostJob = () => {
         requirements: '',
         benefits: ''
     });
-=======
-    import React, { useState } from 'react';
-    import axios from 'axios';
->>>>>>> Stashed changes
+
 
     const PostJob = () => {
         const [job, setJob] = useState({
@@ -154,4 +152,6 @@ const PostJob = () => {
         );
     };
 
-    export default PostJob;
+}
+
+export default PostJob;
