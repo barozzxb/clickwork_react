@@ -14,7 +14,7 @@ const RequestSupport = () => {
     useEffect(() => {
         const token = localStorage.getItem('token'); // Lấy token từ localStorage (sau khi đăng nhập)
         if (token) {
-            try {
+            try {  
                 const decoded = jwtDecode(token);
                 setActorUsername(decoded.sub || decoded.username); // Tùy vào payload token
             } catch (err) {

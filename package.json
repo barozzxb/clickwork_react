@@ -2,6 +2,7 @@
   "name": "clickwork_react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://github.com/barozzxb/clickwork_react/tree/baochau",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -14,10 +15,10 @@
     "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
     "jwt-decode": "^4.0.0",
-    "react": "^19.1.0",
+    "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
-    "react-dom": "^19.1.0",
-    "react-quill": "^2.0.0-beta.4",
+    "react-dom": "^18.3.1",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^7.5.1",
     "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.5",
@@ -29,7 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +53,7 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-import": "^2.31.0"
+    "eslint-plugin-import": "^2.31.0",
+    "gh-pages": "^6.3.0"
   }
 }
