@@ -131,7 +131,7 @@ export default function VerifyOTP() {
   // Gửi OTP ngay khi có email
   useEffect(() => {
     if (email) sendCode(email);
-  }, [email, sendCode]);
+  }, [email]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
