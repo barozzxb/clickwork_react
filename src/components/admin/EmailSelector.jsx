@@ -1,0 +1,176 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
+export default function EmailSelector({ onSelect, onClose, multiple = false }) {
+    const [search, setSearch] = useState('');
+    const [selectedRole, setSelectedRole] = useState('all');
+    const [selectedEmails, setSelectedEmails] = useState([]);
+    const [emails, setEmails] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // Fetch emails based on role and search term
+    useEffect(() => {
+        const fetchEmails = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
+                const response = await axios.get(`http://localhost:9000/api/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+
+                if (!response.data.status) {
+                    throw new Error(response.data.message || 'Failed to fetch emails');
+                }
+
+                setEmails(response.data.body);
+            } catch (error) {
+                const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch emails';
+                setError(errorMessage);
+                toast.error(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchEmails();
+    }, [selectedRole, search]);
+
+    const toggleEmailSelection = (email) => {
+        if (!multiple) {
+            // Single selection mode
+            onSelect([email]);
+            onClose();
+            return;
+        }
+
+        // Multiple selection mode
+        setSelectedEmails(prevSelected => {
+            const isAlreadySelected = prevSelected.some(e => e.email === email.email);
+
+            if (isAlreadySelected) {
+                return prevSelected.filter(e => e.email !== email.email);
+            } else {
+                return [...prevSelected, email];
+            }
+        });
+    };
+
+    const confirmSelection = () => {
+        onSelect(selectedEmails);
+        onClose();
+    };
+
+    const isEmailSelected = (email) => {
+        return selectedEmails.some(e => e.email === email.email);
+    };
+
+    return (
+        <div className="email-selector-overlay">
+            <div className="email-selector-modal">
+                <div className="email-selector-header">
+                    <h4>Select Email{multiple ? 's' : ''}</h4>
+                    <button className="btn-close" onClick={onClose}></button>
+                </div>
+
+                <div className="email-selector-filters">
+                    <div className="input-group mb-3">
+                        <span className="input-group-text">
+                            <i className="bi bi-search"></i>
+                        </span>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search by email or name..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="btn-group mb-3 w-100">
+                        <button
+                            className={`btn btn-outline-primary ${selectedRole === 'all' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            className={`btn btn-outline-primary ${selectedRole === 'jobseekers' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('jobseekers')}
+                        >
+                            Job Seekers
+                        </button>
+                        <button
+                            className={`btn btn-outline-primary ${selectedRole === 'employers' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('employers')}
+                        >
+                            Employers
+                        </button>
+                        <button
+                            className={`btn btn-outline-primary ${selectedRole === 'admins' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('admins')}
+                        >
+                            Admins
+                        </button>
+                        <button
+                            className={`btn btn-outline-primary ${selectedRole === 'inactive' ? 'active' : ''}`}
+                            onClick={() => setSelectedRole('inactive')}
+                        >
+                            Inactive
+                        </button>
+                    </div>
+                </div>
+
+                <div className="email-selector-list">
+                    {isLoading && <div className="text-center p-3"><div className="spinner-border text-primary"></div></div>}
+
+                    {error && <div className="alert alert-danger">{error}</div>}
+
+                    {!isLoading && !error && emails?.length === 0 && (
+                        <div className="text-center p-3">No emails found</div>
+                    )}
+
+                    {!isLoading && !error && emails?.length > 0 && (
+                        <div className="list-group">
+                            {emails.map((item) => (
+                                <button
+                                    key={item.email}
+                                    className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${isEmailSelected(item) ? 'active' : ''}`}
+                                    onClick={() => toggleEmailSelection(item)}
+                                >
+                                    <div>
+                                        <div>{item.email}</div>
+                                        <small className="text-muted">{item.fullname || 'Unknown'} - {item.role}</small>
+                                    </div>
+                                    {isEmailSelected(item) && <i className="bi bi-check-circle-fill"></i>}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {multiple && (
+                    <div className="email-selector-footer">
+                        <div>
+                            <small className="text-muted">Selected: {selectedEmails.length} email(s)</small>
+                        </div>
+                        <div className="d-flex gap-2">
+                            <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                            <button
+                                className="btn btn-primary"
+                                onClick={confirmSelection}
+                                disabled={selectedEmails.length === 0}
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
