@@ -389,8 +389,52 @@ input:focus::placeholder {
     100% { transform: rotate(360deg); }
 }
 
+  button:focus {
+    outline: none !important;
+    border: none !important;
+  }
+
+
+
+  .card-job {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    background-color: #eeeeee;
+    transition: 0.3s;
+    padding: 10px;
+    position: relative;
+  }
+  .card-job span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 10px;
+  }
+  .btn-active{
+    padding: 5px 10px;
+    color: #006b12;
+    border: #006b12 solid 1px;
+    border-radius: 15px;
+    text-decoration: none;
+  }
+  .menu-job {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 10px;
+  }
+=======
 /* End of Loading effect + spinner */
 
+
+.profile_img img{
+    height: 45px;
+    border-radius: 50%;
+    margin: 0 0 0 15px;
+}
+
+.menu-job {
+    
+}
 
 /*  Term modal */
 .term-container {

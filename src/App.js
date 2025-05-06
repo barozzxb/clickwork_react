@@ -28,6 +28,8 @@ import './components/assets/css/styles.css';
 import PostJob from './components/employer/PostJob.jsx';
 import ManageJobs from './components/employer/ManageJobs.jsx';
 import ViewDetailJob from './components/employer/ViewDetailJob.jsx';
+
+
 import ManageSavedJobs from './components/applicant/ManageSavedJobs.jsx';
 import ViewAppliedHistory from './components/applicant/ViewAppliedHistory.jsx';
 
@@ -37,10 +39,14 @@ import SendEmail from './components/admin/SendEmail.jsx';
 import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
+
+import EmployerNavBar from './components/employer/EmployerNavbar.jsx';
+
 import SupportDetail from './components/admin/SupportDetail.jsx';
 
 import NotFound from './components/error/404.jsx';
 import Error403 from './components/error/403.jsx';
+
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -52,6 +58,12 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
+    <>
+    {/* //{!isAdminRoute && <EmployerNavbar />} */}
+    {!isAdminRoute && (
+      location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
+    )}
+
     <>
       {!isAdminRoute && <NavBar />}
 
@@ -66,11 +78,13 @@ function AppContent() {
         draggable
       />
 
+
       <main>
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route path="/verify" element={<VerifyOTP />} />
@@ -96,6 +110,7 @@ function AppContent() {
             <Route path="/view-applied-history" element={<ViewAppliedHistory />} />
           </Route>
 
+
           {/* Các route dành cho admin */}
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="/admin" element={<AdminLayout />}>
@@ -107,6 +122,7 @@ function AppContent() {
               <Route path="support-user/support/:id" element={<SupportDetail />} />
             </Route>
           </Route>
+
 
           {/* Route 403 */}
           <Route path="/403" element={<Error403 />} />

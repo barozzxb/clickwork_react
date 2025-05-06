@@ -51,7 +51,7 @@ const NavBar = () => {
                             <Link className="nav-link" to="/jobs">Tất cả việc làm</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="#">Trang dành cho Nhà tuyển dụng</Link>
+                            <Link className="nav-link" to="/employer">Trang dành cho Nhà tuyển dụng</Link>
                         </li>
                     </ul>
 
