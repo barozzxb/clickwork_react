@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import OverlayLoading from '../effects/Loading';
 import { Link } from 'react-router-dom';
+import {API_ROOT} from '../../config.js';
 
 const EJobTypes = ['FULLTIME', 'PARTTIME', 'INTERNSHIP', 'ONLINE', 'FLEXIBLE'];
-const host = 'http://localhost:9000/api';
+
 
 const JobList = () => {
     // state cho filter
@@ -28,7 +29,7 @@ const JobList = () => {
         const loadJobs = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(host + '/jobs', {
+                const response = await axios.get(`${API_ROOT}/jobs`, {
 
                 });
                 setJobs(response.data.body || []);
@@ -53,7 +54,7 @@ const JobList = () => {
     // gọi API lấy jobs với filter
     const fetchJobs = () => {
         try{
-            const response = axios.post('http://localhost:9000/api/jobs/filter', { filters })
+            const response = axios.post(`${API_ROOT}/jobs/filter`, { filters })
             setJobs(response.data.body || []);
         } catch (err) {
             console.error("Lỗi fetch jobs with filter", err);

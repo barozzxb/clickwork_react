@@ -6,8 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import { toast } from 'react-toastify';
 
-
-const localhost = 'http://localhost:9000/api';
+import {API_ROOT} from '../../config.js';
 
 const Login = () => {
 
@@ -39,7 +38,7 @@ const Login = () => {
                 return;
             }
 
-            const response = await axios.post(localhost + '/auth/login', {
+            const response = await axios.post(`${API_ROOT}/auth/login`, {
                 username,
                 password,
             }, {
@@ -90,7 +89,7 @@ const Login = () => {
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (role === 'APPLICANT') {
-                    navigate('/employee');
+                    navigate('/applicant');
                 } else {
                     navigate('/employer');
                 }

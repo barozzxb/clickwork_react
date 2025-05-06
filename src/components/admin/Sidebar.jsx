@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 
 export default function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
@@ -8,10 +9,24 @@ export default function Sidebar() {
         setCollapsed(!collapsed);
     };
 
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
+        if (confirmLogout) {
+            // Xoá token và thông tin người dùng
+            localStorage.removeItem("token");
+            // localStorage.removeItem("user");
+
+            // Chuyển hướng về trang login
+            navigate("/login");
+        }
+    };
+
     return (
         <div className={`sidebar-wrapper ${collapsed ? 'collapsed' : ''}`}>
             <div className="sidebar-header py-3 px-2 d-flex justify-content-between align-items-center">
-                <span className="fs-4 fw-bold text-primary">Job Admin</span>
+                <span className="fs-4 fw-bold text-primary">ClickWork</span>
                 <button className="btn btn-sm d-md-none" onClick={toggleSidebar}>
                     <i className="bi bi-list"></i>
                 </button>
@@ -61,10 +76,10 @@ export default function Sidebar() {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="#" className="nav-link">
+                        <span className="nav-link" onClick={handleLogout} style={{ cursor: 'pointer' }}>
                             <i className="bi bi-box-arrow-right me-2"></i>
                             <span>Logout</span>
-                        </NavLink>
+                        </span>
                     </li>
                 </ul>
             </div>

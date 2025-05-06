@@ -5,12 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {API_ROOT} from '../../config.js';
+
 import Term from './term'
 
 
 const Register = () => {
-
-    const localhost = 'http://localhost:9000';
 
     const [loading, setLoading] = useState(false);
 
@@ -45,7 +45,7 @@ const Register = () => {
         } else {
 
             try {
-                const response = await axios.post(`${localhost}/api/auth/register`, {
+                const response = await axios.post(`${API_ROOT}/auth/register`, {
                     username,
                     password,
                     email,

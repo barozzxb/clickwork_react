@@ -1,10 +1,9 @@
 import axios from 'axios';
-
-const API_BASE = 'http://localhost:9000/api/auth';
+import {API_ROOT} from '../../config.js';
 
 export async function sendOtp(email) {
     const { data } = await axios.post(
-        `${API_BASE}/sendotp`,
+        `${API_ROOT}/auth/sendotp`,
         { email },
         { headers: { 'Content-Type': 'application/json' } }
     );
@@ -13,7 +12,7 @@ export async function sendOtp(email) {
 
 export async function verifyOtp(email, otp) {
     const { data } = await axios.post(
-        `${API_BASE}/verifyotp`,
+        `${API_ROOT}/auth/verifyotp`,
         { email, inputOtp: otp },
         { headers: { 'Content-Type': 'application/json' } }
     );
