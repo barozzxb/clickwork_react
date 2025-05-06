@@ -1,167 +1,348 @@
-import { useState } from 'react';
-import {
-    BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell,
-    XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
+"use client"
+
+import { useState, useEffect } from "react"
+import UserStatisticsChart from "./UserStatisticsChart"
+import JobCategoryChart from "./JobCategoryChart"
+import JobStatisticsChart from "./JobStatisticsChart"
+import ApplicationStatisticsChart from "./ApplicationStatisticsChart"
+import ViolationStatisticsChart from "./ViolationStatisticsChart"
+import axios from "axios"
+import moment from "moment"
 
 export default function ViewReports() {
-    const [activeTab, setActiveTab] = useState('users');
+    const [activeTab, setActiveTab] = useState("users")
+    const [timePeriod, setTimePeriod] = useState("year")
+    const [reportData, setReportData] = useState({
+        jobStats: {
+            totalJobs: 0,
+            activeJobs: 0,
+            inactiveJobs: 0,
+            jobsByType: [],
+        },
+        applicationStats: {
+            totalApplications: 0,
+            applicationsByStatus: [],
+            applicationsByMonth: [],
+        },
+        userStats: {
+            totalUsers: 0,
+            usersByRole: [],
+            usersByStatus: [],
+            registrationsByMonth: [],
+        },
+        jobCategories: [],
+        violationStats: {
+            totalViolations: 0,
+            violationsByStatus: [],
+            violationsByMonth: [],
+        },
+    })
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-    const userRegistrationData = [
-        { name: 'Jan', count: 400 }, { name: 'Feb', count: 300 }, { name: 'Mar', count: 550 },
-        { name: 'Apr', count: 470 }, { name: 'May', count: 600 }, { name: 'Jun', count: 550 },
-        { name: 'Jul', count: 700 }, { name: 'Aug', count: 650 }, { name: 'Sep', count: 550 },
-        { name: 'Oct', count: 500 }, { name: 'Nov', count: 450 }, { name: 'Dec', count: 480 },
-    ];
-    const jobListingData = [
-        { name: 'Jan', count: 65 }, { name: 'Feb', count: 80 }, { name: 'Mar', count: 110 },
-        { name: 'Apr', count: 100 }, { name: 'May', count: 140 }, { name: 'Jun', count: 120 },
-        { name: 'Jul', count: 160 }, { name: 'Aug', count: 190 }, { name: 'Sep', count: 170 },
-        { name: 'Oct', count: 150 }, { name: 'Nov', count: 130 }, { name: 'Dec', count: 145 },
-    ];
-    const applicationData = [
-        { name: 'Jan', count: 240 }, { name: 'Feb', count: 300 }, { name: 'Mar', count: 320 },
-        { name: 'Apr', count: 280 }, { name: 'May', count: 430 }, { name: 'Jun', count: 380 },
-        { name: 'Jul', count: 520 }, { name: 'Aug', count: 540 }, { name: 'Sep', count: 450 },
-        { name: 'Oct', count: 400 }, { name: 'Nov', count: 360 }, { name: 'Dec', count: 390 },
-    ];
-    const categoryData = [
-        { name: 'Technology', value: 25 }, { name: 'Marketing', value: 20 }, { name: 'Finance', value: 15 },
-        { name: 'Healthcare', value: 15 }, { name: 'Education', value: 10 }, { name: 'Others', value: 15 },
-    ];
+    useEffect(() => {
+        const fetchReportData = async () => {
+            try {
+                setLoading(true)
+                const storedToken = localStorage.getItem("token")
 
-    // Colors for pie chart segments
-    const COLORS = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6610f2', '#d63384'];
+                if (!storedToken) {
+                    setError("Authentication token not found. Please log in again.")
+                    setLoading(false)
+                    return
+                }
 
-    // Custom tooltip for charts
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="custom-tooltip bg-white p-3 shadow-sm rounded border">
-                    <p className="label mb-0"><strong>{label}</strong></p>
-                    <p className="data mb-0 text-primary">{`${payload[0].name}: ${payload[0].value}`}</p>
-                </div>
-            );
+                const response = await axios.get("http://localhost:9000/api/v1/admin/reports", {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                })
+
+                setReportData(response.data)
+                setError(null)
+            } catch (err) {
+                console.error("Error fetching report data:", err)
+                if (err.response && err.response.status === 401) {
+                    setError("Session expired. Please log in again.")
+                } else {
+                    setError("Failed to load report data. Please try again later.")
+                }
+            } finally {
+                setLoading(false)
+            }
         }
-        return null;
-    };
 
-    // Render appropriate chart based on active tab
-    const renderChart = () => {
+        fetchReportData()
+    }, [timePeriod]) // Refetch when time period changes
+
+    // Helper function to sort data by date
+    const sortDataByDate = (data) => {
+        return [...data].sort((a, b) => {
+            const dateA = moment(a.name, "YYYY-MM")
+            const dateB = moment(b.name, "YYYY-MM")
+            return dateA.diff(dateB)
+        })
+    }
+
+    // Format and sort month names in registration data
+    const formattedRegistrationData = (() => {
+        // First sort the data
+        const sortedData = sortDataByDate(reportData.userStats.registrationsByMonth)
+
+        // Then format the month names
+        return sortedData.map((item) => {
+            const [year, month] = item.name.split("-")
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            return {
+                name: `${monthNames[Number.parseInt(month) - 1]} ${year}`,
+                count: item.count,
+                originalDate: item.name, // Keep original date for sorting reference if needed
+            }
+        })
+    })()
+
+    // Format job categories data for pie chart
+    const jobCategoriesData =
+        reportData.jobCategories.length > 0
+            ? reportData.jobCategories.map((category) => ({
+                name: category.name,
+                value: category.count,
+            }))
+            : [{ name: "No Data", value: 100 }]
+
+    // Format and sort application data
+    const applicationData = (() => {
+        if (reportData.applicationStats.applicationsByMonth.length === 0) return []
+
+        // First sort the data
+        const sortedData = sortDataByDate(reportData.applicationStats.applicationsByMonth)
+
+        // Then format the month names
+        return sortedData.map((item) => {
+            const [year, month] = item.name.split("-")
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            return {
+                name: `${monthNames[Number.parseInt(month) - 1]} ${year}`,
+                count: item.count,
+                originalDate: item.name, // Keep original date for sorting reference if needed
+            }
+        })
+    })()
+
+    // Format and sort job listings data
+    const jobListingData = (() => {
+        if (reportData.jobStats.jobsByType.length === 0) return []
+
+        // First sort the data
+        const sortedData = sortDataByDate(reportData.jobStats.jobsByType)
+
+        // Then format the month names
+        return sortedData.map((item) => {
+            const [year, month] = item.name.split("-")
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            return {
+                name: `${monthNames[Number.parseInt(month) - 1]} ${year}`,
+                count: item.count,
+                originalDate: item.name, // Keep original date for sorting reference if needed
+            }
+        })
+    })()
+
+    // Format and sort violations data
+    const violationsData = (() => {
+        // First sort the data
+        const sortedData = sortDataByDate(reportData.violationStats.violationsByMonth)
+
+        // Then format the month names
+        return sortedData.map((item) => {
+            const [year, month] = item.name.split("-")
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            return {
+                name: `${monthNames[Number.parseInt(month) - 1]} ${year}`,
+                count: item.count,
+                originalDate: item.name, // Keep original date for sorting reference if needed
+            }
+        })
+    })()
+
+    // Format user role data
+    const userRoleData = reportData.userStats.usersByRole.map((item) => ({
+        name: item.name,
+        value: parseFloat(((item.count / reportData.userStats.totalUsers) * 100).toFixed(1)),
+    }))
+    //console.log(userRoleData);
+
+
+    // Format user status data
+    const userStatusData = reportData.userStats.usersByStatus.map((item) => ({
+        name: item.name,
+        value: ((item.count / reportData.userStats.totalUsers) * 100).toFixed(1),
+    }))
+
+    // Render stat cards
+    const renderStatCards = () => {
         switch (activeTab) {
-            case 'users':
+            case "users":
                 return (
-                    <div>
-                        <h5 className="text-center mb-4">User Registrations</h5>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <BarChart data={userRegistrationData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend />
-                                <Bar dataKey="count" name="Users" fill="#0d6efd" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                );
-            case 'jobs':
-                return (
-                    <div>
-                        <h5 className="text-center mb-4">Job Listings</h5>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <LineChart data={jobListingData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="count"
-                                    name="Listings"
-                                    stroke="#0d6efd"
-                                    activeDot={{ r: 8 }}
-                                    strokeWidth={2}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                );
-            case 'applications':
-                return (
-                    <div>
-                        <h5 className="text-center mb-4">Applications</h5>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <AreaChart data={applicationData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend />
-                                <Area
-                                    type="monotone"
-                                    dataKey="count"
-                                    name="Applications"
-                                    stroke="#0d6efd"
-                                    fill="#0d6efd"
-                                    fillOpacity={0.3}
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                );
-            case 'categories':
-                return (
-                    <div>
-                        <h5 className="text-center mb-4">Job Categories</h5>
-                        <div className="row align-items-center">
-                            <div className="col-md-6">
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={categoryData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            outerRadius={80}
-                                            innerRadius={40}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            nameKey="name"
-                                            label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
-                                        >
-                                            {categoryData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip formatter={(value) => `${value}%`} />
-                                    </PieChart>
-                                </ResponsiveContainer>
+                    <div className="row mb-4">
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Total Users</h6>
+                                    <h2 className="mb-0 fw-bold">{reportData.userStats.totalUsers}</h2>
+                                </div>
                             </div>
-                            <div className="col-md-6">
-                                <div className="legend">
-                                    {categoryData.map((entry, index) => (
-                                        <div key={index} className="d-flex align-items-center mb-2">
-                                            <div style={{
-                                                width: '16px',
-                                                height: '16px',
-                                                backgroundColor: COLORS[index % COLORS.length],
-                                                marginRight: '8px',
-                                                borderRadius: '3px'
-                                            }}></div>
-                                            <div>{entry.name}: <strong>{entry.value}%</strong></div>
-                                        </div>
-                                    ))}
+                        </div>
+                        <div className="col-md-8 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-3">User Distribution</h6>
+                                    <div style={{ height: "200px" }}>
+                                        <JobCategoryChart height={210} showLegend={true} data={userRoleData} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                );
+                )
+            case "jobs":
+                return (
+                    <div className="row mb-4">
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Total Jobs</h6>
+                                    <h2 className="mb-0 fw-bold">{reportData.jobStats.totalJobs}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Active Jobs</h6>
+                                    <h2 className="mb-0 fw-bold text-success">{reportData.jobStats.activeJobs}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Inactive Jobs</h6>
+                                    <h2 className="mb-0 fw-bold text-secondary">{reportData.jobStats.inactiveJobs}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            case "applications":
+                return (
+                    <div className="row mb-4">
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Total Applications</h6>
+                                    <h2 className="mb-0 fw-bold">{reportData.applicationStats.totalApplications}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        {reportData.applicationStats.applicationsByStatus.length > 0 && (
+                            <div className="col-md-8 mb-3">
+                                <div className="card h-100 border-0 shadow-sm">
+                                    <div className="card-body">
+                                        <h6 className="card-title text-muted mb-3">Application Status</h6>
+                                        <div className="d-flex justify-content-around">
+                                            {reportData.applicationStats.applicationsByStatus.map((status, index) => (
+                                                <div key={index} className="text-center">
+                                                    <h5 className="mb-0">{status.count}</h5>
+                                                    <small className="text-muted">{status.name}</small>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )
+            case "violations":
+                return (
+                    <div className="row mb-4">
+                        <div className="col-md-4 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-1">Total Violations</h6>
+                                    <h2 className="mb-0 fw-bold text-danger">{reportData.violationStats.totalViolations}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-8 mb-3">
+                            <div className="card h-100 border-0 shadow-sm">
+                                <div className="card-body">
+                                    <h6 className="card-title text-muted mb-3">Violations by Status</h6>
+                                    <div className="d-flex justify-content-around">
+                                        {reportData.violationStats.violationsByStatus.map((status, index) => (
+                                            <div key={index} className="text-center">
+                                                <h5 className="mb-0">{status.count}</h5>
+                                                <small className="text-muted">{status.name}</small>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
             default:
-                return null;
+                return null
         }
-    };
+    }
+
+    // Render appropriate chart based on active tab
+    const renderChart = () => {
+        if (loading) {
+            return (
+                <div className="text-center p-5">
+                    <div className="spinner-border" role="status"></div>
+                </div>
+            )
+        }
+
+        if (error) {
+            return <div className="alert alert-danger">{error}</div>
+        }
+
+        switch (activeTab) {
+            case "users":
+                return <UserStatisticsChart chartType="bar" height={350} data={formattedRegistrationData} />
+            case "jobs":
+                return (
+                    <JobStatisticsChart
+                        height={350}
+                        data={jobListingData.length > 0 ? jobListingData : [{ name: "No data available", count: 0 }]}
+                    />
+                )
+            case "applications":
+                return (
+                    <ApplicationStatisticsChart
+                        height={350}
+                        data={applicationData.length > 0 ? applicationData : [{ name: "No data available", count: 0 }]}
+                    />
+                )
+            case "categories":
+                return <JobCategoryChart height={300} showLegend={true} data={jobCategoriesData} />
+            case "violations":
+                return (
+                    <ViolationStatisticsChart
+                        height={250}
+                        data={violationsData}
+                        showStatusDistribution={true}
+                        statusData={reportData.violationStats.violationsByStatus}
+                    />
+                )
+            default:
+                return null
+        }
+    }
 
     return (
         <div className="container-fluid p-0">
@@ -172,59 +353,74 @@ export default function ViewReports() {
                             <h4 className="card-title fw-bold mb-1">Analytics Reports</h4>
                             <p className="text-muted small">Platform performance and statistics</p>
                         </div>
-                        <div className="col-md-4">
-                            <div className="mb-3">
-                                <label htmlFor="time-period" className="form-label">Time Period</label>
-                                <select className="form-select" id="time-period" defaultValue="year">
-                                    <option value="month">Last 30 days</option>
-                                    <option value="quarter">Last 90 days</option>
-                                    <option value="year">Last 12 months</option>
-                                </select>
-                            </div>
-                        </div>
+                        {/* <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="time-period" className="form-label">Time Period</label>
+                <select
+                  className="form-select"
+                  id="time-period"
+                  value={timePeriod}
+                  onChange={(e) => setTimePeriod(e.target.value)}
+                >
+                  <option value="month">Last 30 days</option>
+                  <option value="quarter">Last 90 days</option>
+                  <option value="year">Last 12 months</option>
+                </select>
+              </div>
+            </div> */}
                     </div>
                 </div>
                 <div className="card-body">
                     <ul className="nav nav-tabs mb-4">
                         <li className="nav-item">
                             <button
-                                className={`nav-link ${activeTab === 'users' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('users')}
+                                className={`nav-link ${activeTab === "users" ? "active" : ""}`}
+                                onClick={() => setActiveTab("users")}
                             >
                                 <i className="bi bi-people me-2"></i>User Stats
                             </button>
                         </li>
                         <li className="nav-item">
                             <button
-                                className={`nav-link ${activeTab === 'jobs' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('jobs')}
+                                className={`nav-link ${activeTab === "jobs" ? "active" : ""}`}
+                                onClick={() => setActiveTab("jobs")}
                             >
                                 <i className="bi bi-briefcase me-2"></i>Job Listings
                             </button>
                         </li>
                         <li className="nav-item">
                             <button
-                                className={`nav-link ${activeTab === 'applications' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('applications')}
+                                className={`nav-link ${activeTab === "applications" ? "active" : ""}`}
+                                onClick={() => setActiveTab("applications")}
                             >
                                 <i className="bi bi-file-earmark-text me-2"></i>Applications
                             </button>
                         </li>
                         <li className="nav-item">
                             <button
-                                className={`nav-link ${activeTab === 'categories' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('categories')}
+                                className={`nav-link ${activeTab === "categories" ? "active" : ""}`}
+                                onClick={() => setActiveTab("categories")}
                             >
                                 <i className="bi bi-pie-chart me-2"></i>Categories
                             </button>
                         </li>
+                        <li className="nav-item">
+                            <button
+                                className={`nav-link ${activeTab === "violations" ? "active" : ""}`}
+                                onClick={() => setActiveTab("violations")}
+                            >
+                                <i className="bi bi-shield-exclamation me-2"></i>Violations
+                            </button>
+                        </li>
                     </ul>
 
-                    <div className="chart-container bg-light p-4 rounded" style={{ position: 'relative' }}>
+                    {renderStatCards()}
+
+                    <div className="chart-container bg-light p-4 rounded" style={{ position: "relative" }}>
                         {renderChart()}
                     </div>
                 </div>
             </div>
         </div>
-    );
+    )
 }

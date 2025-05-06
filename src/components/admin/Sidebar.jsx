@@ -70,9 +70,9 @@ export default function Sidebar() {
 
                 <ul className="nav flex-column">
                     <li className="nav-item">
-                        <NavLink to="#" className="nav-link">
-                            <i className="bi bi-gear me-2"></i>
-                            <span>Settings</span>
+                        <NavLink to="/admin/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                            <i className="bi bi-person me-2"></i>
+                            <span>Profile</span>
                         </NavLink>
                     </li>
                     <li className="nav-item">
