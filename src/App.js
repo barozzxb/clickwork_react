@@ -64,7 +64,7 @@ function AppContent() {
       location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
     )}
 
-    <>
+    {/* <> */}
       {!isAdminRoute && <NavBar />}
 
       <ToastContainer
