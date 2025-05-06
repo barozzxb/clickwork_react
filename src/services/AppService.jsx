@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_ROOT} from '../../config.js';
+import {API_ROOT} from './../config.js';
 
 export async function sendOtp(email) {
     const { data } = await axios.post(
