@@ -26,7 +26,6 @@ const JobDetail = () => {
         fetchJob();
     }, [id]);
 
-    if (!job) return <p>Không tìm thấy công việc</p>;
     return (
         <main className="container">
 
