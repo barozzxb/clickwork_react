@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import { API_ROOT } from '../../config';
+
 export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
     const [status, setStatus] = useState(report.status);
     const [isSuspendUser, setIsSuspendUser] = useState(false);
@@ -42,7 +44,7 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
             };
 
             const response = await axios.post(
-                `http://localhost:9000/api/admin/accounts/reports/${report.id}/resolve`,
+                `${API_ROOT}/admin/accounts/reports/${report.id}/resolve`,
                 payload,
                 {
                     headers: {

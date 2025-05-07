@@ -6,6 +6,8 @@ import ViolationDetails from './ViolationDetails';
 import AccountDetails from './AccountDetails';
 import AdminForm from './AdminForm';
 
+import { API_ROOT } from '../../config';
+
 export default function ManageAccounts() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState(null);
@@ -26,7 +28,7 @@ export default function ManageAccounts() {
     const { data: accountsData, isLoading: accountsLoading, error: accountsError } = useQuery({
         queryKey: ['accounts', searchTerm, selectedRole, accountPage],
         queryFn: () =>
-            axios.get('http://localhost:9000/api/admin/accounts', {
+            axios.get(`${API_ROOT}/admin/accounts`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 params: {
                     page: accountPage,
@@ -60,7 +62,7 @@ export default function ManageAccounts() {
     const { data: reportsData, isLoading: reportsLoading, error: reportsError } = useQuery({
         queryKey: ['reports', searchTerm, selectedViolationStatus, reportPage],
         queryFn: () =>
-            axios.get('http://localhost:9000/api/admin/accounts/reports', {
+            axios.get(`${API_ROOT}/admin/accounts/reports`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 params: {
                     page: reportPage,
@@ -93,7 +95,7 @@ export default function ManageAccounts() {
     // Lấy chi tiết tài khoản
     const fetchAccountDetails = async (username) => {
         try {
-            const response = await axios.get(`http://localhost:9000/api/admin/accounts/${username}`, {
+            const response = await axios.get(`${API_ROOT}/admin/accounts/${username}`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
 

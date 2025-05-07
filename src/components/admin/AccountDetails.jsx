@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import { API_ROOT } from '../../config';
+
 export default function AccountDetails({ account, onClose, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedStatus, setEditedStatus] = useState(account.status);
@@ -21,7 +23,7 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
         setIsSubmitting(true);
         try {
             const response = await axios.patch(
-                `http://localhost:9000/api/admin/accounts/${account.username}`,
+                `${API_ROOT}/admin/accounts/${account.username}`,
                 {
                     status: editedStatus.toUpperCase()
                 },

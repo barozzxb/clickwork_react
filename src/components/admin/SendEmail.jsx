@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import EmailSelector from './EmailSelector';
 import './SendEmail.css';
 
+import { API_ROOT } from '../../config';
+
 export default function SendEmail() {
     const [emailType, setEmailType] = useState('single');
     const [showEmailSelector, setShowEmailSelector] = useState(false);
@@ -22,7 +24,7 @@ export default function SendEmail() {
 
     const sendEmail = async (payload) => {
         try {
-            const response = await axios.post('http://localhost:9000/api/admin/accounts/send-email', payload, {
+            const response = await axios.post(`${API_ROOT}/admin/accounts/send-email`, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

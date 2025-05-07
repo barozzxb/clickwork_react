@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+import { API_ROOT, BACK_END_HOST } from '../../config';
+
 const AdminProfile = () => {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState('profile');
@@ -46,7 +48,7 @@ const AdminProfile = () => {
         queryKey: ['adminProfile'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:9000/api/admin/profile', {
+            const response = await axios.get(`${API_ROOT}/admin/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
@@ -58,7 +60,7 @@ const AdminProfile = () => {
         queryKey: ['adminAddresses'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:9000/api/admin/profile/addresses', {
+            const response = await axios.get(`${API_ROOT}/admin/profile/addresses`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
@@ -76,7 +78,7 @@ const AdminProfile = () => {
                 formData.append('avatar', avatarFile);
             }
 
-            return axios.put('http://localhost:9000/api/admin/profile/update', formData, {
+            return axios.put(`${API_ROOT}/admin/profile/update`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -96,7 +98,7 @@ const AdminProfile = () => {
     const changePasswordMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            return axios.put('http://localhost:9000/api/admin/profile/change-password', {
+            return axios.put(`${API_ROOT}/admin/profile/change-password`, {
                 currentPassword: passwordForm.currentPassword,
                 newPassword: passwordForm.newPassword
             }, {
@@ -123,7 +125,7 @@ const AdminProfile = () => {
     const addAddressMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            return axios.post('http://localhost:9000/api/admin/profile/address', addressForm, {
+            return axios.post(`${API_ROOT}/admin/profile/address`, addressForm, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -150,7 +152,7 @@ const AdminProfile = () => {
     const updateAddressMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            return axios.put(`http://localhost:9000/api/admin/profile/address/${editAddressForm.id}`, {
+            return axios.put(`${API_ROOT}/admin/profile/address/${editAddressForm.id}`, {
                 nation: editAddressForm.nation,
                 province: editAddressForm.province,
                 district: editAddressForm.district,
@@ -184,7 +186,7 @@ const AdminProfile = () => {
     const deleteAddressMutation = useMutation({
         mutationFn: async (addressId) => {
             const token = localStorage.getItem('token');
-            return axios.delete(`http://localhost:9000/api/admin/profile/address/${addressId}`, {
+            return axios.delete(`${API_ROOT}/admin/profile/address/${addressId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -213,7 +215,7 @@ const AdminProfile = () => {
                 // Check if the avatar is a full URL or just a path
                 const avatarUrl = profileData.data.avatar.startsWith('http')
                     ? profileData.data.avatar
-                    : `http://localhost:9000${profileData.data.avatar}`;
+                    : `${BACK_END_HOST}${profileData.data.avatar}`;
                 setAvatarPreview(avatarUrl);
             }
         }

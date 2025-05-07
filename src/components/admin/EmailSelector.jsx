@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import { API_ROOT } from '../../config';
+
 export default function EmailSelector({ onSelect, onClose, multiple = false }) {
     const [search, setSearch] = useState('');
     const [selectedRole, setSelectedRole] = useState('all');
@@ -17,7 +19,7 @@ export default function EmailSelector({ onSelect, onClose, multiple = false }) {
             setError(null);
             try {
                 const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
-                const response = await axios.get(`http://localhost:9000/api/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
+                const response = await axios.get(`${API_ROOT}/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
