@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import axios from 'axios';
 
+import { API_ROOT } from '../../config';
+
 const PostJob = () => {
     const [job, setJob] = useState({
         title: '',
@@ -46,7 +48,7 @@ const PostJob = () => {
             e.preventDefault();
             setIsSubmitting(true);
             try {
-                const response = await axios.post('http://localhost:9000/api/jobs/post-job', job, {
+                const response = await axios.post(`${API_ROOT}/jobs/post-job`, job, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import { API_ROOT } from '../../config';
+
 export default function AdminForm({ onClose, onAdminCreated }) {
     const [formData, setFormData] = useState({
         username: '',
@@ -65,7 +67,7 @@ export default function AdminForm({ onClose, onAdminCreated }) {
 
         try {
             const response = await axios.post(
-                'http://localhost:9000/api/admin/accounts/admin',
+                `${API_ROOT}/admin/accounts/admin`,
                 formData,
                 {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
