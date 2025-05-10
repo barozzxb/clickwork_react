@@ -54,7 +54,8 @@ export default function ViewReports() {
                     return
                 }
 
-                const response = await axios.get(`${API_ROOT}/admin/reports`, {
+                // const response = await axios.get(`${API_ROOT}/admin/reports`, {
+                const response = await axios.get("http://localhost:9000/api/admin/reports", {
                     headers: {
                         Authorization: `Bearer ${storedToken}`,
                     },

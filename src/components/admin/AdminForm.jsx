@@ -67,7 +67,8 @@ export default function AdminForm({ onClose, onAdminCreated }) {
 
         try {
             const response = await axios.post(
-                `${API_ROOT}/admin/accounts/admin`,
+                // `${API_ROOT}/admin/accounts/admin`,
+                'http://localhost:9000/api/admin/accounts/admin',
                 formData,
                 {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
