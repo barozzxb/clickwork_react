@@ -9,6 +9,8 @@ import ViolationStatisticsChart from "./ViolationStatisticsChart"
 import axios from "axios"
 import moment from "moment"
 
+import { API_ROOT } from '../../config';
+
 export default function ViewReports() {
     const [activeTab, setActiveTab] = useState("users")
     const [timePeriod, setTimePeriod] = useState("year")
@@ -52,7 +54,7 @@ export default function ViewReports() {
                     return
                 }
 
-                const response = await axios.get("http://localhost:9000/api/v1/admin/reports", {
+                const response = await axios.get(`${API_ROOT}/admin/reports`, {
                     headers: {
                         Authorization: `Bearer ${storedToken}`,
                     },

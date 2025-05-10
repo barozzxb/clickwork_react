@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+import { API_ROOT, BACK_END_HOST } from '../../config';
+
 const AdminProfile = () => {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState('profile');
@@ -54,8 +56,7 @@ const AdminProfile = () => {
         queryKey: ['adminProfile'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            const response = await axios.get(`${baseUrl}/api/admin/profile`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log('Profile data fetched:', response.data);
@@ -68,8 +69,7 @@ const AdminProfile = () => {
         queryKey: ['adminAddresses'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            const response = await axios.get(`${baseUrl}/api/admin/profile/addresses`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile/addresses`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log('Addresses fetched:', response.data);
@@ -121,7 +121,7 @@ const AdminProfile = () => {
             if (profileForm.phonenum) formData.append('phonenum', profileForm.phonenum);
             if (avatarFile) formData.append('avatar', avatarFile);
 
-            return axios.put(`${baseUrl}/api/admin/profile/update`, formData, {
+            return axios.put(`${API_ROOT}/admin/profile/update`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -149,15 +149,7 @@ const AdminProfile = () => {
     const changePasswordMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            if (!passwordForm.currentPassword) {
-                throw new Error('Current password is required');
-            }
-            if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(passwordForm.newPassword)) {
-                throw new Error('New password must be at least 8 characters with at least one letter and one number');
-            }
-
-            return axios.put(`${baseUrl}/api/admin/profile/change-password`, {
+            return axios.put(`${API_ROOT}/admin/profile/change-password`, {
                 currentPassword: passwordForm.currentPassword,
                 newPassword: passwordForm.newPassword
             }, {
@@ -184,17 +176,7 @@ const AdminProfile = () => {
     const addAddressMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            for (const [key, value] of Object.entries(addressForm)) {
-                if (!value || value.trim() === '') {
-                    throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
-                }
-                if (value.length > 255) {
-                    throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} cannot exceed 255 characters`);
-                }
-            }
-            console.log('Adding address with data:', addressForm);
-            return axios.post(`${baseUrl}/api/admin/profile/address`, addressForm, {
+            return axios.post(`${API_ROOT}/admin/profile/address`, addressForm, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -222,18 +204,7 @@ const AdminProfile = () => {
     const updateAddressMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            for (const [key, value] of Object.entries(editAddressForm)) {
-                if (key === 'id') continue;
-                if (!value || value.trim() === '') {
-                    throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
-                }
-                if (value.length > 255) {
-                    throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} cannot exceed 255 characters`);
-                }
-            }
-            console.log('Updating address with data:', editAddressForm);
-            return axios.put(`${baseUrl}/api/admin/profile/address/${editAddressForm.id}`, {
+            return axios.put(`${API_ROOT}/admin/profile/address/${editAddressForm.id}`, {
                 nation: editAddressForm.nation,
                 province: editAddressForm.province,
                 district: editAddressForm.district,
@@ -268,10 +239,11 @@ const AdminProfile = () => {
     const deleteAddressMutation = useMutation({
         mutationFn: async (addressId) => {
             const token = localStorage.getItem('token');
-            if (!token) throw new Error('No authentication token found');
-            console.log('Deleting address with ID:', addressId);
-            return axios.delete(`${baseUrl}/api/admin/profile/address/${addressId}`, {
-                headers: { Authorization: `Bearer ${token}` }
+            return axios.delete(`${API_ROOT}/admin/profile/address/${addressId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
         },
         onSuccess: () => {
@@ -283,6 +255,25 @@ const AdminProfile = () => {
             toast.error(`Failed to delete address: ${error.response?.data?.message || error.message}`);
         }
     });
+
+    // Initialize form with profile data when loaded
+    useEffect(() => {
+        if (profileData?.data) {
+            setProfileForm({
+                fullname: profileData.data.fullname || '',
+                phonenum: profileData.data.phonenum || ''
+            });
+
+            // Set avatar preview with proper URL handling
+            if (profileData.data.avatar) {
+                // Check if the avatar is a full URL or just a path
+                const avatarUrl = profileData.data.avatar.startsWith('http')
+                    ? profileData.data.avatar
+                    : `${BACK_END_HOST}${profileData.data.avatar}`;
+                setAvatarPreview(avatarUrl);
+            }
+        }
+    }, [profileData]);
 
     // Handle avatar file change
     const handleAvatarChange = (e) => {
