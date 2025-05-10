@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { Spinner } from 'react-bootstrap';
 import moment from 'moment';
 
+import { API_ROOT } from '../../config';
+
 export default function SupportUser() {
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
@@ -73,7 +75,7 @@ export default function SupportUser() {
                 params.append('status', statusFilter === 'pending' ? 'NO_RESPOND' : 'RESPONDED');
             }
 
-            const response = await fetch(`http://localhost:9000/api/support?${params}`, {
+            const response = await fetch(`${API_ROOT}/support?${params}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',

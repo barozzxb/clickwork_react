@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import OverlayLoading from '../effects/Loading';
 
 import {API_ROOT} from '../../config.js';
 
@@ -12,6 +13,7 @@ const JobDetail = () => {
 
     useEffect(() => {
         const fetchJob = async () => {
+            setLoading(true);
             try {
                 const res = await axios.get(`${API_ROOT}/jobs/id=${id}`);
                 setJob(res.data.body);
@@ -24,10 +26,11 @@ const JobDetail = () => {
         fetchJob();
     }, [id]);
 
-    if (loading) return <p>Đang tải dữ liệu...</p>;
-    if (!job) return <p>Không tìm thấy công việc</p>;
     return (
         <main className="container">
+
+            {loading && <OverlayLoading />}
+
             {/* Search Bar */}
             <div className="d-flex justify-content-center align-items-center search-bar">
                 <form className="d-flex w-100">

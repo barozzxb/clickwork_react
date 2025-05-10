@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { Spinner, Form, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 
+import { API_ROOT } from '../../config';
+
 export default function SupportDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -58,7 +60,7 @@ export default function SupportDetail() {
                 throw new Error('Không tìm thấy JWT token. Vui lòng đăng nhập lại.');
             }
 
-            const response = await fetch(`http://localhost:9000/api/support/${id}`, {
+            const response = await fetch(`${API_ROOT}/support/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -114,7 +116,7 @@ export default function SupportDetail() {
             setFormSuccess(null);
 
             try {
-                const response = await fetch(`http://localhost:9000/api/support/${id}/response`, {
+                const response = await fetch(`${API_ROOT}/support/${id}/response`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

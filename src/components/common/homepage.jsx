@@ -29,32 +29,38 @@ const Homepage = () => {
         const loadJobs = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`${API_ROOT}/jobs`, {
+                const jobresponse = await axios.get(`${API_ROOT}/jobs`, {
                    
                 });
-                setJobs(response.data.body || []);
-                console.log(process.env.REACT_APP_API_HOST);
-            } catch (err) {
-                console.error("Lỗi fetch jobs", err);
-            } 
-        };
+                setJobs(jobresponse.data.body || []);
 
-        const loadNewJobs = async () => {
-            setLoading(true);
-            try {
                 const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
                    
                 });
                 setNewJobs(response.data.body || []);
+
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
+            } finally{
+                setLoading(false);
             }
+        };
+
+        // const loadNewJobs = async () => {
+        //     setLoading(true);
+        //     try {
+        //         const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
+                   
+        //         });
+        //         setNewJobs(response.data.body || []);
+        //     } catch (err) {
+        //         console.error("Lỗi fetch jobs", err);
+        //     }
                 
-        }
+        // }
 
         loadJobs();
-        loadNewJobs();
-        setLoading(false);
+        // loadNewJobs();
     }, []);
 
     const handleLoading = (token) => {

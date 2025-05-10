@@ -5,6 +5,9 @@ import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
 
+import { API_ROOT } from '../../config';
+import { BACK_END_HOST } from '../../config';
+
 const ApplicantProfile = () => {
   const token = localStorage.getItem('token');
 
@@ -25,7 +28,7 @@ const ApplicantProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:9000/api/applicant/profile', {
+        const res = await axios.get(`${API_ROOT}/applicant/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data.body;
@@ -49,7 +52,7 @@ const ApplicantProfile = () => {
     e.preventDefault();
     try {
       const res = await axios.put(
-        'http://localhost:9000/api/applicant/profile/update',
+        `${API_ROOT}/applicant/profile/update`,
         { id, fullname, email, phonenum, dob, gender: gender || null, interested },
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
@@ -80,7 +83,7 @@ const ApplicantProfile = () => {
     formData.append('avatarFile', selectedFile);
     try {
       const res = await axios.post(
-        'http://localhost:9000/api/applicant/profile/update/avatar',
+        `${API_ROOT}/applicant/profile/update/avatar`,
         formData,
         { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } }
       );
@@ -101,7 +104,7 @@ const ApplicantProfile = () => {
           <div className="d-flex flex-column align-items-center">
             {avatar ? (
               <Image
-                src={`http://localhost:9000${avatar}`}
+                src={`${BACK_END_HOST}${avatar}`}
                 roundedCircle
                 fluid
                 style={{ width: 150, height: 150, objectFit: 'cover' }}
