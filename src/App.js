@@ -18,7 +18,7 @@ import Applicant from './components/applicant/Applicant.jsx';
 import Employer from './components/employer/employer.jsx';
 import VerifyOTP from './components/common/Verify-otp.jsx';
 import ApplicantProfile from './components/applicant/Profile.jsx';
-import ForgotPassword from './components/common/forgotpassword.jsx';
+import ForgotPassword from './components/common/Forgotpassword.jsx';
 
 import JobDetail from './components/common/Jobdetail.jsx';
 import JobList from './components/common/Listjobs.jsx';
