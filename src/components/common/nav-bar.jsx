@@ -30,7 +30,7 @@ const NavBar = () => {
 
 
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top">
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">
                     <span className="logo-title">C</span>lick

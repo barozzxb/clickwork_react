@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import OverlayLoading from '../effects/Loading';
+import OverlayLoading from '../effects/Loading.jsx';
 import { Link } from 'react-router-dom';
 import {API_ROOT} from '../../config.js';
 

@@ -9,19 +9,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './components/assets/css/styles.css';
 
 
-import NavBar from './components/common/nav-bar.jsx';
-import Footer from './components/common/footer.jsx';
-import Homepage from './components/common/homepage.jsx';
-import Login from './components/common/login.jsx';
-import Register from './components/common/register.jsx';
-import Employee from './components/applicant/employee.jsx';
+import NavBar from './components/common/Nav-bar.jsx';
+import Footer from './components/common/Footer.jsx';
+import Homepage from './components/common/Homepage.jsx';
+import Login from './components/common/Login.jsx';
+import Register from './components/common/Register.jsx';
+import Employee from './components/applicant/Applicant.jsx';
 import Employer from './components/employer/employer.jsx';
-import VerifyOTP from './components/common/verify-otp.jsx';
-import ApplicantProfile from './components/applicant/profile.jsx';
+import VerifyOTP from './components/common/Verify-otp.jsx';
+import ApplicantProfile from './components/applicant/Profile.jsx';
 import ForgotPassword from './components/common/forgotpassword.jsx';
 
-import JobDetail from './components/common/jobdetail.jsx';
-import JobList from './components/common/listjobs.jsx';
+import JobDetail from './components/common/Jobdetail.jsx';
+import JobList from './components/common/Listjobs.jsx';
 
 import './components/assets/css/styles.css';
 
@@ -64,10 +64,7 @@ function AppContent() {
       {!isAdminRoute && (
         location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
       )}
-
-      {/* <> */}
-      {!isAdminRoute && <NavBar />}
-
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}
