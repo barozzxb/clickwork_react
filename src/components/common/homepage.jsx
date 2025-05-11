@@ -5,6 +5,7 @@ import OverlayLoading from '../effects/Loading.jsx';
 import { jwtDecode } from 'jwt-decode';
 
 import { API_ROOT } from '../../config.js';
+import {formatRelativeTime} from '../../functions/dayformatter.js';
 
 import './css/homepage.css';
 
@@ -71,9 +72,6 @@ const Homepage = () => {
             const role = decoded.role;
 
             if (role) {
-
-                console.log(`Đăng nhập thành công với vai trò: ${role}`);
-
 
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
@@ -150,7 +148,7 @@ const Homepage = () => {
                         <div className="col-md-4" key={job.id}>
                             <div className="card p-3">
                                 <div className="card-body">
-                                    <p className="text-secondary italic">{job.createdat}</p>
+                                    <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                     <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                     <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
@@ -178,7 +176,7 @@ const Homepage = () => {
                         <div className="col-md-4" key={job.id}>
                             <div className="card p-3">
                                 <div className="card-body">
-                                    <p className="text-secondary italic">{job.createdat}</p>
+                                    <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                     <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                     <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>

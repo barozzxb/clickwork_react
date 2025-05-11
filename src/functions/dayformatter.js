@@ -1,4 +1,4 @@
-function formatRelativeTime(dateString) {
+export function formatRelativeTime(dateString) {
   const now = new Date();
   const date = new Date(dateString);
   const diffMs = now - date;
@@ -19,7 +19,7 @@ function formatRelativeTime(dateString) {
   }
 }
 
-function formatFullDate(dateString) {
+export function formatFullDate(dateString) {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");

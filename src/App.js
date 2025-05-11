@@ -14,7 +14,7 @@ import Footer from './components/common/Footer.jsx';
 import Homepage from './components/common/Homepage.jsx';
 import Login from './components/common/Login.jsx';
 import Register from './components/common/Register.jsx';
-import Employee from './components/applicant/Applicant.jsx';
+import Applicant from './components/applicant/Applicant.jsx';
 import Employer from './components/employer/employer.jsx';
 import VerifyOTP from './components/common/Verify-otp.jsx';
 import ApplicantProfile from './components/applicant/Profile.jsx';
@@ -93,7 +93,7 @@ function AppContent() {
 
           {/* Các Route dành cho ứng viên */}
           <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
-            <Route path="/applicant" element={<Employee />} />
+            <Route path="/applicant" element={<Applicant />} />
             <Route path="/applicant/profile" element={<ApplicantProfile />} />
           </Route>
 

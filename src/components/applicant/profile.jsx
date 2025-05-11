@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-
+import OverlayLoading from '../effects/Loading.jsx';
 
 import { API_ROOT } from '../../config';
 import { BACK_END_HOST } from '../../config';
 import { toast } from 'react-toastify';
-import { Tab } from 'bootstrap';
+
 
 const ApplicantProfile = () => {
   const token = localStorage.getItem('token');
@@ -29,53 +29,57 @@ const ApplicantProfile = () => {
 
   const [cvList, setCvList] = useState([]);
 
-  const mockCVs = [
-    {
-      id: 1,
-      name: "CV_Fresher_NguyenVanA.pdf",
-      file: "98c4f304-3aa0-4c8f-9a2a-cv_fresher_nguyenvana.pdf"
-    },
-    {
-      id: 2,
-      name: "CV_Intern_TranThiB.pdf",
-      file: "ec8c7d95-0b77-4c47-bb38-cv_intern_tranthib.pdf"
+  const [loading, setLoading] = useState(true);
+
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedCV, setSelectedCV] = useState(null);
+  const [cvName, setCVName] = useState('');
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [cvToDelete, setCvToDelete] = useState(null);
+
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${API_ROOT}/applicant/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = res.data.body;
+      setApplicant(data);
+      setId(data.id);
+      setFullname(data.fullname || '');
+      setEmail(data.email || '');
+      setPhonenum(data.phonenum || '');
+      setAvatar(data.avatar || '');
+      setDob(data.dob || '');
+      setGender(data.gender || '');
+      setInterested(data.interested || '');
+    } catch (err) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const fetchCVList = async () => {
+    setLoading(true);
+    try {
+      const cvres = await axios.get(`${API_ROOT}/applicant/manage-cvs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCvList(cvres.data.body || []);
+    } catch (err) {
+      console.error('Lỗi khi lấy danh sách CV:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(`${API_ROOT}/applicant/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = res.data.body;
-        setApplicant(data);
-        setId(data.id);
-        setFullname(data.fullname || '');
-        setEmail(data.email || '');
-        setPhonenum(data.phonenum || '');
-        setAvatar(data.avatar || '');
-        setDob(data.dob || '');
-        setGender(data.gender || '');
-        setInterested(data.interested || '');
-      } catch (err) {
-        console.error('Lỗi khi lấy profile:', err);
-      }
-    };
-
-    const fetchCVList = async () => {
-      try {
-        const cvres = await axios.get(`${API_ROOT}/applicant/profile/manage-cvs`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const cvdata = cvres.data.body;
-        setCvList( cvres.data.body || []);
-      } catch (err) {
-        console.error('Lỗi khi lấy danh sách CV:', err);
-      }
-    };
     fetchProfile();
     fetchCVList();
+    setLoading(false);
   }, []);
 
   const handleUpdateProfile = async (e) => {
@@ -168,11 +172,60 @@ const ApplicantProfile = () => {
       }
     }
   };
+
   const handleUploadCV = async (e) => {
-    // Logic to upload CV
+    e.preventDefault();
+
+    if (!selectedCV || !cvName) {
+      alert("Vui lòng chọn file và nhập tên CV");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedCV);
+    formData.append("name", cvName);
+
+    try {
+      const response = await axios.post(`${API_ROOT}/applicant/manage-cvs/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(response.data.message);
+      setShowUploadModal(false);
+      setSelectedCV(null);
+      setCVName('');
+      fetchCVList();
+    } catch (error) {
+      console.error("Lỗi khi upload CV:", error);
+      toast.error("Có lỗi xảy ra khi tải lên CV");
+    }
   };
-  const handleManageCV = async (e) => {
-    // Logic to manage CV
+
+
+  const handleDeleteCV = async () => {
+    try {
+      const res = await axios.delete(`${API_ROOT}/applicant/manage-cvs/delete/${cvToDelete}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(res.data.message);
+      setShowConfirmModal(false);
+      setCvToDelete(null);
+
+      // Gọi lại API để cập nhật danh sách CV sau khi xóa
+      fetchCVList();
+    } catch (err) {
+      toast.error("Xóa CV thất bại");
+      setShowConfirmModal(false);
+      setCvToDelete(null);
+    }
+  };
+
+
+  if (!applicant || cvList === null) {
+    return <OverlayLoading />;
   }
 
   return (
@@ -449,7 +502,7 @@ const ApplicantProfile = () => {
               </p>
 
               <div className="mb-3">
-                {cvList == null || cvList.length === 0 ? (
+                {!Array.isArray(cvList) || cvList.length === 0 ? (
                   <p className="text-muted">Chưa có CV nào được tải lên.</p>
                 ) : (
                   <table className="table table-bordered">
@@ -466,8 +519,18 @@ const ApplicantProfile = () => {
                           <td>{cv.name}</td>
                           <td>{cv.file}</td>
                           <td>
-                            <button className="btn btn-primary btn-sm">Xem</button>
-                            <button className="btn btn-danger btn-sm ms-2">Xóa</button>
+                            <button
+                              className="btn btn-primary btn-sm"
+                              onClick={() => window.open(`${BACK_END_HOST}${cv.file}`, '_blank')}
+                            >
+                              Xem
+                            </button>
+
+
+                            <button className="btn btn-danger btn-sm ms-2" onClick={() => {
+                              setCvToDelete(cv.id); // lưu ID để xóa
+                              setShowConfirmModal(true); // mở modal
+                            }}>Xóa</button>
                           </td>
                         </tr>
                       ))}
@@ -480,14 +543,13 @@ const ApplicantProfile = () => {
                 <button
                   type="button"
                   className="btn-action btn-info me-md-2"
-                  onClick={handleUploadCV}
+                  onClick={() => setShowUploadModal(true)}
                 >
                   Tải lên CV
                 </button>
                 <button
                   type="button"
                   className="btn-action btn-outline-info"
-                  onClick={handleManageCV}
                 >
                   Chỉnh sửa CV
                 </button>
@@ -496,6 +558,71 @@ const ApplicantProfile = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        show={showConfirmModal}
+        onHide={() => setShowConfirmModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận xóa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Bạn có chắc chắn muốn xóa CV tài khoản này không?
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowConfirmModal(false)}
+          >
+            Hủy
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={handleDeleteCV}
+          >
+            Xóa
+          </button>
+        </Modal.Footer>
+      </Modal>
+
+
+      <Modal
+        show={showUploadModal}
+        onHide={() => setShowUploadModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Tải lên CV (PDF)</Modal.Title>
+        </Modal.Header>
+        <form onSubmit={handleUploadCV}>
+          <Modal.Body>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setSelectedCV(e.target.files[0])}
+              className="form-control mt-2"
+            />
+            <label htmlFor="cvName" className="form-label mt-2">
+              Tên CV
+            </label>
+            <input
+              type="text"
+              value={cvName}
+              onChange={(e) => setCVName(e.target.value)}
+              className="form-control mt-2"
+              placeholder="Tên CV"
+              id="cvName"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <button type="submit" className="btn btn-primary w-100">
+              Tải lên
+            </button>
+          </Modal.Footer>
+        </form>
+
+      </Modal>
 
       {/* Avatar Modal (unchanged) */}
       <Modal
