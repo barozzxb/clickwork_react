@@ -38,6 +38,11 @@ export default function useOtp(onSuccessPath) {
   // Xác thực OTP
   const verifyCode = async (email, otp) => {
     setLoading(true);
+    if (otp.length < 6 || otp.length > 6 || isNaN(otp) || otp.includes(' ')) {
+      toast.error('Mã OTP không hợp lệ. Vui lòng nhập lại.');
+      setLoading(false);
+      return;
+    }
     try {
       const { status, message } = await apiVerifyOtp(email, otp);
       if (status) {
