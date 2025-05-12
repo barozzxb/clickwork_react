@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../services/api"; // wrapper đã có Bearer token
+import api from "../../services/api";
 
 const JobForm = ({ selectedJob, onSuccess }) => {
   const [form, setForm] = useState({
@@ -8,23 +8,36 @@ const JobForm = ({ selectedJob, onSuccess }) => {
     description: "",
     field: "",
     quantity: 1,
+    status: true,
+    createDate: new Date().toISOString(),
   });
 
   useEffect(() => {
-    if (selectedJob) setForm(selectedJob);
-    else
+    if (selectedJob) {
+      setForm({
+        ...selectedJob,
+        createDate: selectedJob.createDate || new Date().toISOString(),
+        status: selectedJob.status !== undefined ? selectedJob.status : true,
+      });
+    } else {
       setForm({
         name: "",
         salary: "",
         description: "",
         field: "",
         quantity: 1,
+        status: true,
+        createDate: new Date().toISOString(),
       });
+    }
   }, [selectedJob]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "quantity" || name === "salary" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -92,6 +105,7 @@ const JobForm = ({ selectedJob, onSuccess }) => {
                 value={form.salary}
                 onChange={handleChange}
                 className="form-control"
+                type="number"
               />
               <label>Mô tả</label>
               <textarea
