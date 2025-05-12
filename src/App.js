@@ -93,7 +93,6 @@ function AppContent() {
           {/* EMPLOYER */}
           <Route element={<ProtectedRoute allowedRoles={["EMPLOYER"]} />}>
             <Route path="/employer" element={<Employer />} />
-            {/* <Route path="/employer/post-job" element={<PostJob />} /> */}
             <Route path="/employer/job" element={<ManageJobs />} />
             <Route
               path="/employer/view-detail-job/:id"
