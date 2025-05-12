@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { Spinner } from 'react-bootstrap';
+import { FaUsers, FaBriefcase, FaFileAlt, FaHeadset, FaExternalLinkAlt, FaChartPie, FaChartLine } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
 
@@ -126,36 +127,33 @@ export default function Dashboard() {
                 <div className="alert alert-warning" role="alert">
                     Vui lòng đăng nhập để xem dashboard.
                 </div>
-                <button
-                    className="btn btn-primary"
-                    onClick={() => navigate('/login')}
-                >
+                <button className="btn btn-primary" onClick={() => navigate('/login')}>
                     Đăng nhập
                 </button>
             </div>
         );
     }
 
-    // Loading indicator component for individual sections
-    const LoadingIndicator = ({ height = '100px' }) => (
-        <div className="d-flex justify-content-center align-items-center" style={{ height }}>
-            <Spinner animation="border" size="sm" className="me-2" />
-            <span>Đang tải...</span>
-        </div>
-    );
-
-    // Skeleton for metric cards
-    const MetricSkeleton = () => (
-        <div className="card h-100">
-            <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 className="text-muted mb-1">Loading...</h6>
-                        <div className="bg-light rounded" style={{ height: '30px', width: '80px' }}></div>
-                        <div className="bg-light rounded mt-2" style={{ height: '20px', width: '40px' }}></div>
+    const MetricCard = ({ title, value, icon, color, bgColor, trend }) => (
+        <div className="col-md-6 col-lg-3 mb-4">
+            <div className="metric-card card border-0 shadow-sm h-100">
+                <div className="card-body p-4">
+                    <div className="d-flex justify-content-between align-items-start mb-3">
+                        <div className={`icon-circle ${bgColor}`}>
+                            {icon}
+                        </div>
+                        {trend && (
+                            <span className={`badge ${trend > 0 ? 'bg-success' : 'bg-danger'} bg-opacity-10 
+                                ${trend > 0 ? 'text-success' : 'text-danger'} rounded-pill`}>
+                                {trend > 0 ? '+' : ''}{trend}%
+                            </span>
+                        )}
                     </div>
-                    <div className="bg-light rounded p-3">
-                        <div style={{ height: '24px', width: '24px' }}></div>
+                    <div>
+                        <h3 className="fw-bold mb-1" style={{ color: '#2b7a78', fontSize: '1.75rem' }}>
+                            {value.toLocaleString()}
+                        </h3>
+                        <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>{title}</p>
                     </div>
                 </div>
             </div>
@@ -163,325 +161,317 @@ export default function Dashboard() {
     );
 
     return (
-        <div className="container-fluid p-0">
+        <div className="dashboard-container p-4">
             {error && (
-                <div className="alert alert-danger" role="alert">
-                    <h5>Lỗi khi tải dữ liệu dashboard:</h5>
-                    <p>{error.message}</p>
-                    <div className="mt-3">
-                        <button
-                            className="btn btn-sm btn-outline-primary me-2"
-                            onClick={() => window.location.reload()}
-                        >
-                            Tải lại trang
-                        </button>
-                        <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => {
-                                localStorage.removeItem('token');
-                                navigate('/login');
-                            }}
-                        >
-                            Đăng nhập lại
-                        </button>
+                <div className="alert alert-danger shadow-sm rounded-3 border-0 mb-4" role="alert">
+                    <div className="d-flex align-items-center">
+                        <i className="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                        <div>
+                            <h5 className="mb-1">Lỗi khi tải dữ liệu dashboard</h5>
+                            <p className="mb-3">{error.message}</p>
+                            <div className="mt-2">
+                                <button className="btn btn-sm btn-outline-light me-2 rounded-pill"
+                                    onClick={() => window.location.reload()}>
+                                    <i className="bi bi-arrow-clockwise me-1"></i> Tải lại trang
+                                </button>
+                                <button className="btn btn-sm btn-outline-light rounded-pill"
+                                    onClick={() => {
+                                        localStorage.removeItem('token');
+                                        navigate('/login');
+                                    }}>
+                                    <i className="bi bi-box-arrow-right me-1"></i> Đăng nhập lại
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Welcome Banner - Always show */}
-            <div className="row mb-4">
-                <div className="col-12">
-                    <div className="card bg-light">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h2 className="card-title fw-bold">Welcome back, {adminUser.name}!</h2>
-                                    <p className="text-muted">Here's an overview of your admin dashboard.</p>
-                                </div>
-                                {/* <div>
-                                    <a href="#" className="btn btn-primary me-2">View Site</a>
-                                    <button
-                                        className="btn btn-outline-secondary"
-                                        onClick={() => {
-                                            localStorage.removeItem('token');
-                                            navigate('/login');
-                                        }}
-                                    >
-                                        Đăng xuất
-                                    </button>
-                                </div> */}
-                            </div>
+            <div className="welcome-section mb-4 p-4 bg-white shadow-sm rounded-3 border-0">
+                <div className="row align-items-center">
+                    <div className="col-lg-8">
+                        <h2 className="display-6 mb-2" style={{ color: '#2b7a78' }}>Welcome back, {adminUser.name}!</h2>
+                        <p className="text-muted mb-0 lead">Here's what's happening with your platform today.</p>
+                    </div>
+                    <div className="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <div className="current-date">
+                            <h5 className="mb-1 fw-bold" style={{ color: '#2b7a78' }}>{moment().format('dddd')}</h5>
+                            <p className="text-muted mb-0">{moment().format('MMMM D, YYYY')}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Metrics */}
-            <div className="row mb-4">
+            <div className="row">
                 {isLoading ? (
-                    // Show skeletons while loading
-                    <>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <MetricSkeleton />
+                    Array(4).fill(null).map((_, index) => (
+                        <div key={index} className="col-md-6 col-lg-3 mb-4">
+                            <div className="metric-card card border-0 shadow-sm">
+                                <div className="card-body p-4">
+                                    <div className="placeholder-glow">
+                                        <div className="d-flex justify-content-between align-items-start mb-3">
+                                            <span className="placeholder rounded-circle" style={{ width: '48px', height: '48px' }}></span>
+                                            <span className="placeholder rounded-pill" style={{ width: '60px', height: '24px' }}></span>
+                                        </div>
+                                        <span className="placeholder col-7 mb-2" style={{ height: '2rem' }}></span>
+                                        <span className="placeholder col-5" style={{ height: '1.2rem' }}></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <MetricSkeleton />
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <MetricSkeleton />
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <MetricSkeleton />
-                        </div>
-                    </>
+                    ))
                 ) : (
                     <>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h6 className="text-muted mb-1">Active Users</h6>
-                                            <h3 className="fw-bold mb-0">{activeUsers.toLocaleString()}</h3>
-                                            <span className="badge bg-success">+12%</span>
-                                        </div>
-                                        <div className="bg-light rounded p-3">
-                                            <i className="bi bi-people-fill text-primary fs-3"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h6 className="text-muted mb-1">Job Listings</h6>
-                                            <h3 className="fw-bold mb-0">{jobListings.toLocaleString()}</h3>
-                                            <span className="badge bg-success">+8%</span>
-                                        </div>
-                                        <div className="bg-light rounded p-3">
-                                            <i className="bi bi-briefcase-fill text-success fs-3"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h6 className="text-muted mb-1">Applications</h6>
-                                            <h3 className="fw-bold mb-0">{applications.toLocaleString()}</h3>
-                                            <span className="badge bg-success">+17%</span>
-                                        </div>
-                                        <div className="bg-light rounded p-3">
-                                            <i className="bi bi-file-earmark-text-fill text-warning fs-3"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3 mb-lg-0">
-                            <div className="card h-100">
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h6 className="text-muted mb-1">Support Tickets</h6>
-                                            <h3 className="fw-bold mb-0">{supportTickets.toLocaleString()}</h3>
-                                            <span className="badge bg-danger">+5</span>
-                                        </div>
-                                        <div className="bg-light rounded p-3">
-                                            <i className="bi bi-headset text-danger fs-3"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <MetricCard
+                            title="Active Users"
+                            value={activeUsers}
+                            icon={<FaUsers size={24} color="#fff" />}
+                            bgColor="bg-success bg-opacity-10"
+                        />
+                        <MetricCard
+                            title="Job Listings"
+                            value={jobListings}
+                            icon={<FaBriefcase size={24} color="#fff" />}
+                            bgColor="bg-primary bg-opacity-10"
+                        />
+                        <MetricCard
+                            title="Applications"
+                            value={applications}
+                            icon={<FaFileAlt size={24} color="#fff" />}
+                            bgColor="bg-warning bg-opacity-10"
+                        />
+                        <MetricCard
+                            title="Support Tickets"
+                            value={supportTickets}
+                            icon={<FaHeadset size={24} color="#fff" />}
+                            bgColor="bg-danger bg-opacity-10"
+                        />
                     </>
                 )}
             </div>
 
-            {/* Support Tickets and Quick Actions */}
             <div className="row mb-4">
-                <div className="col-lg-8 mb-4 mb-lg-0">
-                    <div className="card h-100">
-                        <div className="card-header bg-white">
-                            <h5 className="card-title mb-0">Recent Support Tickets</h5>
+                <div className="col-lg-8">
+                    <div className="card border-0 shadow-sm h-100">
+                        <div className="card-header bg-white border-0 py-3">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center">
+                                    <FaHeadset className="text-primary me-2" size={20} />
+                                    <h5 className="mb-0">Recent Support Tickets</h5>
+                                </div>
+                                <button
+                                    className="btn btn-sm btn-primary rounded-pill px-3"
+                                    onClick={() => navigate('/admin/support-user')}
+                                >
+                                    View All <FaExternalLinkAlt size={12} className="ms-1" />
+                                </button>
+                            </div>
                         </div>
-                        <div className="card-body">
+                        <div className="card-body p-0">
                             {isLoading ? (
-                                <LoadingIndicator height="200px" />
+                                <div className="text-center py-5">
+                                    <Spinner animation="border" variant="primary" />
+                                </div>
                             ) : recentTickets.length === 0 ? (
-                                <p>Không có phiếu hỗ trợ nào.</p>
+                                <div className="text-center py-5">
+                                    <div className="text-muted">
+                                        <FaHeadset size={48} className="mb-3 opacity-50" />
+                                        <p className="mb-0">No support tickets found.</p>
+                                    </div>
+                                </div>
                             ) : (
                                 <div className="table-responsive">
-                                    <table className="table table-hover">
-                                        <thead>
+                                    <table className="table table-hover align-middle mb-0">
+                                        <thead className="bg-light">
                                             <tr>
-                                                <th>ID</th>
-                                                <th>User</th>
-                                                <th>Issue</th>
-                                                <th>Status</th>
-                                                <th>Date</th>
+                                                <th className="border-0">ID</th>
+                                                <th className="border-0">User</th>
+                                                <th className="border-0">Issue</th>
+                                                <th className="border-0">Status</th>
+                                                <th className="border-0">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {recentTickets.map((ticket) => (
-                                                <tr key={ticket.id}>
-                                                    <td>#{ticket.id}</td>
-                                                    <td>{ticket.applicantEmail || ticket.employerEmail || 'Unknown'}</td>
-                                                    <td className="text-truncate" style={{ maxWidth: '200px' }}>
-                                                        {ticket.content}
+                                                <tr key={ticket.id} className="align-middle ticket-row">
+                                                    <td className="ps-3">
+                                                        <span className="fw-medium">#</span>
+                                                        <span className="text-primary">{ticket.id}</span>
                                                     </td>
                                                     <td>
-                                                        <span
-                                                            className={`badge ${ticket.status === 'NO_RESPOND'
-                                                                ? 'bg-warning'
-                                                                : ticket.status === 'RESPONDED'
-                                                                    ? 'bg-success'
-                                                                    : 'bg-secondary'
-                                                                }`}
-                                                        >
-                                                            {ticket.status}
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="avatar-circle bg-primary bg-opacity-10 text-primary me-2">
+                                                                {(ticket.applicantEmail || ticket.employerEmail || 'U')[0].toUpperCase()}
+                                                            </div>
+                                                            <div className="user-info">
+                                                                <div className="text-truncate" style={{ maxWidth: '150px' }}>
+                                                                    {ticket.applicantEmail || ticket.employerEmail || 'Unknown'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="text-truncate" style={{ maxWidth: '200px' }}>
+                                                            {ticket.content}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`badge ${ticket.status === 'NO_RESPOND'
+                                                            ? 'bg-warning bg-opacity-10 text-warning'
+                                                            : 'bg-success bg-opacity-10 text-success'
+                                                            } rounded-pill px-3 py-2`}>
+                                                            {ticket.status === 'NO_RESPOND' ? 'Pending' : 'Resolved'}
                                                         </span>
                                                     </td>
-                                                    <td>{moment(ticket.sendat).format('YYYY-MM-DD HH:mm')}</td>
+                                                    <td>
+                                                        <div className="text-muted">
+                                                            {moment(ticket.sendat).format('MMM D, YYYY')}
+                                                        </div>
+                                                        <div className="small text-muted">
+                                                            {moment(ticket.sendat).format('HH:mm')}
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
                             )}
-                            <div className="text-end pt-3">
-                                <a href="/admin/support-user" className="btn btn-sm btn-primary">
-                                    View All Tickets
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
-                {/* <div className="col-lg-4">
-                    <div className="card h-100">
-                        <div className="card-header bg-white">
-                            <h5 className="card-title mb-0">Quick Actions</h5>
-                        </div>
-                        <div className="card-body">
-                            <div className="d-grid gap-2 mb-4">
-                                <div className="row g-2">
-                                    <div className="col-6">
-                                        <a href="/users/add" className="btn btn-primary w-100">
-                                            <i className="bi bi-person-plus me-2"></i>Add User
-                                        </a>
-                                    </div>
-                                    <div className="col-6">
-                                        <a href="/jobs/add" className="btn btn-primary w-100">
-                                            <i className="bi bi-briefcase-plus me-2"></i>New Job
-                                        </a>
-                                    </div>
-                                </div>
+
+                <div className="col-lg-4">
+                    <div className="card border-0 shadow-sm h-100">
+                        <div className="card-header bg-white border-0 py-3">
+                            <div className="d-flex align-items-center">
+                                <FaChartPie className="text-primary me-2" size={20} />
+                                <h5 className="mb-0">Job Categories</h5>
                             </div>
-
-                            <h6 className="fw-bold mb-3">Recent Activity</h6>
-                            <ul className="list-group list-group-flush">
-                                <li className="list-group-item px-0 py-2 border-0">
-                                    <div className="d-flex align-items-center">
-                                        <div className="bg-primary me-3 p-2 rounded-circle text-white">
-                                            <i className="bi bi-person-fill" />
-                                        </div>
-                                        <div>
-                                            <p className="mb-0 fw-medium">New user registered</p>
-                                            <small className="text-muted">30 minutes ago</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li className="list-group-item px-0 py-2 border-0">
-                                    <div className="d-flex align-items-center">
-                                        <div className="bg-success me-3 p-2 rounded-circle text-white">
-                                            <i className="bi bi-briefcase-fill" />
-                                        </div>
-                                        <div>
-                                            <p className="mb-0 fw-medium">15 new jobs were posted</p>
-                                            <small className="text-muted">1 hour ago</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li className="list-group-item px-0 py-2 border-0">
-                                    <div className="d-flex align-items-center">
-                                        <div className="bg-danger me-3 p-2 rounded-circle text-white">
-                                            <i className="bi bi-file-text-fill" />
-                                        </div>
-                                        <div>
-                                            <p className="mb-0 fw-medium">System alert: Backup completed</p>
-                                            <small className="text-muted">2 hours ago</small>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> */}
-            </div>
-
-            {/* User Stats and Job Category Stats */}
-            <div className="row">
-                <div className="col-lg-6 mb-4 mb-lg-0">
-                    <div className="card h-100">
-                        <div className="card-header bg-white">
-                            <h5 className="card-title mb-0">User Statistics</h5>
                         </div>
                         <div className="card-body">
                             {isLoading ? (
-                                <LoadingIndicator height="350px" />
+                                <div className="text-center py-5">
+                                    <Spinner animation="border" variant="primary" />
+                                </div>
                             ) : (
-                                <>
-                                    <div className="row mb-4 g-3">
-                                        <div className="col-4 text-center">
-                                            <h6 className="text-muted mb-1">New Users</h6>
-                                            <h5 className="fw-bold">{userRegistrations.reduce((sum, month) => sum + month.count, 0)}</h5>
-                                        </div>
-                                        <div className="col-4 text-center">
-                                            <h6 className="text-muted mb-1">Active Users</h6>
-                                            <h5 className="fw-bold">{activeUsers.toLocaleString()}</h5>
-                                        </div>
-                                        <div className="col-4 text-center">
-                                            <h6 className="text-muted mb-1">Conversion Rate</h6>
-                                            <h5 className="fw-bold">24.3%</h5>
+                                <JobCategoryChart height={300} showLegend={true} data={jobCategories} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-12">
+                    <div className="card border-0 shadow-sm">
+                        <div className="card-header bg-white border-0 py-3">
+                            <div className="d-flex align-items-center">
+                                <FaChartLine className="text-primary me-2" size={20} />
+                                <h5 className="mb-0">User Registration Trends</h5>
+                            </div>
+                        </div>
+                        <div className="card-body">
+                            {isLoading ? (
+                                <div className="text-center py-5">
+                                    <Spinner animation="border" variant="primary" />
+                                </div>
+                            ) : (
+                                <div className="row">
+                                    <div className="col-md-3">
+                                        <div className="stats-summary mb-4">
+                                            <div className="stat-item p-3 bg-light rounded-3 mb-3">
+                                                <h6 className="text-muted mb-2">Total New Users</h6>
+                                                <h3 className="fw-bold mb-0" style={{ color: '#2b7a78' }}>
+                                                    {userRegistrations.reduce((sum, month) => sum + month.count, 0)}
+                                                </h3>
+                                            </div>
+                                            <div className="stat-item p-3 bg-light rounded-3">
+                                                <h6 className="text-muted mb-2">Active Users</h6>
+                                                <h3 className="fw-bold mb-0" style={{ color: '#2b7a78' }}>
+                                                    {activeUsers.toLocaleString()}
+                                                </h3>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="p-4">
+                                    <div className="col-md-9">
                                         <UserStatisticsChart chartType="bar" height={300} data={userRegistrations} />
                                     </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                <div className="col-lg-6">
-                    <div className="card h-100">
-                        <div className="card-header bg-white">
-                            <h5 className="card-title mb-0">Job Categories</h5>
-                        </div>
-                        <div className="card-body">
-                            {isLoading ? (
-                                <LoadingIndicator height="350px" />
-                            ) : (
-                                <>
-                                    <div className="text-center mb-4">
-                                        <h6 className="text-muted mb-1">Total Jobs</h6>
-                                        <h4 className="fw-bold">{jobListings.toLocaleString()}</h4>
-                                    </div>
-                                    <div className="p-4">
-                                        <JobCategoryChart height={250} showLegend={true} data={jobCategories} />
-                                    </div>
-                                </>
+                                </div>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <style jsx>{`
+                .dashboard-container {
+                    background-color: #f8f9fa;
+                    min-height: 100vh;
+                }
+                .metric-card {
+                    border-radius: 15px;
+                    transition: all 0.3s ease;
+                }
+                .metric-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+                }
+                .icon-circle {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                }
+                .metric-card:hover .icon-circle {
+                    transform: scale(1.1);
+                }
+                .avatar-circle {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                }
+                .card {
+                    border-radius: 15px;
+                    overflow: hidden;
+                }
+                .table th {
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.5px;
+                }
+                .ticket-row {
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                .ticket-row:hover {
+                    background-color: rgba(43, 122, 120, 0.05);
+                }
+                .stat-item {
+                    transition: all 0.3s ease;
+                }
+                .stat-item:hover {
+                    transform: translateY(-3px);
+                }
+                .alert {
+                    background-color: #dc3545;
+                    color: white;
+                }
+                .btn-outline-light:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    border-color: white;
+                    color: white;
+                }
+            `}</style>
         </div>
     );
 }

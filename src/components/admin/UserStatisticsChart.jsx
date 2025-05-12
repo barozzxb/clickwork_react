@@ -3,14 +3,15 @@ import {
     BarChart, Bar, LineChart, Line, AreaChart, Area,
     XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import '../../styles/admin-charts.css';
 
 // Custom tooltip cho biểu đồ
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="custom-tooltip bg-white p-3 shadow-sm rounded border">
-                <p className="label mb-0"><strong>{label}</strong></p>
-                <p className="data mb-0 text-primary">{`${payload[0].name}: ${payload[0].value}`}</p>
+            <div className="custom-tooltip">
+                <p className="label">{label}</p>
+                <p className="data">{`${payload[0].value} Users`}</p>
             </div>
         );
     }
@@ -19,40 +20,62 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function UserStatisticsChart({ chartType = 'bar', height = 300, data = [] }) {
     const renderChart = () => {
+        const commonProps = {
+            stroke: "rgba(23, 37, 42, 0.1)",
+            strokeDasharray: "3 3"
+        };
+
+        const axisProps = {
+            stroke: "#17252a",
+            tick: { fill: '#17252a' }
+        };
+
         switch (chartType) {
             case 'line':
                 return (
                     <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <CartesianGrid {...commonProps} />
+                        <XAxis dataKey="name" {...axisProps} />
+                        <YAxis {...axisProps} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend />
+                        <Legend wrapperStyle={{ paddingTop: '20px' }} />
                         <Line
                             type="monotone"
                             dataKey="count"
                             name="Users"
-                            stroke="#0d6efd"
-                            activeDot={{ r: 8 }}
-                            strokeWidth={2}
+                            stroke="var(--chart-color-1)"
+                            strokeWidth={3}
+                            dot={{
+                                fill: 'var(--chart-color-1)',
+                                stroke: 'white',
+                                strokeWidth: 2,
+                                r: 6
+                            }}
+                            activeDot={{
+                                r: 8,
+                                stroke: 'var(--chart-color-1)',
+                                strokeWidth: 2,
+                                fill: 'white'
+                            }}
                         />
                     </LineChart>
                 );
             case 'area':
                 return (
                     <AreaChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <CartesianGrid {...commonProps} />
+                        <XAxis dataKey="name" {...axisProps} />
+                        <YAxis {...axisProps} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend />
+                        <Legend wrapperStyle={{ paddingTop: '20px' }} />
                         <Area
                             type="monotone"
                             dataKey="count"
                             name="Users"
-                            stroke="#0d6efd"
-                            fill="#0d6efd"
-                            fillOpacity={0.3}
+                            stroke="var(--chart-color-1)"
+                            fill="var(--chart-color-1)"
+                            fillOpacity={0.2}
+                            strokeWidth={3}
                         />
                     </AreaChart>
                 );
@@ -60,20 +83,32 @@ export default function UserStatisticsChart({ chartType = 'bar', height = 300, d
             default:
                 return (
                     <BarChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <CartesianGrid {...commonProps} />
+                        <XAxis dataKey="name" {...axisProps} />
+                        <YAxis {...axisProps} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <Bar dataKey="count" name="Users" fill="#0d6efd" />
+                        <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                        <Bar
+                            dataKey="count"
+                            name="Users"
+                            fill="var(--chart-color-1)"
+                            radius={[4, 4, 0, 0]}
+                        />
                     </BarChart>
                 );
         }
     };
 
     return (
-        <ResponsiveContainer width="100%" height={height}>
-            {data.length > 0 ? renderChart() : <p>Không có dữ liệu</p>}
-        </ResponsiveContainer>
+        <div className="chart-container">
+            <h5 className="admin-title mb-4">User Registration Trends</h5>
+            <ResponsiveContainer width="100%" height={height}>
+                {data.length > 0 ? renderChart() : (
+                    <div className="text-center text-muted">
+                        <p>No data available</p>
+                    </div>
+                )}
+            </ResponsiveContainer>
+        </div>
     );
 }

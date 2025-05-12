@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import EmailSelector from './EmailSelector';
+import { FaEnvelope, FaUsers, FaSearch, FaPaperPlane } from 'react-icons/fa';
 import './SendEmail.css';
 
 import { API_ROOT } from '../../config';
@@ -111,45 +112,42 @@ export default function SendEmail() {
     };
 
     return (
-        <div className="container-fluid p-0">
-            <div className="card shadow-sm">
-                <div className="card-header bg-white py-3">
-                    <h2 className="card-title h5 fw-bold mb-1">Send Email</h2>
-                    <p className="text-muted small mb-0">Send emails to users of the job platform</p>
+        <div className="admin-container">
+            <div className="admin-card">
+                <div className="admin-card-header">
+                    <h2 className="admin-title">Send Email</h2>
+                    <p className="admin-subtitle">Send emails to users of the job platform</p>
                 </div>
 
-                <div className="card-body">
-                    <ul className="nav nav-tabs mb-4">
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${emailType === 'single' ? 'active' : ''}`}
-                                onClick={() => setEmailType('single')}
-                            >
-                                <i className="bi bi-envelope me-2"></i> Single Email
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${emailType === 'bulk' ? 'active' : ''}`}
-                                onClick={() => setEmailType('bulk')}
-                            >
-                                <i className="bi bi-people me-2"></i> Bulk Email
-                            </button>
-                        </li>
-                    </ul>
+                <div className="admin-card-body p-4">
+                    <div className="nav nav-pills mb-4">
+                        <button
+                            className={`admin-nav-link me-2 ${emailType === 'single' ? 'active' : ''}`}
+                            onClick={() => setEmailType('single')}
+                        >
+                            <FaEnvelope className="me-2" />
+                            Single Email
+                        </button>
+                        <button
+                            className={`admin-nav-link ${emailType === 'bulk' ? 'active' : ''}`}
+                            onClick={() => setEmailType('bulk')}
+                        >
+                            <FaUsers className="me-2" />
+                            Bulk Email
+                        </button>
+                    </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="needs-validation">
                         {emailType === 'single' && (
-                            <div className="mb-3">
-                                <label htmlFor="recipient" className="form-label">Recipient Email</label>
+                            <div className="admin-form-group">
+                                <label className="admin-form-label">Recipient Email</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
-                                        <i className="bi bi-envelope"></i>
+                                        <FaEnvelope />
                                     </span>
                                     <input
                                         type="text"
-                                        className={`form-control ${errors.to ? 'is-invalid' : ''}`}
-                                        id="recipient"
+                                        className={`admin-form-control ${errors.to ? 'is-invalid' : ''}`}
                                         placeholder="user@example.com"
                                         readOnly={selectedEmails.length > 0}
                                         {...register('to', {
@@ -163,29 +161,29 @@ export default function SendEmail() {
                                     />
                                     <button
                                         type="button"
-                                        className="btn btn-primary"
+                                        className="admin-btn"
                                         onClick={() => setShowEmailSelector(true)}
                                     >
-                                        <i className="bi bi-search"></i>
+                                        <FaSearch />
                                     </button>
-                                    {errors.to && (
-                                        <div className="invalid-feedback">{errors.to.message}</div>
-                                    )}
                                 </div>
+                                {errors.to && (
+                                    <div className="admin-form-error">{errors.to.message}</div>
+                                )}
                                 {selectedEmails.length > 0 && (
-                                    <div className="selected-emails mt-2">
-                                        <div className="d-flex flex-wrap gap-1">
+                                    <div className="selected-emails">
+                                        <div className="d-flex flex-wrap gap-2">
                                             {selectedEmails.map(email => (
-                                                <div key={email.email} className="badge bg-primary d-flex align-items-center">
-                                                    <span>{email.email}</span>
+                                                <div key={email.email} className="admin-badge admin-badge-primary">
+                                                    {email.email}
                                                     <button
                                                         type="button"
-                                                        className="btn-close btn-close-white ms-2"
+                                                        className="btn-close ms-2"
                                                         onClick={() => {
                                                             const newSelection = selectedEmails.filter(e => e.email !== email.email);
                                                             handleEmailSelection(newSelection);
                                                         }}
-                                                    ></button>
+                                                    />
                                                 </div>
                                             ))}
                                         </div>
@@ -195,15 +193,14 @@ export default function SendEmail() {
                         )}
 
                         {emailType === 'bulk' && (
-                            <div className="mb-3">
-                                <label htmlFor="userGroup" className="form-label">User Group</label>
+                            <div className="admin-form-group">
+                                <label className="admin-form-label">User Group</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
-                                        <i className="bi bi-people"></i>
+                                        <FaUsers />
                                     </span>
                                     <select
-                                        className={`form-select ${errors.group ? 'is-invalid' : ''}`}
-                                        id="userGroup"
+                                        className={`admin-form-control ${errors.group ? 'is-invalid' : ''}`}
                                         {...register('group', { required: 'User group is required' })}
                                     >
                                         <option value="">Select user group</option>
@@ -213,55 +210,53 @@ export default function SendEmail() {
                                         <option value="admins">Administrators</option>
                                         <option value="inactive">Inactive Users</option>
                                     </select>
-                                    {errors.group && (
-                                        <div className="invalid-feedback">{errors.group.message}</div>
-                                    )}
                                 </div>
+                                {errors.group && (
+                                    <div className="admin-form-error">{errors.group.message}</div>
+                                )}
                             </div>
                         )}
 
-                        <div className="mb-3">
-                            <label htmlFor="subject" className="form-label">Subject</label>
+                        <div className="admin-form-group">
+                            <label className="admin-form-label">Subject</label>
                             <input
                                 type="text"
-                                className={`form-control ${errors.subject ? 'is-invalid' : ''}`}
-                                id="subject"
+                                className={`admin-form-control ${errors.subject ? 'is-invalid' : ''}`}
                                 placeholder="Email subject..."
                                 {...register('subject', { required: 'Subject is required' })}
                             />
                             {errors.subject && (
-                                <div className="invalid-feedback">{errors.subject.message}</div>
+                                <div className="admin-form-error">{errors.subject.message}</div>
                             )}
                         </div>
 
-                        <div className="mb-4">
-                            <label htmlFor="message" className="form-label">Message</label>
+                        <div className="admin-form-group">
+                            <label className="admin-form-label">Message</label>
                             <textarea
-                                className={`form-control ${errors.body ? 'is-invalid' : ''}`}
-                                id="message"
+                                className={`admin-form-control ${errors.body ? 'is-invalid' : ''}`}
                                 rows="8"
                                 placeholder="Write your message here..."
                                 {...register('body', { required: 'Message is required' })}
-                            ></textarea>
+                            />
                             {errors.body && (
-                                <div className="invalid-feedback">{errors.body.message}</div>
+                                <div className="admin-form-error">{errors.body.message}</div>
                             )}
                         </div>
 
-                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <div className="d-flex justify-content-end mt-4">
                             <button
                                 type="submit"
-                                className="btn btn-primary"
+                                className="admin-btn"
                                 disabled={isSending}
                             >
                                 {isSending ? (
                                     <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        <div className="spinner-border spinner-border-sm me-2" role="status" />
                                         Sending...
                                     </>
                                 ) : (
                                     <>
-                                        <i className="bi bi-send me-2"></i>
+                                        <FaPaperPlane className="me-2" />
                                         {emailType === 'single' ? 'Send Email' : 'Send Bulk Email'}
                                     </>
                                 )}

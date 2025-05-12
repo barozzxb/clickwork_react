@@ -39,6 +39,8 @@ import SendEmail from './components/admin/SendEmail.jsx';
 import ManageAccounts from './components/admin/ManageAccounts.jsx';
 import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
+import AdminProfile from "./components/admin/AdminProfile.jsx"
+import AdminNotificationsPage from "./components/admin/AdminNotificationsPage.jsx"
 
 import EmployerNavBar from './components/employer/EmployerNavbar.jsx';
 
@@ -50,7 +52,6 @@ import Error403 from './components/error/403.jsx';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AdminProfile from './components/admin/AdminProfile.jsx';
 
 const queryClient = new QueryClient();
 
@@ -122,6 +123,7 @@ function AppContent() {
               <Route path="view-reports" element={<ViewReports />} />
               <Route path="support-user/support/:id" element={<SupportDetail />} />
               <Route path="profile" element={<AdminProfile />} />
+              <Route path="notifications" element={<AdminNotificationsPage />} />
             </Route>
           </Route>
 

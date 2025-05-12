@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaSearch, FaUsers, FaTimes, FaCheck } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
 
@@ -77,50 +78,51 @@ export default function EmailSelector({ onSelect, onClose, multiple = false }) {
             <div className="email-selector-modal">
                 <div className="email-selector-header">
                     <h4>Select Email{multiple ? 's' : ''}</h4>
-                    <button className="btn-close" onClick={onClose}></button>
+                    <button className="admin-btn admin-btn-icon" onClick={onClose}>
+                        <FaTimes />
+                    </button>
                 </div>
 
                 <div className="email-selector-filters">
-                    <div className="input-group mb-3">
-                        <span className="input-group-text">
-                            <i className="bi bi-search"></i>
-                        </span>
+                    <div className="admin-search mb-3">
+                        <FaSearch className="admin-search-icon" />
                         <input
                             type="text"
-                            className="form-control"
+                            className="admin-form-control admin-search-input"
                             placeholder="Search by email or name..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
 
-                    <div className="btn-group mb-3 w-100">
+                    <div className="btn-group w-100">
                         <button
-                            className={`btn btn-outline-primary ${selectedRole === 'all' ? 'active' : ''}`}
+                            className={`admin-nav-link ${selectedRole === 'all' ? 'active' : ''}`}
                             onClick={() => setSelectedRole('all')}
                         >
+                            <FaUsers className="me-2" />
                             All
                         </button>
                         <button
-                            className={`btn btn-outline-primary ${selectedRole === 'jobseekers' ? 'active' : ''}`}
+                            className={`admin-nav-link ${selectedRole === 'jobseekers' ? 'active' : ''}`}
                             onClick={() => setSelectedRole('jobseekers')}
                         >
                             Job Seekers
                         </button>
                         <button
-                            className={`btn btn-outline-primary ${selectedRole === 'employers' ? 'active' : ''}`}
+                            className={`admin-nav-link ${selectedRole === 'employers' ? 'active' : ''}`}
                             onClick={() => setSelectedRole('employers')}
                         >
                             Employers
                         </button>
                         <button
-                            className={`btn btn-outline-primary ${selectedRole === 'admins' ? 'active' : ''}`}
+                            className={`admin-nav-link ${selectedRole === 'admins' ? 'active' : ''}`}
                             onClick={() => setSelectedRole('admins')}
                         >
                             Admins
                         </button>
                         <button
-                            className={`btn btn-outline-primary ${selectedRole === 'inactive' ? 'active' : ''}`}
+                            className={`admin-nav-link ${selectedRole === 'inactive' ? 'active' : ''}`}
                             onClick={() => setSelectedRole('inactive')}
                         >
                             Inactive
@@ -129,27 +131,45 @@ export default function EmailSelector({ onSelect, onClose, multiple = false }) {
                 </div>
 
                 <div className="email-selector-list">
-                    {isLoading && <div className="text-center p-3"><div className="spinner-border text-primary"></div></div>}
+                    {isLoading && (
+                        <div className="text-center p-4">
+                            <div className="spinner-border" role="status" />
+                            <p className="mt-2 admin-subtitle">Loading emails...</p>
+                        </div>
+                    )}
 
-                    {error && <div className="alert alert-danger">{error}</div>}
+                    {error && (
+                        <div className="alert alert-danger m-3">
+                            <FaTimes className="me-2" />
+                            {error}
+                        </div>
+                    )}
 
                     {!isLoading && !error && emails?.length === 0 && (
-                        <div className="text-center p-3">No emails found</div>
+                        <div className="text-center p-4">
+                            <FaSearch className="text-muted mb-2" size={24} />
+                            <p className="admin-subtitle">No emails found</p>
+                        </div>
                     )}
 
                     {!isLoading && !error && emails?.length > 0 && (
-                        <div className="list-group">
+                        <div className="list-group list-group-flush">
                             {emails.map((item) => (
                                 <button
                                     key={item.email}
-                                    className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${isEmailSelected(item) ? 'active' : ''}`}
+                                    className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${isEmailSelected(item) ? 'active' : ''
+                                        }`}
                                     onClick={() => toggleEmailSelection(item)}
                                 >
                                     <div>
-                                        <div>{item.email}</div>
-                                        <small className="text-muted">{item.fullname || 'Unknown'} - {item.role}</small>
+                                        <div className="fw-medium">{item.email}</div>
+                                        <small className="text-muted">
+                                            {item.fullname || 'Unknown'} - {item.role}
+                                        </small>
                                     </div>
-                                    {isEmailSelected(item) && <i className="bi bi-check-circle-fill"></i>}
+                                    {isEmailSelected(item) && (
+                                        <FaCheck className="text-success" />
+                                    )}
                                 </button>
                             ))}
                         </div>
@@ -159,16 +179,23 @@ export default function EmailSelector({ onSelect, onClose, multiple = false }) {
                 {multiple && (
                     <div className="email-selector-footer">
                         <div>
-                            <small className="text-muted">Selected: {selectedEmails.length} email(s)</small>
+                            <small className="admin-subtitle">
+                                Selected: {selectedEmails.length} email(s)
+                            </small>
                         </div>
                         <div className="d-flex gap-2">
-                            <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
                             <button
-                                className="btn btn-primary"
+                                className="admin-btn admin-btn-secondary"
+                                onClick={onClose}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="admin-btn"
                                 onClick={confirmSelection}
                                 disabled={selectedEmails.length === 0}
                             >
-                                Confirm
+                                Confirm Selection
                             </button>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import axios from "axios"
+import '../../styles/admin-profile.css'
 
 const AdminProfile = () => {
     const queryClient = useQueryClient()
@@ -484,9 +485,9 @@ const AdminProfile = () => {
 
     if (isLoading) {
         return (
-            <div className="container mt-5">
+            <div className="admin-profile">
                 <div className="text-center">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="spinner-border admin-spinner" role="status">
                         <span className="visually-hidden">Loading profile...</span>
                     </div>
                 </div>
@@ -496,8 +497,8 @@ const AdminProfile = () => {
 
     if (error) {
         return (
-            <div className="container mt-5">
-                <div className="alert alert-danger">
+            <div className="admin-profile">
+                <div className="admin-alert admin-alert-danger">
                     <i className="bi bi-exclamation-triangle me-2"></i>
                     Error loading profile: {error.message}
                 </div>
@@ -506,118 +507,87 @@ const AdminProfile = () => {
     }
 
     return (
-        <div className="container mt-4 mb-5">
-            <h2 className="mb-4">Admin Profile</h2>
+        <div className="admin-profile">
+            <h2 className="admin-profile-title">Admin Profile</h2>
 
-            <ul className="nav nav-tabs mb-4">
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "profile" ? "active" : ""}`}
-                        onClick={() => setActiveTab("profile")}
-                    >
-                        <i className="bi bi-person me-2"></i>Profile
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "security" ? "active" : ""}`}
-                        onClick={() => setActiveTab("security")}
-                    >
-                        <i className="bi bi-shield-lock me-2"></i>Security
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link ${activeTab === "addresses" ? "active" : ""}`}
-                        onClick={() => setActiveTab("addresses")}
-                    >
-                        <i className="bi bi-geo-alt me-2"></i>Manage Addresses
-                    </button>
-                </li>
+            <ul className="nav admin-tabs">
+                {[
+                    { id: 'profile', icon: 'bi-person', label: 'Profile' },
+                    { id: 'security', icon: 'bi-shield-lock', label: 'Security' },
+                    { id: 'addresses', icon: 'bi-geo-alt', label: 'Manage Addresses' }
+                ].map(tab => (
+                    <li className="nav-item" key={tab.id}>
+                        <button
+                            className={`admin-tab ${activeTab === tab.id ? 'active' : ''}`}
+                            onClick={() => setActiveTab(tab.id)}
+                        >
+                            <i className={`${tab.icon} me-2`}></i>{tab.label}
+                        </button>
+                    </li>
+                ))}
             </ul>
 
             {/* Profile Tab */}
             {activeTab === "profile" && (
-                <div className="card">
-                    <div className="card-body">
+                <div className="profile-card">
+                    <div className="card-body p-4">
                         <div className="row">
                             <div className="col-md-3 text-center">
-                                <div className="mb-3">
-                                    <div className="avatar-container mb-3">
-                                        <div className="position-relative" style={{ width: "150px", height: "150px", margin: "0 auto" }}>
-                                            <img
-                                                src={avatarPreview || "/assets/no-image.png"}
-                                                alt="Profile Avatar"
-                                                className="rounded-circle img-thumbnail"
-                                                style={{
-                                                    width: "150px",
-                                                    height: "150px",
-                                                    objectFit: "cover",
-                                                    border: "1px solid #dee2e6",
-                                                }}
-                                                onError={(e) => {
-                                                    e.target.onerror = null
-                                                    e.target.src = "/assets/no-image.png"
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="avatar" className="btn btn-outline-primary">
-                                            <i className="bi bi-camera me-1"></i> Change Avatar
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="avatar"
-                                            accept="image/jpeg,image/png,image/gif,image/jpg"
-                                            style={{ display: "none" }}
-                                            onChange={handleAvatarChange}
-                                        />
-                                    </div>
-                                    {avatarFile && (
-                                        <div className="text-muted small">
-                                            <i className="bi bi-info-circle me-1"></i>
-                                            New image selected. Click "Save Changes" to update.
-                                        </div>
-                                    )}
+                                <div className="avatar-container mb-3">
+                                    <img
+                                        src={avatarPreview || "/assets/no-image.png"}
+                                        alt="Profile Avatar"
+                                        className="avatar-image"
+                                        onError={(e) => {
+                                            e.target.onerror = null
+                                            e.target.src = "/assets/no-image.png"
+                                        }}
+                                    />
                                 </div>
+                                <label className="avatar-upload-btn d-block cursor-pointer">
+                                    <i className="bi bi-camera me-1"></i> Change Avatar
+                                    <input
+                                        type="file"
+                                        id="avatar"
+                                        accept="image/jpeg,image/png,image/gif,image/jpg"
+                                        style={{ display: "none" }}
+                                        onChange={handleAvatarChange}
+                                    />
+                                </label>
+                                {avatarFile && (
+                                    <div className="text-muted small mt-2">
+                                        <i className="bi bi-info-circle me-1"></i>
+                                        New image selected. Click "Save Changes" to update.
+                                    </div>
+                                )}
                             </div>
                             <div className="col-md-9">
                                 <form onSubmit={handleProfileSubmit}>
-                                    <div className="mb-3">
-                                        <label htmlFor="username" className="form-label">
-                                            Username
-                                        </label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Username</label>
                                         <input
                                             type="text"
-                                            className="form-control"
-                                            id="username"
+                                            className="admin-form-control"
                                             value={profileData?.body?.username || ""}
                                             disabled
                                         />
                                         <div className="form-text text-muted">Username cannot be changed</div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">
-                                            Email
-                                        </label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Email</label>
                                         <input
                                             type="email"
-                                            className="form-control"
-                                            id="email"
+                                            className="admin-form-control"
                                             value={profileData?.body?.email || ""}
                                             disabled
                                         />
                                         <div className="form-text text-muted">Email address cannot be changed</div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="fullname" className="form-label">
-                                            Full Name
-                                        </label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Full Name</label>
                                         <input
                                             type="text"
-                                            className="form-control"
-                                            id="fullname"
+                                            className="admin-form-control"
                                             name="fullname"
                                             value={profileForm.fullname}
                                             onChange={handleProfileChange}
@@ -626,14 +596,11 @@ const AdminProfile = () => {
                                             maxLength="255"
                                         />
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="phonenum" className="form-label">
-                                            Phone Number
-                                        </label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Phone Number</label>
                                         <input
                                             type="text"
-                                            className="form-control"
-                                            id="phonenum"
+                                            className="admin-form-control"
                                             name="phonenum"
                                             value={profileForm.phonenum}
                                             onChange={handleProfileChange}
@@ -642,7 +609,11 @@ const AdminProfile = () => {
                                             title="Phone number must be 10-15 digits"
                                         />
                                     </div>
-                                    <button type="submit" className="btn btn-primary" disabled={updateProfileMutation.isLoading}>
+                                    <button
+                                        type="submit"
+                                        className="admin-btn admin-btn-primary"
+                                        disabled={updateProfileMutation.isLoading || !hasProfileChanged()}
+                                    >
                                         {updateProfileMutation.isLoading ? (
                                             <>
                                                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -670,32 +641,26 @@ const AdminProfile = () => {
 
             {/* Security Tab */}
             {activeTab === "security" && (
-                <div className="card">
-                    <div className="card-body">
-                        <h4 className="card-title">Change Password</h4>
+                <div className="profile-card">
+                    <div className="card-body p-4">
+                        <h4 className="admin-profile-title mb-4">Change Password</h4>
                         <form onSubmit={handlePasswordSubmit}>
-                            <div className="mb-3">
-                                <label htmlFor="currentPassword" className="form-label">
-                                    Current Password
-                                </label>
+                            <div className="admin-form-group">
+                                <label className="admin-form-label">Current Password</label>
                                 <input
                                     type="password"
-                                    className="form-control"
-                                    id="currentPassword"
+                                    className="admin-form-control"
                                     name="currentPassword"
                                     value={passwordForm.currentPassword}
                                     onChange={handlePasswordChange}
                                     required
                                 />
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="newPassword" className="form-label">
-                                    New Password
-                                </label>
+                            <div className="admin-form-group">
+                                <label className="admin-form-label">New Password</label>
                                 <input
                                     type="password"
-                                    className="form-control"
-                                    id="newPassword"
+                                    className="admin-form-control"
                                     name="newPassword"
                                     value={passwordForm.newPassword}
                                     onChange={handlePasswordChange}
@@ -703,25 +668,26 @@ const AdminProfile = () => {
                                     pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
                                     title="Password must be at least 8 characters with at least one letter and one number"
                                 />
-                                <div className="form-text">
+                                <div className="form-text text-muted">
                                     Password must be at least 8 characters with at least one letter and one number
                                 </div>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="confirmPassword" className="form-label">
-                                    Confirm New Password
-                                </label>
+                            <div className="admin-form-group">
+                                <label className="admin-form-label">Confirm New Password</label>
                                 <input
                                     type="password"
-                                    className="form-control"
-                                    id="confirmPassword"
+                                    className="admin-form-control"
                                     name="confirmPassword"
                                     value={passwordForm.confirmPassword}
                                     onChange={handlePasswordChange}
                                     required
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary" disabled={changePasswordMutation.isLoading}>
+                            <button
+                                type="submit"
+                                className="admin-btn admin-btn-primary"
+                                disabled={changePasswordMutation.isLoading}
+                            >
                                 {changePasswordMutation.isLoading ? (
                                     <>
                                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -741,15 +707,15 @@ const AdminProfile = () => {
 
             {/* Addresses Tab */}
             {activeTab === "addresses" && (
-                <div className="card">
-                    <div className="card-body">
-                        <h4 className="card-title mb-4">Manage Addresses</h4>
+                <div className="profile-card">
+                    <div className="card-body p-4">
+                        <h4 className="admin-profile-title mb-4">Manage Addresses</h4>
 
                         {/* Address Details View */}
                         {showAddressDetails && (
-                            <div className="card mb-4 bg-light" ref={addressDetailsRef}>
-                                <div className="card-header d-flex justify-content-between align-items-center">
-                                    <h5 className="card-title mb-0">Address Details</h5>
+                            <div className="address-card" ref={addressDetailsRef}>
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 className="mb-0">Address Details</h5>
                                     <button
                                         type="button"
                                         className="btn-close"
@@ -757,67 +723,67 @@ const AdminProfile = () => {
                                         aria-label="Close"
                                     ></button>
                                 </div>
-                                <div className="card-body">
-                                    <div className="row mb-3">
-                                        <div className="col-md-6">
-                                            <p className="mb-1">
-                                                <strong>Nation:</strong> {showAddressDetails.nation}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Province:</strong> {showAddressDetails.province}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>District:</strong> {showAddressDetails.district}
-                                            </p>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <p className="mb-1">
-                                                <strong>Village:</strong> {showAddressDetails.village}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Detail:</strong> {showAddressDetails.detail}
-                                            </p>
-                                        </div>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <p className="mb-2">
+                                            <strong>Nation:</strong> {showAddressDetails.nation}
+                                        </p>
+                                        <p className="mb-2">
+                                            <strong>Province:</strong> {showAddressDetails.province}
+                                        </p>
+                                        <p className="mb-2">
+                                            <strong>District:</strong> {showAddressDetails.district}
+                                        </p>
                                     </div>
-                                    <div className="d-flex gap-2">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary"
-                                            onClick={() => handleEditAddress(showAddressDetails)}
-                                        >
-                                            <i className="bi bi-pencil-square me-1"></i> Edit Address
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger"
-                                            onClick={() => handleDeleteAddress(showAddressDetails.id)}
-                                            disabled={deleteAddressMutation.isLoading}
-                                        >
-                                            <i className="bi bi-trash me-1"></i> Delete Address
-                                        </button>
+                                    <div className="col-md-6">
+                                        <p className="mb-2">
+                                            <strong>Village:</strong> {showAddressDetails.village}
+                                        </p>
+                                        <p className="mb-2">
+                                            <strong>Detail:</strong> {showAddressDetails.detail}
+                                        </p>
                                     </div>
+                                </div>
+                                <div className="address-actions">
+                                    <button
+                                        type="button"
+                                        className="admin-btn admin-btn-primary"
+                                        onClick={() => handleEditAddress(showAddressDetails)}
+                                    >
+                                        <i className="bi bi-pencil-square me-1"></i> Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="admin-btn admin-btn-danger"
+                                        onClick={() => handleDeleteAddress(showAddressDetails.id)}
+                                        disabled={deleteAddressMutation.isLoading}
+                                    >
+                                        <i className="bi bi-trash me-1"></i> Delete
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Edit Address Form */}
                         {editAddressForm.id && (
-                            <div className="card mb-4 bg-light" ref={editFormRef}>
-                                <div className="card-header d-flex justify-content-between align-items-center">
-                                    <h5 className="card-title mb-0">Edit Address</h5>
-                                    <button type="button" className="btn-close" onClick={handleCancelEdit} aria-label="Close"></button>
+                            <div className="address-card" ref={editFormRef}>
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 className="mb-0">Edit Address</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={handleCancelEdit}
+                                        aria-label="Close"
+                                    ></button>
                                 </div>
-                                <div className="card-body">
-                                    <form onSubmit={handleUpdateAddressSubmit}>
-                                        <div className="row">
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="editNation" className="form-label">
-                                                    Nation
-                                                </label>
+                                <form onSubmit={handleUpdateAddressSubmit}>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Nation</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
-                                                    id="editNation"
+                                                    className="admin-form-control"
                                                     name="nation"
                                                     value={editAddressForm.nation}
                                                     onChange={handleEditAddressChange}
@@ -826,14 +792,13 @@ const AdminProfile = () => {
                                                     placeholder="Enter nation"
                                                 />
                                             </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="editProvince" className="form-label">
-                                                    Province
-                                                </label>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Province</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
-                                                    id="editProvince"
+                                                    className="admin-form-control"
                                                     name="province"
                                                     value={editAddressForm.province}
                                                     onChange={handleEditAddressChange}
@@ -843,15 +808,14 @@ const AdminProfile = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="row">
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="editDistrict" className="form-label">
-                                                    District
-                                                </label>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">District</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
-                                                    id="editDistrict"
+                                                    className="admin-form-control"
                                                     name="district"
                                                     value={editAddressForm.district}
                                                     onChange={handleEditAddressChange}
@@ -860,14 +824,13 @@ const AdminProfile = () => {
                                                     placeholder="Enter district"
                                                 />
                                             </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="editVillage" className="form-label">
-                                                    Village
-                                                </label>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Village</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
-                                                    id="editVillage"
+                                                    className="admin-form-control"
                                                     name="village"
                                                     value={editAddressForm.village}
                                                     onChange={handleEditAddressChange}
@@ -877,64 +840,65 @@ const AdminProfile = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="mb-3">
-                                            <label htmlFor="editDetail" className="form-label">
-                                                Detail
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="editDetail"
-                                                name="detail"
-                                                value={editAddressForm.detail}
-                                                onChange={handleEditAddressChange}
-                                                required
-                                                maxLength="255"
-                                                placeholder="Enter address details"
-                                            />
-                                        </div>
-                                        <div className="d-flex gap-2">
-                                            <button type="submit" className="btn btn-primary" disabled={updateAddressMutation.isLoading}>
-                                                {updateAddressMutation.isLoading ? (
-                                                    <>
-                                                        <span
-                                                            className="spinner-border spinner-border-sm me-2"
-                                                            role="status"
-                                                            aria-hidden="true"
-                                                        ></span>
-                                                        Updating...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <i className="bi bi-check-circle me-2"></i>
-                                                        Update Address
-                                                    </>
-                                                )}
-                                            </button>
-                                            <button type="button" className="btn btn-secondary" onClick={handleCancelEdit}>
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Detail</label>
+                                        <input
+                                            type="text"
+                                            className="admin-form-control"
+                                            name="detail"
+                                            value={editAddressForm.detail}
+                                            onChange={handleEditAddressChange}
+                                            required
+                                            maxLength="255"
+                                            placeholder="Enter address details"
+                                        />
+                                    </div>
+                                    <div className="address-actions">
+                                        <button
+                                            type="submit"
+                                            className="admin-btn admin-btn-primary"
+                                            disabled={updateAddressMutation.isLoading}
+                                        >
+                                            {updateAddressMutation.isLoading ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                    Updating...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="bi bi-check-circle me-2"></i>
+                                                    Update Address
+                                                </>
+                                            )}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="admin-btn admin-btn-secondary"
+                                            onClick={handleCancelEdit}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         )}
 
                         {/* Addresses List */}
-                        <div className="card mb-4">
-                            <div className="card-header bg-light">
-                                <h5 className="card-title mb-0">Your Addresses</h5>
+                        <div className="profile-card mb-4">
+                            <div className="card-header bg-light p-3">
+                                <h5 className="mb-0">Your Addresses</h5>
                             </div>
-                            <div className="card-body">
+                            <div className="card-body p-0">
                                 {isLoadingAddresses ? (
-                                    <div className="d-flex justify-content-center my-3">
-                                        <div className="spinner-border text-primary" role="status">
+                                    <div className="text-center p-4">
+                                        <div className="spinner-border admin-spinner" role="status">
                                             <span className="visually-hidden">Loading addresses...</span>
                                         </div>
                                     </div>
                                 ) : addressesData?.body?.length > 0 ? (
                                     <div className="table-responsive">
-                                        <table className="table table-hover">
+                                        <table className="admin-table">
                                             <thead>
                                                 <tr>
                                                     <th>Nation</th>
@@ -954,20 +918,23 @@ const AdminProfile = () => {
                                                         <td>
                                                             <div className="d-flex gap-2">
                                                                 <button
-                                                                    className="btn btn-sm btn-info"
+                                                                    className="admin-btn admin-btn-secondary btn-sm"
                                                                     onClick={() => handleViewAddressDetails(address)}
                                                                 >
-                                                                    <i className="bi bi-eye"></i> View
-                                                                </button>
-                                                                <button className="btn btn-sm btn-primary" onClick={() => handleEditAddress(address)}>
-                                                                    <i className="bi bi-pencil-square"></i> Edit
+                                                                    <i className="bi bi-eye"></i>
                                                                 </button>
                                                                 <button
-                                                                    className="btn btn-sm btn-danger"
+                                                                    className="admin-btn admin-btn-primary btn-sm"
+                                                                    onClick={() => handleEditAddress(address)}
+                                                                >
+                                                                    <i className="bi bi-pencil-square"></i>
+                                                                </button>
+                                                                <button
+                                                                    className="admin-btn admin-btn-danger btn-sm"
                                                                     onClick={() => handleDeleteAddress(address.id)}
                                                                     disabled={deleteAddressMutation.isLoading}
                                                                 >
-                                                                    <i className="bi bi-trash"></i> Delete
+                                                                    <i className="bi bi-trash"></i>
                                                                 </button>
                                                             </div>
                                                         </td>
@@ -977,7 +944,7 @@ const AdminProfile = () => {
                                         </table>
                                     </div>
                                 ) : (
-                                    <div className="alert alert-info">
+                                    <div className="admin-alert admin-alert-info m-3">
                                         <i className="bi bi-info-circle me-2"></i>
                                         No addresses found. Add one using the form below.
                                     </div>
@@ -986,88 +953,81 @@ const AdminProfile = () => {
                         </div>
 
                         {/* Add New Address Form */}
-                        <div className="card">
-                            <div className="card-header bg-light">
-                                <h5 className="card-title mb-0">Add New Address</h5>
+                        <div className="profile-card">
+                            <div className="card-header bg-light p-3">
+                                <h5 className="mb-0">Add New Address</h5>
                             </div>
-                            <div className="card-body">
+                            <div className="card-body p-4">
                                 <form onSubmit={handleAddAddressSubmit}>
                                     <div className="row">
-                                        <div className="col-md-6 mb-3">
-                                            <label htmlFor="nation" className="form-label">
-                                                Nation
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="nation"
-                                                name="nation"
-                                                value={addressForm.nation}
-                                                onChange={handleAddressChange}
-                                                required
-                                                maxLength="255"
-                                                placeholder="Enter nation"
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Nation</label>
+                                                <input
+                                                    type="text"
+                                                    className="admin-form-control"
+                                                    name="nation"
+                                                    value={addressForm.nation}
+                                                    onChange={handleAddressChange}
+                                                    required
+                                                    maxLength="255"
+                                                    placeholder="Enter nation"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="col-md-6 mb-3">
-                                            <label htmlFor="province" className="form-label">
-                                                Province
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="province"
-                                                name="province"
-                                                value={addressForm.province}
-                                                onChange={handleAddressChange}
-                                                required
-                                                maxLength="255"
-                                                placeholder="Enter province"
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Province</label>
+                                                <input
+                                                    type="text"
+                                                    className="admin-form-control"
+                                                    name="province"
+                                                    value={addressForm.province}
+                                                    onChange={handleAddressChange}
+                                                    required
+                                                    maxLength="255"
+                                                    placeholder="Enter province"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-md-6 mb-3">
-                                            <label htmlFor="district" className="form-label">
-                                                District
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="district"
-                                                name="district"
-                                                value={addressForm.district}
-                                                onChange={handleAddressChange}
-                                                required
-                                                maxLength="255"
-                                                placeholder="Enter district"
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">District</label>
+                                                <input
+                                                    type="text"
+                                                    className="admin-form-control"
+                                                    name="district"
+                                                    value={addressForm.district}
+                                                    onChange={handleAddressChange}
+                                                    required
+                                                    maxLength="255"
+                                                    placeholder="Enter district"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="col-md-6 mb-3">
-                                            <label htmlFor="village" className="form-label">
-                                                Village
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="village"
-                                                name="village"
-                                                value={addressForm.village}
-                                                onChange={handleAddressChange}
-                                                required
-                                                maxLength="255"
-                                                placeholder="Enter village"
-                                            />
+                                        <div className="col-md-6">
+                                            <div className="admin-form-group">
+                                                <label className="admin-form-label">Village</label>
+                                                <input
+                                                    type="text"
+                                                    className="admin-form-control"
+                                                    name="village"
+                                                    value={addressForm.village}
+                                                    onChange={handleAddressChange}
+                                                    required
+                                                    maxLength="255"
+                                                    placeholder="Enter village"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="detail" className="form-label">
-                                            Detail
-                                        </label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Detail</label>
                                         <input
                                             type="text"
-                                            className="form-control"
-                                            id="detail"
+                                            className="admin-form-control"
                                             name="detail"
                                             value={addressForm.detail}
                                             onChange={handleAddressChange}
@@ -1076,7 +1036,11 @@ const AdminProfile = () => {
                                             placeholder="Enter address details"
                                         />
                                     </div>
-                                    <button type="submit" className="btn btn-success" disabled={addAddressMutation.isLoading}>
+                                    <button
+                                        type="submit"
+                                        className="admin-btn admin-btn-primary"
+                                        disabled={addAddressMutation.isLoading}
+                                    >
                                         {addAddressMutation.isLoading ? (
                                             <>
                                                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

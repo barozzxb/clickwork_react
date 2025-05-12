@@ -3,14 +3,15 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid,
     Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import '../../styles/admin-charts.css';
 
 // Custom tooltip for charts
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="custom-tooltip bg-white p-3 shadow-sm rounded border">
-                <p className="label mb-0"><strong>{label}</strong></p>
-                <p className="data mb-0 text-primary">{`${payload[0].name}: ${payload[0].value}`}</p>
+            <div className="custom-tooltip">
+                <p className="label">{label}</p>
+                <p className="data">{`${payload[0].value} Listings`}</p>
             </div>
         );
     }
@@ -19,22 +20,47 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function JobStatisticsChart({ height = 350, data = [] }) {
     return (
-        <div>
-            <h5 className="text-center mb-4">Job Listings</h5>
+        <div className="chart-container">
+            <h5 className="admin-title mb-4">Job Listings Over Time</h5>
             <ResponsiveContainer width="100%" height={height}>
                 <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="rgba(23, 37, 42, 0.1)"
+                    />
+                    <XAxis
+                        dataKey="name"
+                        stroke="#17252a"
+                        tick={{ fill: '#17252a' }}
+                    />
+                    <YAxis
+                        stroke="#17252a"
+                        tick={{ fill: '#17252a' }}
+                    />
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend />
+                    <Legend
+                        wrapperStyle={{
+                            paddingTop: '20px'
+                        }}
+                    />
                     <Line
                         type="monotone"
                         dataKey="count"
-                        name="Listings"
-                        stroke="#0d6efd"
-                        activeDot={{ r: 8 }}
-                        strokeWidth={2}
+                        name="Job Listings"
+                        stroke="var(--chart-color-1)"
+                        strokeWidth={3}
+                        dot={{
+                            fill: 'var(--chart-color-1)',
+                            stroke: 'white',
+                            strokeWidth: 2,
+                            r: 6
+                        }}
+                        activeDot={{
+                            r: 8,
+                            stroke: 'var(--chart-color-1)',
+                            strokeWidth: 2,
+                            fill: 'white'
+                        }}
                     />
                 </LineChart>
             </ResponsiveContainer>

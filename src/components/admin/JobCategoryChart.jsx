@@ -3,17 +3,25 @@ import {
     PieChart, Pie, Cell,
     Tooltip, ResponsiveContainer
 } from 'recharts';
+import '../../styles/admin-charts.css';
 
-// Màu sắc cho biểu đồ
-export const COLORS = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6610f2', '#d63384'];
+// Updated colors using the new theme
+export const COLORS = [
+    'var(--chart-color-1)',
+    'var(--chart-color-2)',
+    'var(--chart-color-3)',
+    'var(--chart-color-4)',
+    'var(--chart-success)',
+    'var(--chart-info)'
+];
 
 // Custom tooltip cho biểu đồ
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="custom-tooltip bg-white p-3 shadow-sm rounded border">
-                <p className="label mb-0"><strong>{payload[0].name}</strong></p>
-                <p className="data mb-0 text-primary">{`${payload[0].value}%`}</p>
+            <div className="custom-tooltip">
+                <p className="label">{payload[0].name}</p>
+                <p className="data">{`${payload[0].value}%`}</p>
             </div>
         );
     }
@@ -39,7 +47,11 @@ export default function JobCategoryChart({ height = 250, showLegend = true, data
                             label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                    style={{ filter: 'drop-shadow(0px 2px 4px rgba(23, 37, 42, 0.2))' }}
+                                />
                             ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} />
@@ -48,17 +60,16 @@ export default function JobCategoryChart({ height = 250, showLegend = true, data
             </div>
             {showLegend && (
                 <div className="col-md-6">
-                    <div className="legend">
+                    <div className="chart-legend">
                         {data.map((entry, index) => (
-                            <div key={index} className="d-flex align-items-center mb-2">
-                                <div style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    backgroundColor: COLORS[index % COLORS.length],
-                                    marginRight: '8px',
-                                    borderRadius: '3px'
-                                }}></div>
-                                <div>{entry.name}: <strong>{entry.value}%</strong></div>
+                            <div key={index} className="legend-item">
+                                <div
+                                    className="legend-color"
+                                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                />
+                                <div className="legend-text">
+                                    {entry.name}: <strong>{entry.value}%</strong>
+                                </div>
                             </div>
                         ))}
                     </div>

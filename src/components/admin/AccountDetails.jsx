@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaUser, FaSpinner } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
+import '../../styles/admin.css';
 
 export default function AccountDetails({ account, onClose, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -55,46 +57,43 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
     };
 
     return (
-        <div className="modal-content">
-            <div className="modal-header">
-                <h5 className="modal-title">Account Details</h5>
+        <div className="admin-modal-content">
+            <div className="admin-modal-header">
+                <h5 className="admin-title">Account Details</h5>
                 <button type="button" className="btn-close" onClick={onClose}></button>
             </div>
-            <div className="modal-body">
+            <div className="admin-modal-body">
                 <div className="d-flex align-items-center mb-4">
-                    <div
-                        className="avatar-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center"
-                        style={{ width: '60px', height: '60px', borderRadius: '50%', fontSize: '1.5rem' }}
-                    >
-                        {account.fullName?.charAt(0) || account.username.charAt(0)}
+                    <div className="admin-avatar me-3" style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}>
+                        <FaUser />
                     </div>
                     <div>
-                        <h5 className="mb-0">{account.fullName || account.username}</h5>
-                        <p className="text-muted mb-0">{account.email}</p>
+                        <h5 className="admin-title mb-1">{account.fullName || account.username}</h5>
+                        <p className="admin-subtitle mb-0">{account.email}</p>
                     </div>
                 </div>
 
-                <div className="row mb-3">
+                <div className="row mb-4">
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Username</label>
-                            <p className="mb-0 fw-medium">{account.username}</p>
+                            <label className="admin-subtitle mb-2">Username</label>
+                            <p className="fw-medium mb-0">{account.username}</p>
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Phone Number</label>
-                            <p className="mb-0 fw-medium">{account.phoneNum || 'Not provided'}</p>
+                            <label className="admin-subtitle mb-2">Phone Number</label>
+                            <p className="fw-medium mb-0">{account.phoneNum || 'Not provided'}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="row mb-3">
+                <div className="row mb-4">
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Role</label>
-                            <p className="mb-0 fw-medium">
-                                <span className={`badge bg-${account.role === 'ADMIN' ? 'danger' : account.role === 'EMPLOYER' ? 'primary' : 'info'}`}>
+                            <label className="admin-subtitle mb-2">Role</label>
+                            <p className="mb-0">
+                                <span className="admin-badge admin-badge-primary">
                                     {account.role}
                                 </span>
                             </p>
@@ -102,10 +101,10 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                     </div>
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Status</label>
+                            <label className="admin-subtitle mb-2">Status</label>
                             {isEditing ? (
                                 <select
-                                    className="form-select"
+                                    className="admin-form-control"
                                     value={editedStatus}
                                     onChange={(e) => setEditedStatus(e.target.value)}
                                 >
@@ -114,10 +113,10 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                                     <option value="SUSPENDED">Suspended</option>
                                 </select>
                             ) : (
-                                <p className="mb-0 fw-medium">
-                                    <span className={`badge bg-${account.status === 'ACTIVE' ? 'success' :
-                                        account.status === 'INACTIVE' ? 'secondary' :
-                                            account.status === 'SUSPENDED' ? 'danger' : 'warning'
+                                <p className="mb-0">
+                                    <span className={`admin-badge ${account.status === 'ACTIVE' ? 'admin-badge-success' :
+                                        account.status === 'INACTIVE' ? 'admin-badge-warning' :
+                                            'admin-badge-danger'
                                         }`}>
                                         {account.status.charAt(0) + account.status.slice(1).toLowerCase()}
                                     </span>
@@ -127,27 +126,27 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                     </div>
                 </div>
 
-                <div className="row mb-3">
+                <div className="row">
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Registration Date</label>
-                            <p className="mb-0 fw-medium">{formatDate(account.createdAt)}</p>
+                            <label className="admin-subtitle mb-2">Registration Date</label>
+                            <p className="fw-medium mb-0">{formatDate(account.createdAt)}</p>
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="mb-3">
-                            <label className="form-label text-muted small">Violation Count</label>
-                            <p className="mb-0 fw-medium">{account.violationCount}</p>
+                            <label className="admin-subtitle mb-2">Violation Count</label>
+                            <p className="fw-medium mb-0">{account.violationCount}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="modal-footer">
+            <div className="admin-modal-footer">
                 {isEditing ? (
                     <>
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="admin-btn admin-btn-secondary"
                             onClick={() => {
                                 setEditedStatus(account.status);
                                 setIsEditing(false);
@@ -158,13 +157,13 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                         </button>
                         <button
                             type="button"
-                            className="btn btn-primary"
+                            className="admin-btn"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? (
                                 <>
-                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    <FaSpinner className="spinner-border spinner-border-sm me-2" />
                                     Saving...
                                 </>
                             ) : 'Save Changes'}
@@ -172,11 +171,11 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                     </>
                 ) : (
                     <>
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                        <button type="button" className="admin-btn admin-btn-secondary" onClick={onClose}>
                             Close
                         </button>
-                        <button type="button" className="btn btn-primary" onClick={() => setIsEditing(true)}>
-                            <i className="bi bi-pencil me-1"></i> Edit Status
+                        <button type="button" className="admin-btn" onClick={() => setIsEditing(true)}>
+                            Edit Status
                         </button>
                     </>
                 )}
