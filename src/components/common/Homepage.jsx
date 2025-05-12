@@ -1,10 +1,13 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import OverlayLoading from '../effects/Loading';
+import OverlayLoading from '../effects/Loading.jsx';
 import { jwtDecode } from 'jwt-decode';
 
-import {API_ROOT} from '../../config.js';
+import { API_ROOT } from '../../config.js';
+import {formatRelativeTime} from '../../functions/dayformatter.js';
+
+import './css/homepage.css';
 
 // import banner1 from '../assets/banner1.jpg';
 // import banner2 from '../assets/banner2.jpg';
@@ -17,31 +20,31 @@ const Homepage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                handleLoading(token);
-            }
-          }, [navigate]);
+        const token = localStorage.getItem('token');
+        if (token) {
+            handleLoading(token);
+        }
+    }, [navigate]);
 
 
-    
+
     useEffect(() => {
         const loadJobs = async () => {
             setLoading(true);
             try {
                 const jobresponse = await axios.get(`${API_ROOT}/jobs`, {
-                   
+
                 });
                 setJobs(jobresponse.data.body || []);
 
                 const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
-                   
+
                 });
                 setNewJobs(response.data.body || []);
 
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
-            } finally{
+            } finally {
                 setLoading(false);
             }
         };
@@ -50,13 +53,13 @@ const Homepage = () => {
         //     setLoading(true);
         //     try {
         //         const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
-                   
+
         //         });
         //         setNewJobs(response.data.body || []);
         //     } catch (err) {
         //         console.error("Lỗi fetch jobs", err);
         //     }
-                
+
         // }
 
         loadJobs();
@@ -70,9 +73,6 @@ const Homepage = () => {
 
             if (role) {
 
-                console.log(`Đăng nhập thành công với vai trò: ${role}`);
-                
-
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (role === 'APPLICANT') {
@@ -80,7 +80,7 @@ const Homepage = () => {
                 } else {
                     navigate('/employer');
                 }
-            } 
+            }
         }
     }
 
@@ -89,11 +89,11 @@ const Homepage = () => {
 
              {loading && <OverlayLoading />}
 
-            
+
             <div className="hero">
                 <div className="carousel slide" id="heroCarousel" data-bs-ride="carousel">
-                    
-                    
+
+
                 <div id="carouselExample" className="carousel slide" data-bs-ride="carousel">
                     <div className="carousel-inner">
                         <div className="carousel-item active">
@@ -148,7 +148,7 @@ const Homepage = () => {
                         <div className="col-md-4" key={job.id}>
                             <div className="card p-3">
                                 <div className="card-body">
-                                    <p className="text-secondary italic">{job.createdat}</p>
+                                    <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                     <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                     <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
@@ -162,7 +162,7 @@ const Homepage = () => {
 
             <div class="row mt-4">
                 <p className="h2">Mới nhất</p>
-                
+
                 {newJobs.length === 0 ? (
                     <div className="col-md-4">
                         <div className="card p-3">
@@ -176,7 +176,7 @@ const Homepage = () => {
                         <div className="col-md-4" key={job.id}>
                             <div className="card p-3">
                                 <div className="card-body">
-                                    <p className="text-secondary italic">{job.createdat}</p>
+                                    <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
                                     <p className="card-text location"><i className="fa fa-location-dot">&emsp;</i>{job.address}</p>
                                     <p className="card-text job-field"><i className="fa fa-bars">&emsp;</i>{job.field}</p>
@@ -189,6 +189,7 @@ const Homepage = () => {
             </div>
 
         </main>
+        
     );
 }
 

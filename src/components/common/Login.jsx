@@ -68,7 +68,6 @@ const Login = () => {
             }
 
         } catch (error) {
-            console.error('Đăng nhập thất bại:', error);
             const message = "Error occurred while logging in";
             toast.error(message);
         } finally {
@@ -83,9 +82,6 @@ const Login = () => {
             const role = decoded.role;
 
             if (role) {
-
-                console.log(`Đăng nhập thành công với vai trò: ${role}`);
-
 
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
