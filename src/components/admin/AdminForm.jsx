@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaUserShield, FaSpinner, FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
+import '../../styles/admin.css';
 
 export default function AdminForm({ onClose, onAdminCreated }) {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         email: '',
-        role: 'ADMIN' // Default role is ADMIN for this form
+        role: 'ADMIN'
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +24,6 @@ export default function AdminForm({ onClose, onAdminCreated }) {
             [name]: value
         }));
 
-        // Clear error for this field when user types
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -67,7 +68,8 @@ export default function AdminForm({ onClose, onAdminCreated }) {
 
         try {
             const response = await axios.post(
-                `${API_ROOT}/admin/accounts/admin`,
+                // `${API_ROOT}/admin/accounts/admin`,
+                '${API_ROOT}/admin/accounts/admin',
                 formData,
                 {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -91,94 +93,127 @@ export default function AdminForm({ onClose, onAdminCreated }) {
     };
 
     return (
-        <div className="modal-content">
-            <div className="modal-header">
-                <h5 className="modal-title">Create New Admin Account</h5>
-                <button
-                    type="button"
-                    className="btn-close"
-                    onClick={onClose}
-                    aria-label="Close"
-                ></button>
+        <div className="admin-modal-content">
+            <div className="admin-modal-header">
+                <h5 className="admin-title">Create New Admin Account</h5>
+                <button type="button" className="btn-close" onClick={onClose}></button>
             </div>
 
-            <div className="modal-body">
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="username" className="form-label">Username</label>
-                        <input
-                            type="text"
-                            className={`form-control ${errors.username ? 'is-invalid' : ''}`}
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                        {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+            <div className="admin-modal-body">
+                <div className="admin-form-container">
+                    <div className="admin-form-icon">
+                        <FaUserShield />
                     </div>
+                    <p className="admin-subtitle text-center mb-4">
+                        Create a new administrator account with full system access
+                    </p>
 
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                        {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="admin-form-group">
+                            <label className="admin-form-label" htmlFor="username">
+                                <FaUser className="me-2" />
+                                Username
+                            </label>
+                            <input
+                                type="text"
+                                className={`admin-form-control ${errors.username ? 'is-invalid' : ''}`}
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                placeholder="Enter username"
+                                required
+                            />
+                            {errors.username && (
+                                <div className="admin-form-error">{errors.username}</div>
+                            )}
+                        </div>
 
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                        {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                    </div>
+                        <div className="admin-form-group">
+                            <label className="admin-form-label" htmlFor="email">
+                                <FaEnvelope className="me-2" />
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                className={`admin-form-control ${errors.email ? 'is-invalid' : ''}`}
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Enter email address"
+                                required
+                            />
+                            {errors.email && (
+                                <div className="admin-form-error">{errors.email}</div>
+                            )}
+                        </div>
 
-                    <div className="mb-3">
-                        <label className="form-label">Role</label>
-                        <input
-                            type="text"
-                            className="form-control bg-light"
-                            value="ADMIN"
-                            disabled
-                        />
-                        <small className="text-muted">Role is set to ADMIN for this form</small>
-                    </div>
-                </form>
+                        <div className="admin-form-group">
+                            <label className="admin-form-label" htmlFor="password">
+                                <FaLock className="me-2" />
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                className={`admin-form-control ${errors.password ? 'is-invalid' : ''}`}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Enter password"
+                                required
+                            />
+                            {errors.password && (
+                                <div className="admin-form-error">{errors.password}</div>
+                            )}
+                            <div className="admin-form-help">
+                                Password must be at least 6 characters long
+                            </div>
+                        </div>
+
+                        <div className="admin-form-group">
+                            <label className="admin-form-label">
+                                <FaUserShield className="me-2" />
+                                Role
+                            </label>
+                            <div className="admin-form-control bg-light">
+                                ADMIN
+                                <div className="admin-form-help mt-1">
+                                    This account will have full administrative privileges
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="admin-modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="admin-btn admin-btn-secondary"
                     onClick={onClose}
+                    disabled={isLoading}
                 >
                     Cancel
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="admin-btn"
                     onClick={handleSubmit}
                     disabled={isLoading}
                 >
                     {isLoading ? (
                         <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <FaSpinner className="admin-spinner" />
                             Creating...
                         </>
-                    ) : 'Create Admin Account'}
+                    ) : (
+                        <>
+                            <FaUserShield />
+                            Create Admin Account
+                        </>
+                    )}
                 </button>
             </div>
         </div>

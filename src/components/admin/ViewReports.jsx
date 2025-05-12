@@ -8,6 +8,7 @@ import ApplicationStatisticsChart from "./ApplicationStatisticsChart"
 import ViolationStatisticsChart from "./ViolationStatisticsChart"
 import axios from "axios"
 import moment from "moment"
+import '../../styles/admin-charts.css';
 
 import { API_ROOT } from '../../config';
 
@@ -55,6 +56,7 @@ export default function ViewReports() {
                 }
 
                 const response = await axios.get(`${API_ROOT}/admin/reports`, {
+                    // const response = await axios.get("http://localhost:9000/api/admin/reports", {
                     headers: {
                         Authorization: `Bearer ${storedToken}`,
                     },
@@ -181,27 +183,23 @@ export default function ViewReports() {
         value: ((item.count / reportData.userStats.totalUsers) * 100).toFixed(1),
     }))
 
-    // Render stat cards
+    // Render stat cards with new styling
     const renderStatCards = () => {
         switch (activeTab) {
             case "users":
                 return (
                     <div className="row mb-4">
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Total Users</h6>
-                                    <h2 className="mb-0 fw-bold">{reportData.userStats.totalUsers}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Total Users</h6>
+                                <h2 className="stat-card-value">{reportData.userStats.totalUsers}</h2>
                             </div>
                         </div>
                         <div className="col-md-8 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-3">User Distribution</h6>
-                                    <div style={{ height: "200px" }}>
-                                        <JobCategoryChart height={210} showLegend={true} data={userRoleData} />
-                                    </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">User Distribution</h6>
+                                <div style={{ height: "200px" }}>
+                                    <JobCategoryChart height={220} showLegend={true} data={userRoleData} />
                                 </div>
                             </div>
                         </div>
@@ -211,27 +209,25 @@ export default function ViewReports() {
                 return (
                     <div className="row mb-4">
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Total Jobs</h6>
-                                    <h2 className="mb-0 fw-bold">{reportData.jobStats.totalJobs}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Total Jobs</h6>
+                                <h2 className="stat-card-value">{reportData.jobStats.totalJobs}</h2>
                             </div>
                         </div>
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Active Jobs</h6>
-                                    <h2 className="mb-0 fw-bold text-success">{reportData.jobStats.activeJobs}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Active Jobs</h6>
+                                <h2 className="stat-card-value" style={{ color: 'var(--chart-success)' }}>
+                                    {reportData.jobStats.activeJobs}
+                                </h2>
                             </div>
                         </div>
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Inactive Jobs</h6>
-                                    <h2 className="mb-0 fw-bold text-secondary">{reportData.jobStats.inactiveJobs}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Inactive Jobs</h6>
+                                <h2 className="stat-card-value" style={{ color: 'var(--chart-secondary)' }}>
+                                    {reportData.jobStats.inactiveJobs}
+                                </h2>
                             </div>
                         </div>
                     </div>
@@ -240,26 +236,22 @@ export default function ViewReports() {
                 return (
                     <div className="row mb-4">
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Total Applications</h6>
-                                    <h2 className="mb-0 fw-bold">{reportData.applicationStats.totalApplications}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Total Applications</h6>
+                                <h2 className="stat-card-value">{reportData.applicationStats.totalApplications}</h2>
                             </div>
                         </div>
                         {reportData.applicationStats.applicationsByStatus.length > 0 && (
                             <div className="col-md-8 mb-3">
-                                <div className="card h-100 border-0 shadow-sm">
-                                    <div className="card-body">
-                                        <h6 className="card-title text-muted mb-3">Application Status</h6>
-                                        <div className="d-flex justify-content-around">
-                                            {reportData.applicationStats.applicationsByStatus.map((status, index) => (
-                                                <div key={index} className="text-center">
-                                                    <h5 className="mb-0">{status.count}</h5>
-                                                    <small className="text-muted">{status.name}</small>
-                                                </div>
-                                            ))}
-                                        </div>
+                                <div className="stat-card">
+                                    <h6 className="stat-card-title">Application Status</h6>
+                                    <div className="d-flex justify-content-around mt-3">
+                                        {reportData.applicationStats.applicationsByStatus.map((status, index) => (
+                                            <div key={index} className="text-center">
+                                                <h3 className="stat-card-value mb-2">{status.count}</h3>
+                                                <span className="text-muted">{status.name}</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -270,25 +262,23 @@ export default function ViewReports() {
                 return (
                     <div className="row mb-4">
                         <div className="col-md-4 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-1">Total Violations</h6>
-                                    <h2 className="mb-0 fw-bold text-danger">{reportData.violationStats.totalViolations}</h2>
-                                </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Total Violations</h6>
+                                <h2 className="stat-card-value" style={{ color: 'var(--chart-danger)' }}>
+                                    {reportData.violationStats.totalViolations}
+                                </h2>
                             </div>
                         </div>
                         <div className="col-md-8 mb-3">
-                            <div className="card h-100 border-0 shadow-sm">
-                                <div className="card-body">
-                                    <h6 className="card-title text-muted mb-3">Violations by Status</h6>
-                                    <div className="d-flex justify-content-around">
-                                        {reportData.violationStats.violationsByStatus.map((status, index) => (
-                                            <div key={index} className="text-center">
-                                                <h5 className="mb-0">{status.count}</h5>
-                                                <small className="text-muted">{status.name}</small>
-                                            </div>
-                                        ))}
-                                    </div>
+                            <div className="stat-card">
+                                <h6 className="stat-card-title">Violations by Status</h6>
+                                <div className="d-flex justify-content-around mt-3">
+                                    {reportData.violationStats.violationsByStatus.map((status, index) => (
+                                        <div key={index} className="text-center">
+                                            <h3 className="stat-card-value mb-2">{status.count}</h3>
+                                            <span className="text-muted">{status.name}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -304,7 +294,9 @@ export default function ViewReports() {
         if (loading) {
             return (
                 <div className="text-center p-5">
-                    <div className="spinner-border" role="status"></div>
+                    <div className="spinner-border" style={{ color: '#2b7a78' }} role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             )
         }
@@ -347,81 +339,57 @@ export default function ViewReports() {
     }
 
     return (
-        <div className="container-fluid p-0">
-            <div className="card shadow-sm mb-4">
-                <div className="card-header bg-white py-3">
-                    <div className="row align-items-center">
-                        <div className="col-md-8 mb-3 mb-md-0">
-                            <h4 className="card-title fw-bold mb-1">Analytics Reports</h4>
-                            <p className="text-muted small">Platform performance and statistics</p>
+        <div className="container-fluid p-4">
+            <div className="chart-container mb-4">
+                <div className="row align-items-center mb-4">
+                    <div className="col">
+                        <h4 className="mb-1" style={{ color: '#17252a', fontWeight: 600 }}>Analytics Reports</h4>
+                        <p className="text-muted mb-0">Platform performance and statistics</p>
+                    </div>
+                </div>
+
+                <ul className="nav nav-tabs mb-4" style={{ borderBottom: '2px solid rgba(43, 122, 120, 0.1)' }}>
+                    {[
+                        { id: "users", icon: "bi-people", label: "User Stats" },
+                        { id: "jobs", icon: "bi-briefcase", label: "Job Listings" },
+                        { id: "applications", icon: "bi-file-earmark-text", label: "Applications" },
+                        { id: "categories", icon: "bi-pie-chart", label: "Categories" },
+                        { id: "violations", icon: "bi-shield-exclamation", label: "Violations" }
+                    ].map(tab => (
+                        <li className="nav-item" key={tab.id}>
+                            <button
+                                className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
+                                onClick={() => setActiveTab(tab.id)}
+                                style={{
+                                    color: activeTab === tab.id ? '#2b7a78' : '#17252a',
+                                    border: 'none',
+                                    borderBottom: activeTab === tab.id ? '2px solid #2b7a78' : 'none',
+                                    background: 'none',
+                                    padding: '1rem 1.5rem',
+                                    transition: 'all 0.2s ease',
+                                    fontWeight: activeTab === tab.id ? '600' : '400'
+                                }}
+                            >
+                                <i className={`bi ${tab.icon} me-2`}></i>
+                                {tab.label}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+
+                {renderStatCards()}
+
+                {loading ? (
+                    <div className="text-center p-5">
+                        <div className="spinner-border" style={{ color: '#2b7a78' }} role="status">
+                            <span className="visually-hidden">Loading...</span>
                         </div>
-                        {/* <div className="col-md-4">
-              <div className="mb-3">
-                <label htmlFor="time-period" className="form-label">Time Period</label>
-                <select
-                  className="form-select"
-                  id="time-period"
-                  value={timePeriod}
-                  onChange={(e) => setTimePeriod(e.target.value)}
-                >
-                  <option value="month">Last 30 days</option>
-                  <option value="quarter">Last 90 days</option>
-                  <option value="year">Last 12 months</option>
-                </select>
-              </div>
-            </div> */}
                     </div>
-                </div>
-                <div className="card-body">
-                    <ul className="nav nav-tabs mb-4">
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === "users" ? "active" : ""}`}
-                                onClick={() => setActiveTab("users")}
-                            >
-                                <i className="bi bi-people me-2"></i>User Stats
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === "jobs" ? "active" : ""}`}
-                                onClick={() => setActiveTab("jobs")}
-                            >
-                                <i className="bi bi-briefcase me-2"></i>Job Listings
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === "applications" ? "active" : ""}`}
-                                onClick={() => setActiveTab("applications")}
-                            >
-                                <i className="bi bi-file-earmark-text me-2"></i>Applications
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === "categories" ? "active" : ""}`}
-                                onClick={() => setActiveTab("categories")}
-                            >
-                                <i className="bi bi-pie-chart me-2"></i>Categories
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === "violations" ? "active" : ""}`}
-                                onClick={() => setActiveTab("violations")}
-                            >
-                                <i className="bi bi-shield-exclamation me-2"></i>Violations
-                            </button>
-                        </li>
-                    </ul>
-
-                    {renderStatCards()}
-
-                    <div className="chart-container bg-light p-4 rounded" style={{ position: "relative" }}>
-                        {renderChart()}
-                    </div>
-                </div>
+                ) : error ? (
+                    <div className="alert alert-danger">{error}</div>
+                ) : (
+                    renderChart()
+                )}
             </div>
         </div>
     )
