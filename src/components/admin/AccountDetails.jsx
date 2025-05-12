@@ -26,7 +26,7 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
         try {
             const response = await axios.patch(
                 // `${API_ROOT}/admin/accounts/${account.username}`,
-                `http://localhost:9000/api/admin/accounts/${account.username}`,
+                `${API_ROOT}/admin/accounts/${account.username}`,
                 {
                     status: editedStatus.toUpperCase()
                 },

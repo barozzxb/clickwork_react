@@ -81,8 +81,8 @@ export default function SupportUser() {
                 params.append('status', statusFilter === 'pending' ? 'NO_RESPOND' : 'RESPONDED');
             }
 
-            // const response = await fetch(`${API_ROOT}/support?${params}`, {
-            const response = await fetch(`http://localhost:9000/api/support?${params}`, {
+            const response = await fetch(`${API_ROOT}/support?${params}`, {
+                // const response = await fetch(`http://localhost:9000/api/support?${params}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',

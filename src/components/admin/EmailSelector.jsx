@@ -20,8 +20,8 @@ export default function EmailSelector({ onSelect, onClose, multiple = false }) {
             setError(null);
             try {
                 const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
-                // const response = await axios.get(`${API_ROOT}/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
-                const response = await axios.get(`http://localhost:9000/api/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
+                const response = await axios.get(`${API_ROOT}/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
+                    // const response = await axios.get(`http://localhost:9000/api/admin/accounts/emails?group=${selectedRole}${searchParam}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },

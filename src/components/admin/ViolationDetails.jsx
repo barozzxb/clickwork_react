@@ -36,8 +36,8 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
             };
 
             const response = await axios.post(
-                // `${API_ROOT}/admin/accounts/reports/${report.id}/resolve`,
-                `http://localhost:9000/api/admin/accounts/reports/${report.id}/resolve`,
+                `${API_ROOT}/admin/accounts/reports/${report.id}/resolve`,
+                // `http://localhost:9000/api/admin/accounts/reports/${report.id}/resolve`,
                 payload,
                 {
                     headers: {

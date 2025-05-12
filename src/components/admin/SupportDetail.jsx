@@ -61,8 +61,8 @@ export default function SupportDetail() {
                 throw new Error('Không tìm thấy JWT token. Vui lòng đăng nhập lại.');
             }
 
-            // const response = await fetch(`${API_ROOT}/support/${id}`, {
-            const response = await fetch(`http://localhost:9000/api/support/${id}`, {
+            const response = await fetch(`${API_ROOT}/support/${id}`, {
+                // const response = await fetch(`http://localhost:9000/api/support/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -118,8 +118,8 @@ export default function SupportDetail() {
             setFormSuccess(null);
 
             try {
-                // const response = await fetch(`${API_ROOT}/support/${id}/response`, {
-                const response = await fetch(`http://localhost:9000/api/support/${id}/response`, {
+                const response = await fetch(`${API_ROOT}/support/${id}/response`, {
+                    // const response = await fetch(`http://localhost:9000/api/support/${id}/response`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

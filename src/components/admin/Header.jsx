@@ -9,6 +9,7 @@ import { toast } from "react-toastify"
 import NotificationDetailModal from "./NotificationDetailModal"
 import "../../styles/admin-shared.css"
 import "../../styles/admin-header.css"
+import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminHeader = () => {
     const navigate = useNavigate()
@@ -18,14 +19,13 @@ const AdminHeader = () => {
     const [selectedNotification, setSelectedNotification] = useState(null)
     const notificationRef = useRef(null)
     const profileRef = useRef(null)
-    const baseUrl = "http://localhost:9000"
 
     // Fetch admin profile
     const { data: profileData } = useQuery({
         queryKey: ["adminProfile"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get(`${baseUrl}/api/admin/profile`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             return response.data
@@ -37,7 +37,7 @@ const AdminHeader = () => {
         queryKey: ["adminNotifications"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get(`${baseUrl}/api/admin/profile/notifications`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile/notifications`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             return response.data
@@ -50,7 +50,7 @@ const AdminHeader = () => {
         queryKey: ["unreadNotificationCount"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get(`${baseUrl}/api/admin/profile/notifications/unread-count`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile/notifications/unread-count`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             return response.data
@@ -63,7 +63,7 @@ const AdminHeader = () => {
         mutationFn: async (notificationId) => {
             const token = localStorage.getItem("token")
             return axios.put(
-                `${baseUrl}/api/admin/profile/notifications/${notificationId}/mark-read`,
+                `${API_ROOT}/admin/profile/notifications/${notificationId}/mark-read`,
                 {},
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -84,7 +84,7 @@ const AdminHeader = () => {
         mutationFn: async () => {
             const token = localStorage.getItem("token")
             return axios.put(
-                `${baseUrl}/api/admin/profile/notifications/mark-all-read`,
+                `${API_ROOT}/admin/profile/notifications/mark-all-read`,
                 {},
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -148,7 +148,7 @@ const AdminHeader = () => {
         if (!avatarPath) return "/assets/no-image.png"
         return avatarPath.startsWith("http")
             ? avatarPath
-            : `${baseUrl}${avatarPath.startsWith("/") ? "" : "/"}${avatarPath}`
+            : `${BACK_END_HOST}${avatarPath.startsWith("/") ? "" : "/"}${avatarPath}`
     }
 
     // Get notification icon based on type

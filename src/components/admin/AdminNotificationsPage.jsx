@@ -8,20 +8,20 @@ import { toast } from "react-toastify"
 import NotificationDetailModal from "./NotificationDetailModal"
 import "../../styles/admin-shared.css"
 import "../../styles/admin-notifications.css"
+import { API_ROOT } from '../../config';
 
 const AdminNotificationsPage = () => {
     const queryClient = useQueryClient()
     const [selectedNotification, setSelectedNotification] = useState(null)
     const [filterType, setFilterType] = useState("all")
     const [searchTerm, setSearchTerm] = useState("")
-    const baseUrl = "http://localhost:9000"
 
     // Fetch notifications
     const { data: notificationsData, isLoading } = useQuery({
         queryKey: ["adminNotifications"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get(`${baseUrl}/api/admin/profile/notifications`, {
+            const response = await axios.get(`${API_ROOT}/admin/profile/notifications`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             return response.data
@@ -34,7 +34,7 @@ const AdminNotificationsPage = () => {
         mutationFn: async (notificationId) => {
             const token = localStorage.getItem("token")
             return axios.put(
-                `${baseUrl}/api/admin/profile/notifications/${notificationId}/mark-read`,
+                `${API_ROOT}/admin/profile/notifications/${notificationId}/mark-read`,
                 {},
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -55,7 +55,7 @@ const AdminNotificationsPage = () => {
         mutationFn: async () => {
             const token = localStorage.getItem("token")
             return axios.put(
-                `${baseUrl}/api/admin/profile/notifications/mark-all-read`,
+                `${API_ROOT}/admin/profile/notifications/mark-all-read`,
                 {},
                 {
                     headers: { Authorization: `Bearer ${token}` },

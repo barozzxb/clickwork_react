@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import axios from "axios"
 import '../../styles/admin-profile.css'
+import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminProfile = () => {
     const queryClient = useQueryClient()
@@ -13,7 +14,6 @@ const AdminProfile = () => {
     const [avatarFile, setAvatarFile] = useState(null)
     const [initialProfileData, setInitialProfileData] = useState(null)
     const [showAddressDetails, setShowAddressDetails] = useState(null)
-    const baseUrl = "http://localhost:9000"
     const editFormRef = useRef(null)
     const addressDetailsRef = useRef(null)
 
@@ -54,7 +54,7 @@ const AdminProfile = () => {
         if (!avatarPath) return "/assets/no-image.png"
         return avatarPath.startsWith("http")
             ? avatarPath
-            : `${baseUrl}${avatarPath.startsWith("/") ? "" : "/"}${avatarPath}`
+            : `${BACK_END_HOST}${avatarPath.startsWith("/") ? "" : "/"}${avatarPath}`
     }
 
     // Fetch admin profile data
@@ -66,7 +66,7 @@ const AdminProfile = () => {
         queryKey: ["adminProfile"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get("http://localhost:9000/api/admin/profile", {
+            const response = await axios.get(`${API_ROOT}/admin/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             console.log("Profile data fetched:", response.data)
@@ -83,7 +83,7 @@ const AdminProfile = () => {
         queryKey: ["adminAddresses"],
         queryFn: async () => {
             const token = localStorage.getItem("token")
-            const response = await axios.get("http://localhost:9000/api/admin/profile/addresses", {
+            const response = await axios.get(`${API_ROOT}/admin/profile/addresses`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             console.log("Addresses fetched:", response.data)
@@ -183,7 +183,7 @@ const AdminProfile = () => {
                     console.log(pair[0] + ": " + pair[1])
                 }
 
-                const response = await axios.put("http://localhost:9000/api/admin/profile/update", formData, {
+                const response = await axios.put(`${API_ROOT}/admin/profile/update`, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data",
@@ -235,7 +235,7 @@ const AdminProfile = () => {
             if (!token) throw new Error("No authentication token found")
 
             const response = await axios.put(
-                "http://localhost:9000/api/admin/profile/change-password",
+                `${API_ROOT}/admin/profile/change-password`,
                 {
                     currentPassword: passwordForm.currentPassword,
                     newPassword: passwordForm.newPassword,
@@ -268,7 +268,7 @@ const AdminProfile = () => {
             const token = localStorage.getItem("token")
             if (!token) throw new Error("No authentication token found")
 
-            const response = await axios.post("http://localhost:9000/api/admin/profile/address", addressForm, {
+            const response = await axios.post(`${API_ROOT}/admin/profile/address`, addressForm, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -299,7 +299,7 @@ const AdminProfile = () => {
             if (!token) throw new Error("No authentication token found")
 
             const response = await axios.put(
-                `http://localhost:9000/api/admin/profile/address/${editAddressForm.id}`,
+                `${API_ROOT}/admin/profile/address/${editAddressForm.id}`,
                 editAddressForm,
                 {
                     headers: {
@@ -333,7 +333,7 @@ const AdminProfile = () => {
             const token = localStorage.getItem("token")
             if (!token) throw new Error("No authentication token found")
 
-            const response = await axios.delete(`http://localhost:9000/api/admin/profile/address/${addressId}`, {
+            const response = await axios.delete(`${API_ROOT}/admin/profile/address/${addressId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
