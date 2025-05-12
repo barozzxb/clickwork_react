@@ -5,6 +5,10 @@ import { toast } from 'react-toastify';
 import ViolationDetails from './ViolationDetails';
 import AccountDetails from './AccountDetails';
 import AdminForm from './AdminForm';
+import { FaSearch, FaUserPlus, FaUsers, FaExclamationTriangle } from 'react-icons/fa';
+
+import { API_ROOT } from '../../config';
+import '../../styles/admin.css';
 
 export default function ManageAccounts() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -26,7 +30,8 @@ export default function ManageAccounts() {
     const { data: accountsData, isLoading: accountsLoading, error: accountsError } = useQuery({
         queryKey: ['accounts', searchTerm, selectedRole, accountPage],
         queryFn: () =>
-            axios.get('http://localhost:9000/api/admin/accounts', {
+            axios.get(`${API_ROOT}/admin/accounts`, {
+                // axios.get('http://localhost:9000/api/admin/accounts', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 params: {
                     page: accountPage,
@@ -60,7 +65,8 @@ export default function ManageAccounts() {
     const { data: reportsData, isLoading: reportsLoading, error: reportsError } = useQuery({
         queryKey: ['reports', searchTerm, selectedViolationStatus, reportPage],
         queryFn: () =>
-            axios.get('http://localhost:9000/api/admin/accounts/reports', {
+            axios.get(`${API_ROOT}/admin/accounts/reports`, {
+                // axios.get('http://localhost:9000/api/admin/accounts/reports', {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 params: {
                     page: reportPage,
@@ -93,7 +99,8 @@ export default function ManageAccounts() {
     // Lấy chi tiết tài khoản
     const fetchAccountDetails = async (username) => {
         try {
-            const response = await axios.get(`http://localhost:9000/api/admin/accounts/${username}`, {
+            const response = await axios.get(`${API_ROOT}/admin/accounts/${username}`, {
+                // const response = await axios.get(`http://localhost:9000/api/admin/accounts/${username}`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
 
@@ -189,57 +196,51 @@ export default function ManageAccounts() {
     );
 
     return (
-        <div className="container-fluid p-0">
-            <div className="card shadow-sm">
-                <div className="card-header bg-white py-3">
+        <div className="admin-container">
+            <div className="admin-card">
+                <div className="admin-card-header">
                     <div className="row align-items-center">
                         <div className="col-12 col-md-6 mb-3 mb-md-0">
-                            <h2 className="card-title h5 fw-bold mb-1">Manage Accounts</h2>
-                            <p className="text-muted small mb-0">View and manage all user accounts</p>
+                            <h2 className="admin-title">Manage Accounts</h2>
+                            <p className="admin-subtitle">View and manage all user accounts</p>
                         </div>
                         <div className="col-12 col-md-6 text-md-end">
                             <button
-                                className="btn btn-primary"
+                                className="admin-btn"
                                 onClick={() => setShowAdminForm(true)}
                             >
-                                <i className="bi bi-person-plus me-2"></i>
+                                <FaUserPlus className="me-2" />
                                 Add New Admin
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="card-body">
-                    <ul className="nav nav-pills mb-4">
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === 'accounts' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('accounts')}
-                            >
-                                <i className="bi bi-people me-2"></i>
-                                User Accounts
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${activeTab === 'violations' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('violations')}
-                            >
-                                <i className="bi bi-exclamation-triangle me-2"></i>
-                                Account Violation Reports
-                            </button>
-                        </li>
-                    </ul>
+                <div className="admin-modal-body">
+                    <div className="nav nav-pills mb-4">
+                        <button
+                            className={`admin-nav-link me-2 ${activeTab === 'accounts' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('accounts')}
+                        >
+                            <FaUsers className="me-2" />
+                            User Accounts
+                        </button>
+                        <button
+                            className={`admin-nav-link ${activeTab === 'violations' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('violations')}
+                        >
+                            <FaExclamationTriangle className="me-2" />
+                            Account Violation Reports
+                        </button>
+                    </div>
 
-                    <div className="row mb-4 align-items-center">
-                        <div className="col-12 col-md-6 mb-3 mb-md-0">
-                            <div className="input-group">
-                                <span className="input-group-text bg-light border-end-0">
-                                    <i className="bi bi-search"></i>
-                                </span>
+                    <div className="row mb-4">
+                        <div className="col-12 col-md-6">
+                            <div className="admin-search">
+                                <FaSearch className="admin-search-icon" />
                                 <input
                                     type="text"
-                                    className="form-control bg-light border-start-0"
+                                    className="form-control admin-search-input"
                                     placeholder={activeTab === 'accounts' ? "Search users..." : "Search reports..."}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -251,100 +252,91 @@ export default function ManageAccounts() {
                     {activeTab === 'accounts' && (
                         <>
                             <div className="nav nav-tabs mb-4">
-                                <button
-                                    className={`nav-link ${selectedRole === null ? 'active' : ''}`}
-                                    onClick={() => setSelectedRole(null)}
-                                >
-                                    All Users
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedRole === 'applicant' ? 'active' : ''}`}
-                                    onClick={() => setSelectedRole('applicant')}
-                                >
-                                    Job Seekers
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedRole === 'employer' ? 'active' : ''}`}
-                                    onClick={() => setSelectedRole('employer')}
-                                >
-                                    Employers
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedRole === 'admin' ? 'active' : ''}`}
-                                    onClick={() => setSelectedRole('admin')}
-                                >
-                                    Admins
-                                </button>
+                                {['All Users', 'Job Seekers', 'Employers', 'Admins'].map(tab => (
+                                    <button
+                                        key={tab}
+                                        className={`admin-nav-link me-2 ${selectedRole === (tab === 'All Users' ? null :
+                                            tab === 'Job Seekers' ? 'APPLICANT' :
+                                                tab === 'Employers' ? 'EMPLOYER' :
+                                                    tab === 'Admins' ? 'ADMIN' : null)
+                                            ? 'active'
+                                            : ''
+                                            }`}
+                                        onClick={() =>
+                                            setSelectedRole(tab === 'All Users' ? null :
+                                                tab === 'Job Seekers' ? 'APPLICANT' :
+                                                    tab === 'Employers' ? 'EMPLOYER' :
+                                                        tab === 'Admins' ? 'ADMIN' : null)
+                                        }
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
                             </div>
 
-                            {accountsLoading && <div className="text-center"><div className="spinner-border" role="status"></div></div>}
-                            {accountsError && (
-                                <div className="alert alert-danger">
-                                    Lỗi: {accountsError.message || 'Không thể tải danh sách tài khoản'}
+                            {accountsLoading ? (
+                                <div className="text-center p-5">
+                                    <div className="spinner-border text-primary" role="status" />
                                 </div>
-                            )}
-                            {accountsData && (
-                                <>
-                                    <div className="table-responsive">
-                                        <table className="table table-hover align-middle">
-                                            <thead className="table-light">
-                                                <tr>
-                                                    <th>User</th>
-                                                    <th>Role</th>
-                                                    <th>Status</th>
-                                                    <th>Join Date</th>
-                                                    <th>Actions</th>
+                            ) : accountsError ? (
+                                <div className="alert alert-danger">
+                                    {accountsError.message || 'Failed to load accounts'}
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>Join Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {accountsData.accounts.map((user) => (
+                                                <tr key={user.id}>
+                                                    <td>
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="admin-avatar me-3">
+                                                                {user.name.charAt(0)}
+                                                            </div>
+                                                            <div>
+                                                                <div className="fw-medium">{user.name}</div>
+                                                                <div className="admin-subtitle">{user.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="admin-badge admin-badge-primary">
+                                                            {user.role}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`admin-badge ${user.status === 'active'
+                                                            ? 'admin-badge-success'
+                                                            : user.status === 'suspended'
+                                                                ? 'admin-badge-danger'
+                                                                : 'admin-badge-warning'
+                                                            }`}>
+                                                            {user.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>{user.joinDate}</td>
+                                                    <td>
+                                                        <button
+                                                            className="admin-btn admin-btn-secondary"
+                                                            onClick={() => fetchAccountDetails(user.id)}
+                                                        >
+                                                            View Details
+                                                        </button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {accountsData.accounts.map((user) => (
-                                                    <tr key={user.id}>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <div
-                                                                    className="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center"
-                                                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
-                                                                >
-                                                                    {user.name.charAt(0)}
-                                                                </div>
-                                                                <div>
-                                                                    <div className="fw-medium">{user.name}</div>
-                                                                    <div className="text-muted small">{user.email}</div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className={`badge ${getRoleBadgeClass(user.role)}`}>
-                                                                {user.role}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <span className={`badge ${getBadgeClass(user.status)}`}>
-                                                                {user.status}
-                                                            </span>
-                                                        </td>
-                                                        <td>{user.joinDate}</td>
-                                                        <td>
-                                                            <div className="btn-group">
-                                                                <button
-                                                                    className="btn btn-sm btn-secondary"
-                                                                    onClick={() => fetchAccountDetails(user.id)}
-                                                                >
-                                                                    <i className="bi bi-eye"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {accountsData.totalPages > 1 && renderPagination(
-                                        accountsData.currentPage,
-                                        accountsData.totalPages,
-                                        setAccountPage
-                                    )}
-                                </>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             )}
                         </>
                     )}
@@ -352,122 +344,180 @@ export default function ManageAccounts() {
                     {activeTab === 'violations' && (
                         <>
                             <div className="nav nav-tabs mb-4">
-                                <button
-                                    className={`nav-link ${selectedViolationStatus === null ? 'active' : ''}`}
-                                    onClick={() => setSelectedViolationStatus(null)}
-                                >
-                                    All Reports
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedViolationStatus === 'pending' ? 'active' : ''}`}
-                                    onClick={() => setSelectedViolationStatus('pending')}
-                                >
-                                    Pending
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedViolationStatus === 'responded' ? 'active' : ''}`}
-                                    onClick={() => setSelectedViolationStatus('responded')}
-                                >
-                                    Responded
-                                </button>
-                                <button
-                                    className={`nav-link ${selectedViolationStatus === 'dismissed' ? 'active' : ''}`}
-                                    onClick={() => setSelectedViolationStatus('dismissed')}
-                                >
-                                    Dismissed
-                                </button>
+                                {['All Reports', 'Pending', 'Responded', 'Dismissed'].map(tab => (
+                                    <button
+                                        key={tab}
+                                        className={`admin-nav-link me-2 ${selectedViolationStatus === (tab === 'All Reports' ? null : tab.toLowerCase())
+                                            ? 'active'
+                                            : ''
+                                            }`}
+                                        onClick={() =>
+                                            setSelectedViolationStatus(
+                                                tab === 'All Reports' ? null : tab.toLowerCase()
+                                            )
+                                        }
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
                             </div>
 
-                            {reportsLoading && <div className="text-center"><div className="spinner-border" role="status"></div></div>}
-                            {reportsError && (
+                            {reportsLoading ? (
+                                <div className="text-center p-5">
+                                    <div className="spinner-border text-primary" role="status" />
+                                </div>
+                            ) : reportsError ? (
                                 <div className="alert alert-danger">
-                                    Lỗi: {reportsError.message || 'Không thể tải danh sách báo cáo'}
+                                    {reportsError.message || 'Failed to load reports'}
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Issue</th>
+                                                <th>Sender</th>
+                                                <th>Reported User</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {reportsData.reports.map((report) => (
+                                                <tr key={report.id}>
+                                                    <td>#{report.id}</td>
+                                                    <td>{report.issue}</td>
+                                                    <td>{report.sender}</td>
+                                                    <td>{report.reported}</td>
+                                                    <td>
+                                                        <span className={`admin-badge ${report.status === 'pending'
+                                                            ? 'admin-badge-warning'
+                                                            : report.status === 'resolved'
+                                                                ? 'admin-badge-success'
+                                                                : 'admin-badge-secondary'
+                                                            }`}>
+                                                            {report.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>{report.date}</td>
+                                                    <td>
+                                                        <button
+                                                            className="admin-btn"
+                                                            onClick={() => handleViewViolationDetails(report.id)}
+                                                        >
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             )}
-                            {reportsData && (
-                                <>
-                                    <div className="table-responsive">
-                                        <table className="table table-hover align-middle">
-                                            <thead className="table-light">
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Issue</th>
-                                                    <th>Sender</th>
-                                                    <th>Reported User</th>
-                                                    <th>Status</th>
-                                                    <th>Date</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {reportsData.reports.map((report) => (
-                                                    <tr key={report.id}>
-                                                        <td>{report.id}</td>
-                                                        <td>{report.issue}</td>
-                                                        <td>{report.sender}</td>
-                                                        <td>{report.reported}</td>
-                                                        <td>
-                                                            <span className={`badge ${getViolationStatusBadgeClass(report.status)}`}>
-                                                                {report.status}
-                                                            </span>
-                                                        </td>
-                                                        <td>{report.date}</td>
-                                                        <td>
-                                                            <button
-                                                                className="btn btn-sm btn-primary"
-                                                                onClick={() => handleViewViolationDetails(report.id)}
-                                                            >
-                                                                <i className="bi bi-eye me-1"></i> View
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {reportsData.totalPages > 1 && renderPagination(
-                                        reportsData.currentPage,
-                                        reportsData.totalPages,
-                                        setReportPage
-                                    )}
-                                </>
-                            )}
                         </>
+                    )}
+
+                    {/* Pagination */}
+                    {activeTab === 'accounts' && accountsData?.totalPages > 1 && (
+                        <div className="admin-pagination">
+                            <button
+                                className={`admin-pagination-item ${accountsData.currentPage === 0 ? 'disabled' : ''}`}
+                                onClick={() => setAccountPage(accountsData.currentPage - 1)}
+                                disabled={accountsData.currentPage === 0}
+                            >
+                                Previous
+                            </button>
+                            {[...Array(accountsData.totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    className={`admin-pagination-item ${accountsData.currentPage === i ? 'active' : ''}`}
+                                    onClick={() => setAccountPage(i)}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                className={`admin-pagination-item ${accountsData.currentPage === accountsData.totalPages - 1 ? 'disabled' : ''
+                                    }`}
+                                onClick={() => setAccountPage(accountsData.currentPage + 1)}
+                                disabled={accountsData.currentPage === accountsData.totalPages - 1}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+
+                    {activeTab === 'violations' && reportsData?.totalPages > 1 && (
+                        <div className="admin-pagination">
+                            <button
+                                className={`admin-pagination-item ${reportsData.currentPage === 0 ? 'disabled' : ''}`}
+                                onClick={() => setReportPage(reportsData.currentPage - 1)}
+                                disabled={reportsData.currentPage === 0}
+                            >
+                                Previous
+                            </button>
+                            {[...Array(reportsData.totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    className={`admin-pagination-item ${reportsData.currentPage === i ? 'active' : ''}`}
+                                    onClick={() => setReportPage(i)}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                className={`admin-pagination-item ${reportsData.currentPage === reportsData.totalPages - 1 ? 'disabled' : ''
+                                    }`}
+                                onClick={() => setReportPage(reportsData.currentPage + 1)}
+                                disabled={reportsData.currentPage === reportsData.totalPages - 1}
+                            >
+                                Next
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
 
+            {/* Modals */}
             {showViolationDetails && selectedReport && (
-                <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
-                    <div className="modal-dialog modal-lg">
-                        <ViolationDetails
-                            report={selectedReport}
-                            onClose={() => setShowViolationDetails(false)}
-                            onStatusUpdate={handleViolationStatusUpdate}
-                        />
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="admin-modal" onClick={() => setShowViolationDetails(false)}>
+                        <div className="modal-dialog modal-lg" onClick={e => e.stopPropagation()}>
+                            <ViolationDetails
+                                report={selectedReport}
+                                onClose={() => setShowViolationDetails(false)}
+                                onStatusUpdate={handleViolationStatusUpdate}
+                            />
+                        </div>
                     </div>
                 </div>
             )}
 
             {showAccountDetails && selectedAccount && (
-                <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
-                    <div className="modal-dialog modal-lg">
-                        <AccountDetails
-                            account={selectedAccount}
-                            onClose={() => setShowAccountDetails(false)}
-                            onUpdate={handleAccountUpdate}
-                        />
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="admin-modal" onClick={() => setShowAccountDetails(false)}>
+                        <div className="modal-dialog modal-lg" onClick={e => e.stopPropagation()}>
+                            <AccountDetails
+                                account={selectedAccount}
+                                onClose={() => setShowAccountDetails(false)}
+                                onUpdate={handleAccountUpdate}
+                            />
+                        </div>
                     </div>
                 </div>
             )}
 
             {showAdminForm && (
-                <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
-                    <div className="modal-dialog">
-                        <AdminForm
-                            onClose={() => setShowAdminForm(false)}
-                            onAdminCreated={handleAdminCreated}
-                        />
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="admin-modal" onClick={() => setShowAdminForm(false)}>
+                        <div className="modal-dialog" onClick={e => e.stopPropagation()}>
+                            <AdminForm
+                                onClose={() => setShowAdminForm(false)}
+                                onAdminCreated={handleAdminCreated}
+                            />
+                        </div>
                     </div>
                 </div>
             )}

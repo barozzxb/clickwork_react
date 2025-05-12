@@ -1,0 +1,250 @@
+/* Admin Profile Container */
+.admin-profile {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-profile-title {
+    color: #17252a;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+/* Navigation Tabs */
+.admin-tabs {
+    border-bottom: 2px solid rgba(43, 122, 120, 0.1);
+    margin-bottom: 2rem;
+}
+
+.admin-tab {
+    color: #17252a;
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.admin-tab:hover {
+    color: #2b7a78;
+}
+
+.admin-tab.active {
+    color: #2b7a78;
+    font-weight: 600;
+}
+
+.admin-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #2b7a78;
+}
+
+/* Profile Card */
+.profile-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(23, 37, 42, 0.08);
+    transition: all 0.2s ease;
+}
+
+.profile-card:hover {
+    box-shadow: 0 6px 15px rgba(23, 37, 42, 0.12);
+}
+
+/* Avatar Section */
+.avatar-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #2b7a78;
+    padding: 3px;
+    background: white;
+}
+
+.avatar-upload-btn {
+    background-color: #2b7a78;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+}
+
+.avatar-upload-btn:hover {
+    background-color: #17252a;
+}
+
+/* Form Controls */
+.admin-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form-label {
+    color: #17252a;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.admin-form-control {
+    border: 2px solid rgba(43, 122, 120, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.admin-form-control:focus {
+    border-color: #2b7a78;
+    box-shadow: 0 0 0 3px rgba(43, 122, 120, 0.1);
+}
+
+.admin-form-control:disabled {
+    background-color: rgba(43, 122, 120, 0.05);
+    border-color: transparent;
+}
+
+/* Buttons */
+.admin-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.admin-btn-primary {
+    background-color: #2b7a78;
+    color: white;
+}
+
+.admin-btn-primary:hover {
+    background-color: #17252a;
+}
+
+.admin-btn-secondary {
+    background-color: rgba(23, 37, 42, 0.1);
+    color: #17252a;
+}
+
+.admin-btn-secondary:hover {
+    background-color: rgba(23, 37, 42, 0.15);
+}
+
+.admin-btn-danger {
+    background-color: #e71d36;
+    color: white;
+}
+
+.admin-btn-danger:hover {
+    background-color: #c41829;
+}
+
+/* Address Cards */
+.address-card {
+    border: 1px solid rgba(43, 122, 120, 0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.address-card:hover {
+    border-color: #2b7a78;
+    box-shadow: 0 4px 12px rgba(43, 122, 120, 0.08);
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Table Styles */
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.admin-table th {
+    background-color: rgba(43, 122, 120, 0.05);
+    color: #17252a;
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(43, 122, 120, 0.1);
+}
+
+.admin-table tr:hover {
+    background-color: rgba(43, 122, 120, 0.02);
+}
+
+/* Alert Styles */
+.admin-alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.admin-alert-info {
+    background-color: rgba(43, 122, 120, 0.1);
+    color: #2b7a78;
+    border: 1px solid rgba(43, 122, 120, 0.2);
+}
+
+.admin-alert-danger {
+    background-color: rgba(231, 29, 54, 0.1);
+    color: #e71d36;
+    border: 1px solid rgba(231, 29, 54, 0.2);
+}
+
+/* Loading Spinner */
+.admin-spinner {
+    color: #2b7a78;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-profile {
+        padding: 1rem;
+    }
+
+    .admin-tab {
+        padding: 0.75rem 1rem;
+    }
+
+    .avatar-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .admin-form-control {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .admin-btn {
+        padding: 0.5rem 1rem;
+    }
+}

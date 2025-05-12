@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import {API_ROOT} from '../../config.js';
 
-import Term from './term'
+import Term from './Term.jsx'
 
 
 const Register = () => {

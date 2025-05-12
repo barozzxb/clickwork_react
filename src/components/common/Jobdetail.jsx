@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import OverlayLoading from '../effects/Loading.jsx';
 
-import {API_ROOT} from '../../config.js';
+import { API_ROOT } from '../../config.js';
+
+import { formatFullDate } from '../../functions/dayformatter.js';
 
 const JobDetail = () => {
 
@@ -12,8 +15,9 @@ const JobDetail = () => {
 
     useEffect(() => {
         const fetchJob = async () => {
+            setLoading(true);
             try {
-                const res = await axios.get(`${API_ROOT}/jobs/id=${id}`);
+                const res = await axios.get(`${API_ROOT}/jobs/${id}`);
                 setJob(res.data.body);
             } catch (err) {
                 console.error("Lỗi khi fetch job detail", err);
@@ -22,12 +26,17 @@ const JobDetail = () => {
             }
         };
         fetchJob();
+        console.log("useeffect");
     }, [id]);
 
-    if (loading) return <p>Đang tải dữ liệu...</p>;
-    if (!job) return <p>Không tìm thấy công việc</p>;
+    if (loading || !job) {
+        return <OverlayLoading />;
+    }
     return (
         <main className="container">
+
+            {loading && <OverlayLoading />}
+
             {/* Search Bar */}
             <div className="d-flex justify-content-center align-items-center search-bar">
                 <form className="d-flex w-100">
@@ -39,12 +48,12 @@ const JobDetail = () => {
             {/* Chi tiết công việc */}
             <div className="row mt-4">
                 <div className="col detail">
-                    <p className="h2 title">{job?.name || "Tên công việc"}</p>
-                    <p className="text-secondary italic">{job?.postedAgo || "x ngày trước"}</p>
-                    <p className="card-text location"><i className="fa fa-location-dot" />&emsp;{job?.location || "Địa điểm làm việc"}</p>
-                    <p className="card-text job-field"><i className="fa fa-bars" />&emsp;{job?.field || "Lĩnh vực"}</p>
-                    <p className="card-text job-type"><i className="fa fa-suitcase" />&emsp;{job?.type || "Loại công việc"}</p>
-                    <p className="card-text salary"><i className="fa fa-sack-dollar" />&emsp;{job?.salary || "Mức lương"}</p>
+                    <p className="h2 title">{job?.name}</p>
+                    <p className="text-secondary italic"> {formatFullDate(job.createdat)} </p>
+                    <p className="card-text location"><i className="fa fa-location-dot" />&emsp;{job?.location}</p>
+                    <p className="card-text job-field"><i className="fa fa-bars" />&emsp;{job?.field}</p>
+                    <p className="card-text job-type"><i className="fa fa-suitcase" />&emsp;{job?.jobtype}</p>
+                    <p className="card-text salary"><i className="fa fa-sack-dollar" />&emsp;{job?.salary}</p>
 
                     <div className="card-text d-flex tag flex-wrap gap-2">
                         {(job?.tags || ["tag 1", "tag 2", "tag 3"]).map((tag, index) => (
@@ -56,7 +65,7 @@ const JobDetail = () => {
                     <div className="d-flex justify-content-around align-items-center">
                         <button className="btn-action btn-primary">Ứng tuyển ngay</button>
                         <button className="btn btn-secondary">Lưu công việc</button>
-                        </div>
+                    </div>
                     <hr />
 
                     {/* Mô tả */}
@@ -86,8 +95,8 @@ const JobDetail = () => {
                     {/* Công ty */}
                     <div className="col job-info">
                         <p className="heading">Về công ty</p>
-                        <div className="col-md-8 mx-auto d-flex flex-column card">
-                            <div className="container d-flex justify-content-center">
+                        <div className="col-md-4 mx-auto d-flex flex-column card" >
+                            <div className="d-flex justify-content-center">
                                 <img className="avatar-small" src={job?.employer.avatar || "../images/user-default.png"} alt="Company Avatar" />
                             </div>
                             <div className="company-info d-flex flex-column text-center">

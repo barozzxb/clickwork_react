@@ -1,0 +1,120 @@
+/* Chart Container Styles */
+.chart-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(23, 37, 42, 0.08);
+    padding: 1.5rem;
+}
+
+/* Custom Tooltip Styles */
+.custom-tooltip {
+    background-color: white !important;
+    border: none !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(23, 37, 42, 0.15);
+    padding: 1rem !important;
+}
+
+.custom-tooltip .label {
+    color: #17252a;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.custom-tooltip .data {
+    color: #2b7a78;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Legend Styles */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(43, 122, 120, 0.05);
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.legend-item:hover {
+    background: rgba(43, 122, 120, 0.1);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.legend-text {
+    color: #17252a;
+    font-size: 0.875rem;
+}
+
+/* Stat Card Styles */
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(23, 37, 42, 0.08);
+    padding: 1.5rem;
+    height: 100%;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(23, 37, 42, 0.12);
+}
+
+.stat-card-title {
+    color: rgba(23, 37, 42, 0.6);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card-value {
+    color: #17252a;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* Chart Colors */
+:root {
+    --chart-color-1: #2b7a78;
+    --chart-color-2: #3aafa9;
+    --chart-color-3: #def2f1;
+    --chart-color-4: #17252a;
+    --chart-color-5: #feffff;
+    --chart-success: #2b7a78;
+    --chart-warning: #ff9f1c;
+    --chart-danger: #e71d36;
+    --chart-info: #2ec4b6;
+    --chart-secondary: #adb5bd;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        padding: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.5rem;
+    }
+}

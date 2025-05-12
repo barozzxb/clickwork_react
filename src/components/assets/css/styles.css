@@ -11,11 +11,18 @@ body {
     font-family: 'Nunito', sans-serif;
     background-color: #fafcfa;
     color: #333;
-    margin-top: 80px;
+
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 main{
     flex: 1;
+    margin-top: 5px;
 }
 
 footer{
@@ -28,6 +35,12 @@ footer{
 .logo-title {
     color: #00d600;
     font-size: 30px;
+}
+
+.navbar{
+    background-color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand{
@@ -422,7 +435,7 @@ input:focus::placeholder {
     top: 0;
     margin: 10px;
   }
-=======
+
 /* End of Loading effect + spinner */
 
 
@@ -432,9 +445,6 @@ input:focus::placeholder {
     margin: 0 0 0 15px;
 }
 
-.menu-job {
-    
-}
 
 /*  Term modal */
 .term-container {

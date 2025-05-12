@@ -1,0 +1,219 @@
+/* Email Selector Modal Styles */
+.email-selector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(23, 37, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.email-selector-modal {
+    background-color: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(23, 37, 42, 0.15);
+}
+
+.email-selector-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(43, 122, 120, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.email-selector-header h4 {
+    color: #17252a;
+    margin: 0;
+    font-weight: 600;
+}
+
+.email-selector-filters {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(43, 122, 120, 0.1);
+}
+
+.email-selector-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 1rem;
+}
+
+.email-selector-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(43, 122, 120, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.selected-emails {
+    margin-top: 1rem;
+}
+
+.selected-emails .badge {
+    background-color: rgba(43, 122, 120, 0.1) !important;
+    color: #2b7a78 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    margin: 0.25rem;
+}
+
+.selected-emails .btn-close {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* Search Input Styling */
+.email-selector-filters .input-group .form-control {
+    border: 2px solid rgba(43, 122, 120, 0.15);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.email-selector-filters .input-group .form-control:focus {
+    border-color: #2b7a78;
+    box-shadow: 0 0 0 3px rgba(43, 122, 120, 0.1);
+}
+
+.email-selector-filters .input-group-text {
+    background: transparent;
+    border: none;
+    color: rgba(23, 37, 42, 0.5);
+    position: absolute;
+    z-index: 4;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.email-selector-filters .input-group .form-control {
+    padding-left: 2.75rem;
+}
+
+/* Role Filter Buttons */
+.email-selector-filters .btn-group {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.email-selector-filters .btn-outline-primary {
+    color: #2b7a78;
+    border-color: rgba(43, 122, 120, 0.15);
+    background: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.email-selector-filters .btn-outline-primary:hover {
+    background-color: rgba(43, 122, 120, 0.05);
+    border-color: #2b7a78;
+    color: #2b7a78;
+}
+
+.email-selector-filters .btn-outline-primary.active {
+    background-color: #2b7a78;
+    border-color: #2b7a78;
+    color: white;
+}
+
+/* Email List Styling */
+.email-selector-list .list-group-item {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.email-selector-list .list-group-item:hover {
+    background-color: rgba(43, 122, 120, 0.05);
+}
+
+.email-selector-list .list-group-item.active {
+    background-color: rgba(43, 122, 120, 0.1);
+    color: #2b7a78;
+    border: none;
+}
+
+.email-selector-list .list-group-item small {
+    color: rgba(23, 37, 42, 0.6);
+}
+
+/* Footer Buttons */
+.email-selector-footer .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.email-selector-footer .btn-secondary {
+    background-color: rgba(23, 37, 42, 0.1);
+    border: none;
+    color: #17252a;
+}
+
+.email-selector-footer .btn-secondary:hover {
+    background-color: rgba(23, 37, 42, 0.15);
+}
+
+.email-selector-footer .btn-primary {
+    background-color: #2b7a78;
+    border: none;
+    color: white;
+}
+
+.email-selector-footer .btn-primary:hover {
+    background-color: #235d5b;
+}
+
+.email-selector-footer .btn-primary:disabled {
+    background-color: rgba(43, 122, 120, 0.5);
+}
+
+/* Loading and Error States */
+.email-selector-list .spinner-border {
+    color: #2b7a78;
+}
+
+.email-selector-list .alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: none;
+    border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .email-selector-modal {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .email-selector-filters .btn-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .email-selector-filters .btn {
+        width: 100%;
+    }
+}
