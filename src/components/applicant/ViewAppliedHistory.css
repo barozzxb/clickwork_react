@@ -1,0 +1,161 @@
+:root {
+  --primary-dark: #1b4d3e;  /* Xanh lá đậm */
+  --primary: #34936c;       /* Xanh lá chính */
+  --primary-light: #48b585; /* Xanh lá nhạt */
+  --secondary: #e8f5e9;     /* Nền xanh lá rất nhạt */
+  --white: #feffff;
+  --status-pending: #ffd54f;
+  --status-rejected: #ef5350;
+  --status-accepted: #66bb6a;
+}
+
+.applied-history-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.history-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.history-header h2 {
+  color: var(--primary-dark);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.history-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.history-header:hover::after {
+  width: 150px;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.history-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(23, 37, 42, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--secondary);
+  height: 100%;
+}
+
+.history-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(43, 122, 120, 0.2);
+  border-color: var(--primary-light);
+}
+
+.card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.applied-date {
+  color: var(--primary);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.job-title {
+  color: var(--primary-dark);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.company-name {
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.status-pending {
+  background-color: rgba(255, 213, 79, 0.1);
+  color: var(--status-pending);
+}
+
+.status-rejected {
+  background-color: rgba(239, 83, 80, 0.1);
+  color: var(--status-rejected);
+}
+
+.status-accepted {
+  background-color: rgba(102, 187, 106, 0.1);
+  color: var(--status-accepted);
+}
+
+.view-details-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  justify-content: center;
+  margin-top: auto;
+  border: none;
+}
+
+.view-details-btn:hover {
+  background-color: var(--primary-dark);
+  color: var(--white);
+}
+
+.status-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .history-header h2 {
+    font-size: 1.5rem;
+  }
+}
