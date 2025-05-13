@@ -19,7 +19,7 @@ import VerifyOTP from './components/common/Verify-otp.jsx';
 import ApplicantProfile from './components/applicant/Profile.jsx';
 import ForgotPassword from './components/common/Forgotpassword.jsx';
 
-import JobDetail from './components/employer/JobDetail';
+import JobDetailEmployer from './components/employer/JobDetail.jsx';
 
 import ActiveAccount from './components/common/ActiveAccount.jsx';
 
@@ -119,7 +119,7 @@ function AppContent() {
             <Route path="/employer" element={<EmployerDashboard />} />
             <Route path="/employer/jobs/new" element={<JobForm />} />
             <Route path="/employer/jobs/edit/:id" element={<JobForm />} />
-            <Route path="/employer/jobs/:id" element={<JobDetail />} />
+            <Route path="/employer/jobs/:id" element={<JobDetailEmployer />} />
             <Route path="/employer/jobs/:jobId/applicants" element={<ApplicantList />} />
             <Route path="/employer/jobs/:jobId/applicants/:applicantId" element={<ApplicantDetail />} />
             <Route path="/employer/profile" element={<EmployerProfile />} />
