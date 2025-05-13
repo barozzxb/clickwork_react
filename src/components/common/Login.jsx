@@ -47,6 +47,19 @@ const Login = () => {
                 }
             });
 
+            if (response.data.status === false) {
+                const message = response.data.message;
+                toast.error(message);
+                if (response.data.body.accStatus === 'INACTIVE') {
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('status', response.data.body.accStatus);
+                    navigate('/active-account');
+                }
+                else if (response.data.body.accStatus === 'SUSPENDED') {
+                    navigate('/403');
+                }
+            }
+
             if (response.data.status === true) {
 
                 const { token } = response.data.body || {};

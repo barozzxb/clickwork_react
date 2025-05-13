@@ -16,7 +16,6 @@ const Homepage = () => {
     const [loading, setLoading] = useState(false);
     const [jobs, setJobs] = useState([]);
     const [newJobs, setNewJobs] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -70,10 +69,16 @@ const Homepage = () => {
         }
     }
 
+    const [keyword, setKeyword] = useState('');
+
     const handleSearch = (e) => {
         e.preventDefault();
-        // Implement search functionality here
-        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+        if (keyword.trim() === '') {
+            return;
+        }
+
+        navigate(`/search/${keyword}`);
+
     };
 
     const JobCard = ({ job }) => (
@@ -150,8 +155,11 @@ const Homepage = () => {
 
 
             <div className="d-flex justify-content-center align-items-center search-bar">
-                <form className="d-flex w-100">
-                    <input className="form-control search-input" type="search" placeholder="Tìm kiếm việc làm..."/>
+                <form className="d-flex w-100" onSubmit={handleSearch}>
+                    <input className="form-control search-input" type="search" placeholder="Tìm kiếm việc làm..."
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
+                    />
                     <button className="btn btn-success search-btn" type="submit">Tìm kiếm</button>
                 </form>
             </div>
