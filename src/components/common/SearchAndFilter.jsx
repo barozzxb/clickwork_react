@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import OverlayLoading from '../effects/Loading.jsx';
 import { Link } from 'react-router-dom';
 import { API_ROOT } from '../../config.js';
 
 const EJobTypes = ['FULLTIME', 'PARTTIME', 'INTERNSHIP', 'ONLINE', 'FLEXIBLE'];
+const PAGE_SIZE = 6;
 
-const JobList = () => {
+const Search = () => {
     const [filters, setFilters] = useState({
         name: '',
         dateFrom: '',
@@ -23,16 +25,22 @@ const JobList = () => {
     const [allTags, setAllTags] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const keyword = useParams();
+
+
     useEffect(() => {
+        // Chỉ fetch khi keyword tồn tại
+        if (!keyword) return;
+
         const loadData = async () => {
             setLoading(true);
             try {
-                const [jobRes, empRes] = await Promise.all([
-                    axios.get(`${API_ROOT}/jobs`),
-                    axios.get(`${API_ROOT}/jobs/get-employers`)
-                ]);
-                setJobs(jobRes.data.body.content || []);
-                setEmployers(empRes.data.body || []);
+                // 2. Gọi đúng URL với keyword là string
+                const response = await axios.post(
+                    `${API_ROOT}/search/query`, keyword
+                );
+                setJobs(response.data.body.jobs || []);
+                setEmployers(response.data.body.employers || []);
             } catch (err) {
                 console.error("Lỗi fetch jobs", err);
             } finally {
@@ -40,7 +48,8 @@ const JobList = () => {
             }
         };
         loadData();
-    }, []);
+    }, [keyword]);  // Chạy lại khi path param thay đổi
+
 
     const handleSubmit = async e => {
         e.preventDefault(); // Prevent form submission from reloading the page
@@ -55,7 +64,6 @@ const JobList = () => {
         }
     };
 
-
     const handleChange = e => {
         const { name, value, type, selectedOptions } = e.target;
         if (type === 'select-multiple') {
@@ -65,6 +73,10 @@ const JobList = () => {
             setFilters(f => ({ ...f, [name]: value }));
         }
     };
+
+    if (loading || !jobs || !employers) {
+        return <OverlayLoading />;
+    }
 
     return (
         <div className="container py-4">
@@ -168,43 +180,87 @@ const JobList = () => {
                     </Card>
                 </Col>
 
-                {/* Danh sách jobs */}
+                {/* Main content: Companies and Jobs */}
                 <Col md={9}>
-                    <h3 className="mb-4">🗂️ Danh sách công việc</h3>
-                    <Row xs={1} md={2} lg={3} className="g-4">
-                        {jobs.length === 0 ? (
-                            <Col>
-                                <Card className="text-center p-3 shadow-sm">
-                                    <Card.Body>
-                                        <Card.Title>Không có công việc nào phù hợp</Card.Title>
-                                        <Card.Text>Vui lòng thử lại với bộ lọc khác.</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ) : (
-                            jobs.map((job) => (
-                                <Col key={job.id}>
-                                    <Card className="p-3 shadow-sm h-100">
+                    {/* Company Section */}
+                    <section className="mb-5">
+                        <h3 className="mb-4">🏢 Danh sách công ty</h3>
+                        <Row xs={1} md={2} lg={3} className="g-4">
+                            {employers.length === 0 ? (
+                                <Col>
+                                    <Card className="text-center p-3 shadow-sm">
                                         <Card.Body>
-                                            <p className="text-muted mb-1">{job.created_at}</p>
-                                            <Card.Title>
-                                                <Link to={`/jobs/${job.id}`} className="text-decoration-none text-dark fw-bold">
-                                                    {job.name}
-                                                </Link>
-                                            </Card.Title>
-                                            <Card.Text><i className="fa fa-location-dot me-2 text-primary"></i>{job.address}</Card.Text>
-                                            <Card.Text><i className="fa fa-bars me-2 text-info"></i>{job.field}</Card.Text>
-                                            <Card.Text><i className="fa fa-suitcase me-2 text-success"></i>{job.jobtype}</Card.Text>
+                                            <Card.Title>Không có công ty nào</Card.Title>
+                                            <Card.Text>Vui lòng thử lại với bộ lọc khác.</Card.Text>
                                         </Card.Body>
                                     </Card>
                                 </Col>
-                            ))
-                        )}
-                    </Row>
+                            ) : (
+                                employers.map((emp) => (
+                                    <Col key={emp.id}>
+                                        <Card className="p-3 shadow-sm h-100">
+                                            <Card.Body>
+                                                <Card.Title>
+                                                    {emp.name || emp.email}
+                                                </Card.Title>
+                                                <Card.Text>
+                                                    <i className="fa fa-envelope me-2 text-info"></i>
+                                                    {emp.email}
+                                                </Card.Text>
+                                                <Card.Text>
+                                                    <i className="fa fa-phone me-2 text-success"></i>
+                                                    {emp.phone || 'Chưa cập nhật'}
+                                                </Card.Text>
+                                                <Card.Text>
+                                                    <i className="fa fa-location-dot me-2 text-primary"></i>
+                                                    {emp.address || 'Chưa cập nhật'}
+                                                </Card.Text>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))
+                            )}
+                        </Row>
+                    </section>
+
+                    {/* Job Section */}
+                    <section>
+                        <h3 className="mb-4">🗂️ Danh sách công việc</h3>
+                        <Row xs={1} md={2} lg={3} className="g-4">
+                            {jobs.length === 0 ? (
+                                <Col>
+                                    <Card className="text-center p-3 shadow-sm">
+                                        <Card.Body>
+                                            <Card.Title>Không có công việc nào phù hợp</Card.Title>
+                                            <Card.Text>Vui lòng thử lại với bộ lọc khác.</Card.Text>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ) : (
+                                jobs.map((job) => (
+                                    <Col key={job.id}>
+                                        <Card className="p-3 shadow-sm h-100">
+                                            <Card.Body>
+                                                <p className="text-muted mb-1">{job.created_at}</p>
+                                                <Card.Title>
+                                                    <Link to={`/jobs/${job.id}`} className="text-decoration-none text-dark fw-bold">
+                                                        {job.name}
+                                                    </Link>
+                                                </Card.Title>
+                                                <Card.Text><i className="fa fa-location-dot me-2 text-primary"></i>{job.address}</Card.Text>
+                                                <Card.Text><i className="fa fa-bars me-2 text-info"></i>{job.field}</Card.Text>
+                                                <Card.Text><i className="fa fa-suitcase me-2 text-success"></i>{job.jobtype}</Card.Text>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))
+                            )}
+                        </Row>
+                    </section>
                 </Col>
             </Row>
         </div>
     );
 };
 
-export default JobList;
+export default Search;

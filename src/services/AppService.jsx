@@ -18,3 +18,12 @@ export async function verifyOtp(email, otp) {
     );
     return data; // { status, message }
 }
+
+export async function activeAccount(username) {
+    const { data } = await axios.post(
+        `${API_ROOT}/auth/active-account`,
+        { username },
+        { headers: { 'Content-Type': 'application/json' } }
+    );
+    return data; // { status, message }
+}

@@ -2,12 +2,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { sendOtp as apiSendOtp, verifyOtp as apiVerifyOtp } from '../services/AppService';
+import { activeAccount, sendOtp as apiSendOtp, verifyOtp as apiVerifyOtp } from '../services/AppService';
 
 export default function useOtp(onSuccessPath) {
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const username = localStorage.getItem('username');
+  const accstatus = localStorage.getItem('status');
 
   // Countdown timer
   useEffect(() => {
@@ -47,6 +50,20 @@ export default function useOtp(onSuccessPath) {
       const { status, message } = await apiVerifyOtp(email, otp);
       if (status) {
         toast.success(message);
+        localStorage.removeItem('email');
+        if (username && accstatus === 'INACTIVE') {
+          try {
+            const response = await activeAccount(username);
+            if (response.data.status === true) {
+              toast.success(response.message);
+            } else {
+              toast.error(response.message);
+            }
+          } catch (err) {
+            console.error('activeAccount error', err);
+            toast.error('Kích hoạt tài khoản thất bại.');
+          }
+        }
         navigate(onSuccessPath);
       } else {
         toast.error(message);

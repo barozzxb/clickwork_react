@@ -20,6 +20,8 @@ import VerifyOTP from './components/common/Verify-otp.jsx';
 import ApplicantProfile from './components/applicant/Profile.jsx';
 import ForgotPassword from './components/common/Forgotpassword.jsx';
 
+import ActiveAccount from './components/common/ActiveAccount.jsx';
+
 import JobDetail from './components/common/Jobdetail.jsx';
 import JobList from './components/common/Listjobs.jsx';
 
@@ -41,6 +43,8 @@ import SupportUser from './components/admin/SupportUser.jsx';
 import ViewReports from './components/admin/ViewReports.jsx';
 import AdminProfile from "./components/admin/AdminProfile.jsx"
 import AdminNotificationsPage from "./components/admin/AdminNotificationsPage.jsx"
+
+import Search from './components/common/SearchAndFilter.jsx';
 
 import EmployerNavBar from './components/employer/EmployerNavbar.jsx';
 
@@ -90,7 +94,10 @@ function AppContent() {
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/jobs" element={<JobList />} />
 
+          <Route path="/search" element={<Search />} />
+          <Route path="/search/:keyword" element={<Search />} />
 
+          <Route path="/active-account" element={<ActiveAccount />} />
 
           {/* Các Route dành cho ứng viên */}
           <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
