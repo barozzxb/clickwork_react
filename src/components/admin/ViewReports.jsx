@@ -55,12 +55,20 @@ export default function ViewReports() {
                     return
                 }
 
-                const response = await axios.get(`${API_ROOT}/admin/reports`, {
-                    // const response = await axios.get("http://localhost:9000/api/admin/reports", {
+                // const response = await axios.get(`${API_ROOT}/admin/reports`, {
+                const response = await axios.get("http://localhost:9000/api/admin/reports", {
                     headers: {
                         Authorization: `Bearer ${storedToken}`,
                     },
                 })
+
+                console.log("Reports API Response:", {
+                    jobCategories: response.data.jobCategories,
+                    userStats: response.data.userStats,
+                    jobStats: response.data.jobStats,
+                    applicationStats: response.data.applicationStats,
+                    violationStats: response.data.violationStats
+                });
 
                 setReportData(response.data)
                 setError(null)
@@ -106,13 +114,11 @@ export default function ViewReports() {
     })()
 
     // Format job categories data for pie chart
-    const jobCategoriesData =
-        reportData.jobCategories.length > 0
-            ? reportData.jobCategories.map((category) => ({
-                name: category.name,
-                value: category.count,
-            }))
-            : [{ name: "No Data", value: 100 }]
+    const jobCategoriesData = reportData.jobCategories && reportData.jobCategories.length > 0
+        ? reportData.jobCategories
+        : [{ name: "No Data", value: 100 }]
+
+    console.log("Formatted Job Categories Data:", jobCategoriesData);
 
     // Format and sort application data
     const applicationData = (() => {
@@ -312,7 +318,8 @@ export default function ViewReports() {
                 return (
                     <JobStatisticsChart
                         height={350}
-                        data={jobListingData.length > 0 ? jobListingData : [{ name: "No data available", count: 0 }]}
+                        monthlyData={reportData.jobStats.jobsByMonth}
+                        jobTypeData={reportData.jobStats.jobsByType}
                     />
                 )
             case "applications":

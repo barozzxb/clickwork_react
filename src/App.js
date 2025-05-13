@@ -15,10 +15,11 @@ import Homepage from './components/common/Homepage.jsx';
 import Login from './components/common/Login.jsx';
 import Register from './components/common/Register.jsx';
 import Applicant from './components/applicant/Applicant.jsx';
-import Employer from './components/employer/employer.jsx';
 import VerifyOTP from './components/common/Verify-otp.jsx';
 import ApplicantProfile from './components/applicant/Profile.jsx';
 import ForgotPassword from './components/common/Forgotpassword.jsx';
+
+import JobDetail from './components/employer/JobDetail';
 
 import ActiveAccount from './components/common/ActiveAccount.jsx';
 
@@ -27,9 +28,16 @@ import JobList from './components/common/Listjobs.jsx';
 
 import './components/assets/css/styles.css';
 
-import PostJob from './components/employer/PostJob.jsx';
-import ManageJobs from './components/employer/ManageJobs.jsx';
-import ViewDetailJob from './components/employer/ViewDetailJob.jsx';
+import EmployerDashboard from './components/employer/EmployerDashboard';
+import JobForm from './components/employer/JobForm'; // Component đã tạo trước đó
+import ApplicantList from './components/employer/ApplicantList';
+import ApplicantDetail from './components/employer/ApplicantDetail';
+import EmployerProfile from './components/employer/EmployerProfile';
+import SupportRequest from './components/employer/SupportRequest';
+import ReportUser from './components/employer/ReportUser';
+import Notifications from './components/employer/Notifications';
+import EmployerAddressManagement from './components/employer/EmployerAddressManagement';
+import EmployerChangePassword from './components/employer/EmployerChangePassword';
 
 
 import ManageSavedJobs from './components/applicant/ManageSavedJobs.jsx';
@@ -69,7 +77,7 @@ function AppContent() {
       {!isAdminRoute && (
         location.pathname.startsWith('/employer') ? <EmployerNavBar /> : <NavBar />
       )}
-      
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -107,13 +115,20 @@ function AppContent() {
 
 
           {/* Các Route dành cho nhà tuyển dụng */}
-          <Route element={<ProtectedRoute allowedRoles={['EMPLOYER']} />}>
-            <Route path="/employer" element={<Employer />} />
-            <Route path="/post-job" element={<PostJob />} />
-            <Route path="/manage-job" element={<ManageJobs />} />
-            <Route path="/view-detail-job" element={<ViewDetailJob />} />
-            <Route path="/manage-saved-jobs" element={<ManageSavedJobs />} />
-            <Route path="/view-applied-history" element={<ViewAppliedHistory />} />
+          <Route element={<ProtectedRoute allowedRoles={["EMPLOYER"]} />}>
+            <Route path="/employer" element={<EmployerDashboard />} />
+            <Route path="/employer/jobs/new" element={<JobForm />} />
+            <Route path="/employer/jobs/edit/:id" element={<JobForm />} />
+            <Route path="/employer/jobs/:id" element={<JobDetail />} />
+            <Route path="/employer/jobs/:jobId/applicants" element={<ApplicantList />} />
+            <Route path="/employer/jobs/:jobId/applicants/:applicantId" element={<ApplicantDetail />} />
+            <Route path="/employer/profile" element={<EmployerProfile />} />
+            <Route path="/employer/profile/addresses" element={<EmployerAddressManagement />} />
+            <Route path="/employer/profile/password" element={<EmployerChangePassword />} />
+            <Route path="/employer/notifications" element={<Notifications />} />
+            <Route path="/employer/support" element={<SupportRequest />} />
+            <Route path="/employer/report" element={<ReportUser />} />
+            <Route path="/employer/report/:username" element={<ReportUser />} />
           </Route>
 
 

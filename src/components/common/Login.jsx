@@ -6,8 +6,8 @@ import { jwtDecode } from 'jwt-decode';
 
 import { toast } from 'react-toastify';
 
-import { API_ROOT } from '../../config.js';
-// const API_ROOT = 'http://localhost:9000/api';
+// import { API_ROOT } from '../../config.js';
+const API_ROOT = 'http://localhost:9000/api';
 
 const Login = () => {
 

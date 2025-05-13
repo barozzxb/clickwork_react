@@ -55,8 +55,8 @@ export default function Dashboard() {
                 throw new Error('Không tìm thấy JWT token. Vui lòng đăng nhập lại.');
             }
 
-            const response = await fetch(`${API_ROOT}/admin/dashboard`, {
-                // const response = await fetch('http://localhost:9000/api/admin/dashboard', {
+            // const response = await fetch(`${API_ROOT}/admin/dashboard`, {
+            const response = await fetch('http://localhost:9000/api/admin/dashboard', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
