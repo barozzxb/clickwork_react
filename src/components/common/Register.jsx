@@ -146,6 +146,22 @@ const Register = () => {
                                     Nhà tuyển dụng
                                 </label>
                             </div>
+
+                            <div className="form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="admin"
+                                    name="role"
+                                    value="ADMIN"
+                                    checked={role === 'ADMIN'}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    required
+                                />
+                                <label className="form-check-label" htmlFor="employer">
+                                    Quản trị viên
+                                </label>
+                            </div>
                         </div>
                     </div>
 

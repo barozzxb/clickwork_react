@@ -13,10 +13,10 @@ import './css/homepage.css';
 // import banner2 from '../assets/banner2.jpg';
 
 const Homepage = () => {
-
     const [loading, setLoading] = useState(false);
     const [jobs, setJobs] = useState([]);
     const [newJobs, setNewJobs] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,19 +26,20 @@ const Homepage = () => {
         }
     }, [navigate]);
 
-
-
     useEffect(() => {
         const loadJobs = async () => {
             setLoading(true);
             try {
                 const jobresponse = await axios.get(`${API_ROOT}/jobs`, {
-
+                    // API call for recommended jobs
                 });
-                setJobs(jobresponse.data.body || []);
+
+                const jobList = jobresponse.data.body.content || [];
+                const firstSixJobs = jobList.slice(0, 6);
+                setJobs(firstSixJobs);
 
                 const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
-
+                    // API call for new jobs
                 });
                 setNewJobs(response.data.body || []);
 
@@ -49,21 +50,7 @@ const Homepage = () => {
             }
         };
 
-        // const loadNewJobs = async () => {
-        //     setLoading(true);
-        //     try {
-        //         const response = await axios.get(`${API_ROOT}/jobs/newjobs`, {
-
-        //         });
-        //         setNewJobs(response.data.body || []);
-        //     } catch (err) {
-        //         console.error("Lỗi fetch jobs", err);
-        //     }
-
-        // }
-
         loadJobs();
-        // loadNewJobs();
     }, []);
 
     const handleLoading = (token) => {
@@ -72,7 +59,6 @@ const Homepage = () => {
             const role = decoded.role;
 
             if (role) {
-
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (role === 'APPLICANT') {
@@ -82,6 +68,45 @@ const Homepage = () => {
                 }
             }
         }
+    }
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        // Implement search functionality here
+        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    };
+
+    const JobCard = ({ job }) => (
+        <div className="col-md-10 mb-4">
+            <div className="card h-100">
+                <div className="card-body">
+                    <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
+                    <h5 className="card-title">
+                        <Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link>
+                    </h5>
+                    <p className="card-text location">
+                        <i className="fa fa-location-dot"></i>
+                        {job.address}
+                    </p>
+                    <p className="card-text job-field">
+                        <i className="fa fa-bars"></i>
+                        {job.field}
+                    </p>
+                    <p className="card-text job-type">
+                        <i className="fa fa-suitcase"></i>
+                        {job.jobtype}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
+    if (loading || !jobs || !newJobs) {
+        return (
+            <div className="container">
+                <OverlayLoading />
+            </div>
+        );
     }
 
     return (
@@ -146,7 +171,7 @@ const Homepage = () => {
                 ) : (
                     jobs.map((job) => (
                         <div className="col-md-4" key={job.id}>
-                            <div className="card p-3">
+                            <div className="card p-3 job-card">
                                 <div className="card-body">
                                     <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
@@ -174,7 +199,7 @@ const Homepage = () => {
                 ) : (
                     newJobs.map((job) => (
                         <div className="col-md-4" key={job.id}>
-                            <div className="card p-3">
+                            <div className="card p-3 job-card">
                                 <div className="card-body">
                                     <p className="text-secondary italic">{formatRelativeTime(job.createdat)}</p>
                                     <h5 className="card-title"><Link to={`/jobs/${job.id}`} className="job-title">{job.name}</Link></h5>
@@ -189,7 +214,6 @@ const Homepage = () => {
             </div>
 
         </main>
-        
     );
 }
 
