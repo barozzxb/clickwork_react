@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_ROOT} from './../config.js';
+import { API_ROOT } from './../config.js';
 
 export async function sendOtp(email) {
     const { data } = await axios.post(
@@ -22,7 +22,7 @@ export async function verifyOtp(email, otp) {
 export async function activeAccount(username) {
     const { data } = await axios.post(
         `${API_ROOT}/auth/active-account`,
-        { username },
+        JSON.stringify(username),
         { headers: { 'Content-Type': 'application/json' } }
     );
     return data; // { status, message }

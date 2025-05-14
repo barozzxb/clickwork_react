@@ -1,12 +1,14 @@
 import React, {useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 const NavBar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        toast.success('Đăng xuất thành công');
         navigate('/login');
     };
 

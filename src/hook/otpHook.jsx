@@ -54,7 +54,7 @@ export default function useOtp(onSuccessPath) {
         if (username && accstatus === 'INACTIVE') {
           try {
             const response = await activeAccount(username);
-            if (response.data.status === true) {
+            if (response.status === true) {
               toast.success(response.message);
             } else {
               toast.error(response.message);
