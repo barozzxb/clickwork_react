@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaSpinner, FaExclamationTriangle, FaUser, FaCalendar, FaFlag } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
+import '../../styles/admin.css';
 
 export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
     const [status, setStatus] = useState(report.status);
@@ -16,16 +18,6 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
         setError(null);
     }, [report]);
 
-    const getStatusBadgeClass = (status) => {
-        switch (status) {
-            case 'pending': return 'bg-warning';
-            case 'investigating': return 'bg-info';
-            case 'resolved': return 'bg-success';
-            case 'dismissed': return 'bg-secondary';
-            default: return 'bg-light text-dark';
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -34,7 +26,7 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
-                throw new Error('Bạn cần đăng nhập để thực hiện hành động này');
+                throw new Error('Authentication required to perform this action');
             }
 
             const apiStatus = status.toUpperCase();
@@ -45,6 +37,7 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
 
             const response = await axios.post(
                 `${API_ROOT}/admin/accounts/reports/${report.id}/resolve`,
+                // `http://localhost:9000/api/admin/accounts/reports/${report.id}/resolve`,
                 payload,
                 {
                     headers: {
@@ -56,18 +49,18 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
 
             if (response.data.status) {
                 onStatusUpdate(report.id, status, isSuspendUser);
-                toast.success('Xử lý báo cáo thành công!');
+                toast.success('Report processed successfully!');
                 setIsLoading(false);
                 onClose();
             } else {
-                throw new Error(response.data.message || 'Không thể xử lý báo cáo');
+                throw new Error(response.data.message || 'Could not process report');
             }
         } catch (err) {
             const errorMessage = err.response?.status === 401
-                ? 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.'
+                ? 'Session expired. Please login again.'
                 : err.response?.status === 403
-                    ? 'Bạn không có quyền thực hiện hành động này.'
-                    : err.message || 'Đã xảy ra lỗi khi xử lý báo cáo';
+                    ? 'You do not have permission to perform this action.'
+                    : err.message || 'An error occurred while processing the report';
             setError(errorMessage);
             toast.error(errorMessage);
             setIsLoading(false);
@@ -75,66 +68,82 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
     };
 
     return (
-        <div className="modal-content">
-            <div className="modal-header">
-                <h5 className="modal-title">Violation Report Details</h5>
-                <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+        <div className="admin-modal-content">
+            <div className="admin-modal-header">
+                <h5 className="admin-title">Violation Report Details</h5>
+                <button type="button" className="btn-close" onClick={onClose}></button>
             </div>
-            <div className="modal-body">
+            <div className="admin-modal-body">
                 {error && (
-                    <div className="alert alert-danger" role="alert">
-                        {error}
+                    <div className="alert alert-danger d-flex align-items-center" role="alert">
+                        <FaExclamationTriangle className="me-2" />
+                        <div>{error}</div>
                     </div>
                 )}
+
                 <div className="row mb-4">
                     <div className="col-md-6">
-                        <h6 className="fw-bold mb-3">Report Information</h6>
-                        <div className="mb-2">
-                            <span className="text-muted">Report ID:</span>
-                            <span className="ms-2 fw-medium">{report.id}</span>
-                        </div>
-                        <div className="mb-2">
-                            <span className="text-muted">Date Submitted:</span>
-                            <span className="ms-2">{report.date}</span>
-                        </div>
-                        <div className="mb-2">
-                            <span className="text-muted">Current Status:</span>
-                            <span className={`ms-2 badge ${getStatusBadgeClass(report.status)}`}>
-                                {report.status}
-                            </span>
+                        <div className="admin-card p-3">
+                            <h6 className="admin-title mb-3">
+                                <FaFlag className="me-2" />
+                                Report Information
+                            </h6>
+                            <div className="mb-2">
+                                <span className="admin-subtitle">Report ID:</span>
+                                <span className="ms-2 fw-medium">#{report.id}</span>
+                            </div>
+                            <div className="mb-2">
+                                <span className="admin-subtitle">
+                                    <FaCalendar className="me-2" />
+                                    Date Submitted:
+                                </span>
+                                <span className="ms-2">{report.date}</span>
+                            </div>
+                            <div className="mb-2">
+                                <span className="admin-subtitle">Current Status:</span>
+                                <span className={`admin-badge ms-2 ${report.status === 'pending'
+                                    ? 'admin-badge-warning'
+                                    : report.status === 'resolved'
+                                        ? 'admin-badge-success'
+                                        : 'admin-badge-secondary'
+                                    }`}>
+                                    {report.status}
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <h6 className="fw-bold mb-3">Users Involved</h6>
-                        <div className="mb-2">
-                            <span className="text-muted">Sender:</span>
-                            <span className="ms-2 fw-medium">{report.sender}</span>
-                        </div>
-                        <div className="mb-2">
-                            <span className="text-muted">Reported User:</span>
-                            <span className="ms-2 fw-medium">{report.reported}</span>
+                        <div className="admin-card p-3">
+                            <h6 className="admin-title mb-3">
+                                <FaUser className="me-2" />
+                                Users Involved
+                            </h6>
+                            <div className="mb-2">
+                                <span className="admin-subtitle">Sender:</span>
+                                <span className="ms-2 fw-medium">{report.sender}</span>
+                            </div>
+                            <div className="mb-2">
+                                <span className="admin-subtitle">Reported User:</span>
+                                <span className="ms-2 fw-medium">{report.reported}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="card mb-4">
-                    <div className="card-header">
-                        <h6 className="fw-bold mb-0">Issue Details</h6>
-                    </div>
-                    <div className="card-body">
-                        <h6 className="fw-medium">{report.issue}</h6>
-                        <p className="mb-0">
-                            {report.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-                        </p>
-                    </div>
+                <div className="admin-card p-3 mb-4">
+                    <h6 className="admin-title mb-3">Issue Details</h6>
+                    <h6 className="fw-medium mb-2">{report.issue}</h6>
+                    <p className="mb-0 admin-subtitle">
+                        {report.description || "No additional details provided."}
+                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="status" className="form-label fw-medium">Update Status</label>
+                        <label htmlFor="status" className="admin-subtitle mb-2">Update Status</label>
                         <select
                             id="status"
-                            className="form-select"
+                            className="admin-form-control"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                             required
@@ -145,7 +154,7 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
                         </select>
                     </div>
 
-                    {(status === 'responded') && (
+                    {status === 'responded' && (
                         <div className="form-check mb-3">
                             <input
                                 className="form-check-input"
@@ -154,24 +163,24 @@ export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
                                 checked={isSuspendUser}
                                 onChange={(e) => setIsSuspendUser(e.target.checked)}
                             />
-                            <label className="form-check-label" htmlFor="suspendUser">
-                                <span className="text-danger fw-medium">Suspend reported user account</span>
+                            <label className="form-check-label text-danger fw-medium" htmlFor="suspendUser">
+                                Suspend reported user account
                             </label>
                         </div>
                     )}
 
-                    <div className="modal-footer px-0 pb-0">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    <div className="admin-modal-footer px-0 pb-0">
+                        <button type="button" className="admin-btn admin-btn-secondary" onClick={onClose}>
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="btn btn-primary"
+                            className="admin-btn"
                             disabled={isLoading}
                         >
                             {isLoading ? (
                                 <>
-                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    <FaSpinner className="spinner-border spinner-border-sm me-2" />
                                     Processing...
                                 </>
                             ) : 'Submit Resolution'}

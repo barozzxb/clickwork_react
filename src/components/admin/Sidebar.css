@@ -1,0 +1,169 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #eee;
+}
+
+.sidebar.expanded {
+    width: 250px;
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    background: #ffffff;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    color: #2b7a78 !important;
+}
+
+.logo-small {
+    font-size: 1.2rem;
+    color: #2b7a78 !important;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #17252a;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+    border-radius: 5px;
+}
+
+.toggle-button:hover {
+    color: #2b7a78;
+    background: #f8f9fa;
+}
+
+.menu-items {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #17252a;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+}
+
+.menu-item:hover {
+    background: #f1f1f1;
+    color: #17252a;
+    transform: translateX(5px);
+}
+
+.menu-item.active {
+    background: #e9ecef;
+    color: #17252a;
+    font-weight: 500;
+}
+
+.menu-item .icon {
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-item .title {
+    margin-left: 12px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .title {
+    display: none;
+}
+
+.menu-item .tooltip {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #17252a;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item:hover .tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(5px);
+}
+
+/* Add smooth hover effect */
+.menu-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background: #e9ecef;
+    transition: width 0.3s ease;
+}
+
+.menu-item:hover::after {
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar.expanded {
+        width: 200px;
+    }
+
+    .sidebar.collapsed {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .toggle-button {
+        padding: 8px;
+    }
+}

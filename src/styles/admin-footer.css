@@ -1,0 +1,38 @@
+.admin-footer {
+    background-color: var(--primary-white);
+    border-top: 1px solid var(--gray-200);
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.admin-footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+}
+
+.admin-footer-text {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.admin-footer-version {
+    color: var(--gray-500);
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-footer {
+        padding: 1rem 0;
+    }
+
+    .admin-footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+}
