@@ -2,20 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
 import { toast } from "react-toastify";
 
-import { API_ROOT } from "../../config.js";
+// ⚠️ Bạn nên dùng dòng dưới nếu có file config.js đúng chuẩn:
+// import { API_ROOT } from "../../config.js";
+const API_ROOT = "http://localhost:9000/api";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      handleLoading(token);
-    }
-  }, [navigate]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,35 +17,49 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      handleLoading(token);
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      if (
-        !username ||
-        !password ||
-        username.trim() === "" ||
-        password.trim() === ""
-      ) {
+      if (!username.trim() || !password.trim()) {
         toast.error("Vui lòng điền tất cả các trường");
         return;
       }
 
       const response = await axios.post(
         `${API_ROOT}/auth/login`,
+        { username, password },
         {
-          username,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (response.data.status === true) {
-        const { token } = response.data.body || {};
+      const { status, message, body } = response.data;
+
+      if (status === false) {
+        toast.error(message || "Đăng nhập thất bại");
+
+        if (body?.accStatus === "INACTIVE") {
+          localStorage.setItem("username", username);
+          localStorage.setItem("status", "INACTIVE");
+          navigate("/active-account");
+        } else if (body?.accStatus === "SUSPENDED") {
+          navigate("/403");
+        }
+
+        return;
+      }
+
+      if (status === true) {
+        const token = body?.token;
         if (token) {
           localStorage.setItem("token", token);
           const decoded = jwtDecode(token);
@@ -59,19 +67,15 @@ const Login = () => {
           if (email) {
             localStorage.setItem("email", email);
           }
+          toast.success(message || "Đăng nhập thành công");
+          handleLoading(token);
+        } else {
+          toast.error("Không tìm thấy token trong phản hồi");
         }
-
-        toast.success(response.data.message || "Đăng nhập thành công");
-        handleLoading(token);
-      } else {
-        const message = response.data.message || "Đăng nhập thất bại";
-        toast.error(message);
-        return;
       }
     } catch (error) {
       console.error("Đăng nhập thất bại:", error);
-      const message = "Error occurred while logging in";
-      toast.error(message);
+      toast.error("Có lỗi xảy ra trong quá trình đăng nhập");
     } finally {
       setLoading(false);
     }
@@ -80,18 +84,16 @@ const Login = () => {
   const handleLoading = (token) => {
     if (token) {
       const decoded = jwtDecode(token);
-      const role = decoded.role;
+      const role = decoded?.role;
 
-      if (role) {
-        console.log(`Đăng nhập thành công với vai trò: ${role}`);
-
-        if (role === "ADMIN") {
-          navigate("/admin/dashboard");
-        } else if (role === "APPLICANT") {
-          navigate("/applicant");
-        } else {
-          navigate("/employer");
-        }
+      if (role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (role === "APPLICANT") {
+        navigate("/applicant");
+      } else if (role === "EMPLOYER") {
+        navigate("/employer");
+      } else {
+        navigate("/");
       }
     }
   };
@@ -100,7 +102,7 @@ const Login = () => {
     <main className="d-flex container justify-content-center align-items-center">
       <div className="col-md-6 bg-white login">
         <p className="h3 text-center">Đăng nhập</p>
-        {/* {message && <p className="text-center text-danger">{message}</p>} */}
+
         <form className="form-control login" onSubmit={handleLogin}>
           <div className="input-group d-flex align-items-center">
             <label htmlFor="email">
