@@ -11,6 +11,8 @@ import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function ManageAccounts() {
+    // const API_ROOT = 'http://localhost:9000/api';
+
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState(null);
     const [activeTab, setActiveTab] = useState('accounts');

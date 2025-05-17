@@ -9,6 +9,7 @@ import { API_ROOT } from '../../config.js';
 
 
 const Login = () => {
+    // const API_ROOT = 'http://localhost:9000/api';
 
     const navigate = useNavigate();
 

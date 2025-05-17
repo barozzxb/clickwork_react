@@ -5,12 +5,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {API_ROOT} from '../../config.js';
+import { API_ROOT } from '../../config.js';
 
 import Term from './Term.jsx'
 
 
 const Register = () => {
+    // const API_ROOT = 'http://localhost:9000/api';
 
     const [loading, setLoading] = useState(false);
 

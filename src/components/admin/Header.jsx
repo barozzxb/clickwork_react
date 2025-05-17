@@ -12,6 +12,9 @@ import "../../styles/admin-header.css"
 import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminHeader = () => {
+    // const API_ROOT = 'http://localhost:9000/api';
+    // const BACK_END_HOST = 'http://localhost:9000';
+
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const [showNotifications, setShowNotifications] = useState(false)
@@ -224,8 +227,8 @@ const AdminHeader = () => {
                                         </div>
                                     </div>
                                 ) : notificationsData?.body?.length > 0 ? (
-                                    <div className="notification-list">
-                                        {notificationsData.body.slice(0, 5).map((notification) => (
+                                    <div className="notification-list custom-scrollbar">
+                                        {notificationsData.body.slice(0, 4).map((notification) => (
                                             <div
                                                 key={notification.id}
                                                 className={`notification-item ${!notification.read ? "unread" : ""}`}

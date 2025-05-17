@@ -7,6 +7,7 @@ import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function AdminForm({ onClose, onAdminCreated }) {
+    // const API_ROOT = 'http://localhost:9000/api';
     const [formData, setFormData] = useState({
         username: '',
         password: '',
