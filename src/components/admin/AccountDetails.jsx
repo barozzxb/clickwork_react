@@ -1,17 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FaUser, FaSpinner } from 'react-icons/fa';
+import { FaUser, FaSpinner, FaLock } from 'react-icons/fa';
 
 import { API_ROOT } from '../../config';
+
 import '../../styles/admin.css';
 
 export default function AccountDetails({ account, onClose, onUpdate }) {
+    // const API_ROOT = 'http://localhost:9000/api';
     const [isEditing, setIsEditing] = useState(false);
     const [editedStatus, setEditedStatus] = useState(account.status);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuspensionExpired, setIsSuspensionExpired] = useState(false);
+
+    useEffect(() => {
+        // Check if suspension period has expired
+        if (account.suspendedUntil) {
+            const suspendDate = new Date(account.suspendedUntil);
+            const currentDate = new Date();
+            setIsSuspensionExpired(suspendDate < currentDate);
+        }
+    }, [account.suspendedUntil]);
 
     const formatDate = (dateString) => {
+        if (!dateString) return 'Not available';
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
@@ -40,7 +53,9 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                 toast.success('Account status updated successfully');
                 onUpdate({
                     ...account,
-                    status: editedStatus
+                    status: editedStatus,
+                    // If changing to active, clear suspendedUntil
+                    suspendedUntil: editedStatus === 'ACTIVE' ? null : account.suspendedUntil
                 });
                 setIsEditing(false);
             } else {
@@ -107,6 +122,7 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                                     className="admin-form-control"
                                     value={editedStatus}
                                     onChange={(e) => setEditedStatus(e.target.value)}
+                                    disabled={account.status === 'SUSPENDED' && isSuspensionExpired}
                                 >
                                     <option value="ACTIVE">Active</option>
                                     <option value="INACTIVE">Inactive</option>
@@ -125,6 +141,25 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                         </div>
                     </div>
                 </div>
+
+                {/* Display suspension information if applicable */}
+                {account.status === 'SUSPENDED' && account.suspendedUntil && (
+                    <div className="row mb-4">
+                        <div className="col-12">
+                            <div className="alert alert-warning d-flex align-items-center">
+                                <FaLock className="me-2" />
+                                <div>
+                                    <strong>Suspended Until:</strong> {formatDate(account.suspendedUntil)}
+                                    {isSuspensionExpired && (
+                                        <div className="text-danger mt-1">
+                                            <strong>Note:</strong> Suspension period has expired. Account cannot be unlocked.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="row">
                     <div className="col-md-6">
@@ -159,7 +194,7 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                             type="button"
                             className="admin-btn"
                             onClick={handleSubmit}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || (account.status === 'SUSPENDED' && isSuspensionExpired)}
                         >
                             {isSubmitting ? (
                                 <>
@@ -174,8 +209,14 @@ export default function AccountDetails({ account, onClose, onUpdate }) {
                         <button type="button" className="admin-btn admin-btn-secondary" onClick={onClose}>
                             Close
                         </button>
-                        <button type="button" className="admin-btn" onClick={() => setIsEditing(true)}>
-                            Edit Status
+                        <button
+                            type="button"
+                            className="admin-btn"
+                            onClick={() => setIsEditing(true)}
+                            disabled={account.status === 'SUSPENDED' && isSuspensionExpired}
+                        >
+                            {account.status === 'SUSPENDED' && isSuspensionExpired ?
+                                'Cannot Edit (Suspension Expired)' : 'Edit Status'}
                         </button>
                     </>
                 )}

@@ -9,6 +9,8 @@ import { FaSearch, FaFilter, FaExclamationTriangle, FaCheckCircle, FaClock } fro
 import { API_ROOT } from '../../config';
 
 export default function SupportUser() {
+    // const API_ROOT = 'http://localhost:9000/api';
+
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -78,7 +80,7 @@ export default function SupportUser() {
                 sortDir,
             });
             if (statusFilter) {
-                params.append('status', statusFilter === 'pending' ? 'NO_RESPOND' : 'RESPONDED');
+                params.append('status', statusFilter === 'pending' ? 'PENDING' : 'RESPONDED');
             }
 
             const response = await fetch(`${API_ROOT}/support?${params}`, {
@@ -111,7 +113,7 @@ export default function SupportUser() {
             return {
                 tickets: data.body.tickets.map((ticket) => ({
                     ...ticket,
-                    status: ticket.status === 'NO_RESPOND' ? 'pending' : 'resolved',
+                    status: ticket.status === 'PENDING' ? 'pending' : 'resolved',
                     user: {
                         name: ticket.applicantEmail || ticket.employerEmail || 'Unknown',
                         email: ticket.applicantEmail || ticket.employerEmail || 'Unknown',
