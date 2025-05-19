@@ -7,11 +7,11 @@ import AccountDetails from './AccountDetails';
 import AdminForm from './AdminForm';
 import { FaSearch, FaUserPlus, FaUsers, FaExclamationTriangle } from 'react-icons/fa';
 
-import { API_ROOT } from '../../config';
+// import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function ManageAccounts() {
-    // const API_ROOT = 'http://localhost:9000/api';
+    const API_ROOT = 'http://localhost:9000/api';
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState(null);
@@ -398,7 +398,11 @@ export default function ManageAccounts() {
                                                             ? 'admin-badge-warning'
                                                             : report.status === 'resolved'
                                                                 ? 'admin-badge-success'
-                                                                : 'admin-badge-secondary'
+                                                                : report.status === 'responded'
+                                                                    ? 'admin-badge-primary'
+                                                                    : report.status === 'dismissed'
+                                                                        ? 'admin-badge-secondary'
+                                                                        : 'admin-badge-light'
                                                             }`}>
                                                             {report.status}
                                                         </span>

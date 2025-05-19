@@ -8,10 +8,10 @@ import { toast } from "react-toastify"
 import NotificationDetailModal from "./NotificationDetailModal"
 import "../../styles/admin-shared.css"
 import "../../styles/admin-notifications.css"
-import { API_ROOT } from '../../config';
+// import { API_ROOT } from '../../config';
 
 const AdminNotificationsPage = () => {
-    // const API_ROOT = 'http://localhost:9000/api';
+    const API_ROOT = 'http://localhost:9000/api';
     const queryClient = useQueryClient()
     const [selectedNotification, setSelectedNotification] = useState(null)
     const [filterType, setFilterType] = useState("all")

@@ -5,11 +5,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import axios from "axios"
 import '../../styles/admin-profile.css'
-import { API_ROOT, BACK_END_HOST } from '../../config';
+// import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminProfile = () => {
-    // const API_ROOT = 'http://localhost:9000/api';
-    // const BACK_END_HOST = 'http://localhost:9000';
+    const API_ROOT = 'http://localhost:9000/api';
+    const BACK_END_HOST = 'http://localhost:9000';
 
     const queryClient = useQueryClient()
     const [activeTab, setActiveTab] = useState("profile")

@@ -3,11 +3,11 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaUserShield, FaSpinner, FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
 
-import { API_ROOT } from '../../config';
+// import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function AdminForm({ onClose, onAdminCreated }) {
-    // const API_ROOT = 'http://localhost:9000/api';
+    const API_ROOT = 'http://localhost:9000/api';
     const [formData, setFormData] = useState({
         username: '',
         password: '',
