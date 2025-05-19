@@ -12,8 +12,6 @@ import "../../styles/admin-header.css"
 import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminHeader = () => {
-    // const API_ROOT = 'http://localhost:9000/api';
-    // const BACK_END_HOST = 'http://localhost:9000';
 
     const navigate = useNavigate()
     const queryClient = useQueryClient()

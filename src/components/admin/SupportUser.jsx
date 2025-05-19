@@ -9,8 +9,6 @@ import { FaSearch, FaFilter, FaExclamationTriangle, FaCheckCircle, FaClock } fro
 import { API_ROOT } from '../../config';
 
 export default function SupportUser() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');

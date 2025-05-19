@@ -9,8 +9,6 @@ import './SendEmail.css';
 import { API_ROOT } from '../../config';
 
 export default function SendEmail() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const [emailType, setEmailType] = useState('single');
     const [showEmailSelector, setShowEmailSelector] = useState(false);
     const [selectedEmails, setSelectedEmails] = useState([]);

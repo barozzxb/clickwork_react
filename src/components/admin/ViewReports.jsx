@@ -13,8 +13,6 @@ import '../../styles/admin-charts.css';
 import { API_ROOT } from '../../config';
 
 export default function ViewReports() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const [activeTab, setActiveTab] = useState("users")
     const [timePeriod, setTimePeriod] = useState("year")
     const [reportData, setReportData] = useState({

@@ -9,8 +9,6 @@ import { FaArrowLeft, FaUser, FaEnvelope, FaIdCard, FaUserTag, FaClock, FaExclam
 import { API_ROOT } from '../../config';
 
 export default function SupportDetail() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const { id } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();

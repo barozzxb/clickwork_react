@@ -11,8 +11,6 @@ import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function ManageAccounts() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState(null);
     const [activeTab, setActiveTab] = useState('accounts');
@@ -398,7 +396,11 @@ export default function ManageAccounts() {
                                                             ? 'admin-badge-warning'
                                                             : report.status === 'resolved'
                                                                 ? 'admin-badge-success'
-                                                                : 'admin-badge-secondary'
+                                                                : report.status === 'responded'
+                                                                    ? 'admin-badge-primary'
+                                                                    : report.status === 'dismissed'
+                                                                        ? 'admin-badge-secondary'
+                                                                        : 'admin-badge-light'
                                                             }`}>
                                                             {report.status}
                                                         </span>

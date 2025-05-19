@@ -8,7 +8,6 @@ import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function AccountDetails({ account, onClose, onUpdate }) {
-    // const API_ROOT = 'http://localhost:9000/api';
     const [isEditing, setIsEditing] = useState(false);
     const [editedStatus, setEditedStatus] = useState(account.status);
     const [isSubmitting, setIsSubmitting] = useState(false);

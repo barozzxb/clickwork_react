@@ -11,8 +11,6 @@ import { FaUsers, FaBriefcase, FaFileAlt, FaHeadset, FaExternalLinkAlt, FaChartP
 import { API_ROOT } from '../../config';
 
 export default function Dashboard() {
-    // const API_ROOT = 'http://localhost:9000/api';
-
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
 

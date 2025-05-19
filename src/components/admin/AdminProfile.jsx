@@ -8,9 +8,6 @@ import '../../styles/admin-profile.css'
 import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminProfile = () => {
-    // const API_ROOT = 'http://localhost:9000/api';
-    // const BACK_END_HOST = 'http://localhost:9000';
-
     const queryClient = useQueryClient()
     const [activeTab, setActiveTab] = useState("profile")
     const [avatarPreview, setAvatarPreview] = useState(null)
