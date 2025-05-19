@@ -6,11 +6,9 @@ import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import moment from 'moment';
 import { FaArrowLeft, FaUser, FaEnvelope, FaIdCard, FaUserTag, FaClock, FaExclamationTriangle, FaPaperPlane, FaCheck } from 'react-icons/fa';
 
-// import { API_ROOT } from '../../config';
+import { API_ROOT } from '../../config';
 
 export default function SupportDetail() {
-    const API_ROOT = 'http://localhost:9000/api';
-
     const { id } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();

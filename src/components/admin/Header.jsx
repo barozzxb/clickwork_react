@@ -9,11 +9,9 @@ import { toast } from "react-toastify"
 import NotificationDetailModal from "./NotificationDetailModal"
 import "../../styles/admin-shared.css"
 import "../../styles/admin-header.css"
-// import { API_ROOT, BACK_END_HOST } from '../../config';
+import { API_ROOT, BACK_END_HOST } from '../../config';
 
 const AdminHeader = () => {
-    const API_ROOT = 'http://localhost:9000/api';
-    const BACK_END_HOST = 'http://localhost:9000';
 
     const navigate = useNavigate()
     const queryClient = useQueryClient()

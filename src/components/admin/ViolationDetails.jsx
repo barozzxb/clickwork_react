@@ -3,12 +3,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaSpinner, FaExclamationTriangle, FaUser, FaCalendar, FaFlag } from 'react-icons/fa';
 
-// import { API_ROOT } from '../../config';
+import { API_ROOT } from '../../config';
 import '../../styles/admin.css';
 
 export default function ViolationDetails({ report, onClose, onStatusUpdate }) {
-    const API_ROOT = 'http://localhost:9000/api';
-
     const [status, setStatus] = useState(report.status);
     const [isSuspendUser, setIsSuspendUser] = useState(false);
     const [isLoading, setIsLoading] = useState(false);

@@ -6,11 +6,9 @@ import { Spinner } from 'react-bootstrap';
 import moment from 'moment';
 import { FaSearch, FaFilter, FaExclamationTriangle, FaCheckCircle, FaClock } from 'react-icons/fa';
 
-// import { API_ROOT } from '../../config';
+import { API_ROOT } from '../../config';
 
 export default function SupportUser() {
-    const API_ROOT = 'http://localhost:9000/api';
-
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');

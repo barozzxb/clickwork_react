@@ -8,11 +8,9 @@ import { jwtDecode } from 'jwt-decode';
 import { Spinner } from 'react-bootstrap';
 import { FaUsers, FaBriefcase, FaFileAlt, FaHeadset, FaExternalLinkAlt, FaChartPie, FaChartLine } from 'react-icons/fa';
 
-// import { API_ROOT } from '../../config';
+import { API_ROOT } from '../../config';
 
 export default function Dashboard() {
-    const API_ROOT = 'http://localhost:9000/api';
-
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
 
