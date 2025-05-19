@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import OverlayLoading from '../effects/Loading';
 import { API_ROOT } from '../../config.js';
+import './ManageSavedJobs.css';
 
 const ManageSavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState([]);
@@ -26,7 +27,7 @@ const ManageSavedJobs = () => {
 
       console.log('Dữ liệu trả về:', response.data);
 
-      const data = Array.isArray(response.data) ? response.data : [];
+      const data = Array.isArray(response.data.body) ? response.data.body : [];
       setSavedJobs(data);
       setError(null);
     } catch (err) {
@@ -63,64 +64,93 @@ const ManageSavedJobs = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Công việc đã lưu</h2>
+    <div className="saved-jobs-container">
+      <div className="saved-jobs-header">
+        <h2>Công việc đã lưu</h2>
+        <p className="text-muted">Quản lý danh sách công việc bạn quan tâm</p>
+      </div>
 
       {loading && <OverlayLoading />}
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert alert-danger fade-in">
+          <i className="fas fa-exclamation-circle me-2"></i>
           <p>{error}</p>
-          <button className="btn btn-primary mt-2" onClick={fetchSavedJobs}>Thử lại</button>
+          <button className="btn btn-primary mt-2" onClick={fetchSavedJobs}>
+            <i className="fas fa-sync-alt me-2"></i>Thử lại
+          </button>
         </div>
       )}
 
       {!loading && !error && savedJobs.length === 0 && (
-        <div className="alert alert-info">
-          <p>Bạn chưa lưu công việc nào.</p>
-          <Link to="/jobs" className="btn btn-primary mt-2">Tìm kiếm công việc</Link>
+        <div className="empty-state fade-in">
+          <i className="fas fa-bookmark empty-icon"></i>
+          <p>Bạn chưa lưu công việc nào</p>
+          <Link to="/jobs" className="btn btn-primary mt-3">
+            <i className="fas fa-search me-2"></i>Tìm kiếm công việc
+          </Link>
         </div>
       )}
 
       {!loading && !error && savedJobs.length > 0 && (
-        <div className="row">
-          {savedJobs.map((savedJob) => {
-            const job = savedJob.job || {};
+        <div className="row g-4">
+          {savedJobs.map((savedJob) => (
+            <div key={savedJob.id || savedJob.jobId} className="col-md-6 col-lg-4">
+              <div className="job-card">
+                <div className="job-card-body">
+                  <div className="save-date">
+                    <i className="far fa-calendar-alt me-2"></i>
+                    {savedJob.savedDate ? new Date(savedJob.savedDate).toLocaleDateString() : "x ngày trước"}
+                  </div>
+                  
+                  <h5 className="job-title">
+                    <Link to={`/jobs/${savedJob.jobId}`}>
+                      {savedJob.title || "Chưa có tên"}
+                    </Link>
+                  </h5>
 
-            return (
-              <div key={job.id || savedJob.id} className="col-md-4 mb-4">
-                <div className="card h-100">
-                  <div className="card-body">
-<p className="text-secondary italic">{job.postedAgo || "x ngày trước"}</p>
-                    <h5 className="card-title">
-                      <Link to={`/jobs/${job.id}`} className="job-title">{job.name || "Chưa có tên"}</Link>
-                    </h5>
-                    <p className="card-text location"><i className="fa fa-location-dot"></i> {job.location || "Không xác định"}</p>
-                    <p className="card-text job-field"><i className="fa fa-bars"></i> {job.field || "Không xác định"}</p>
-                    <p className="card-text job-type"><i className="fa fa-suitcase"></i> {job.type || "Không xác định"}</p>
-                    <p className="card-text salary"><i className="fa fa-sack-dollar"></i> {job.salary || "Thỏa thuận"}</p>
-
-                    <div className="card-text d-flex tag flex-wrap gap-2">
-                      {(job.tags || []).map((tag, index) => (
-                        <p key={`${job.id}-tag-${index}`} className="tags">{tag}</p>
-                      ))}
+                  <div className="job-info">
+                    <div className="info-item">
+                      <i className="fas fa-map-marker-alt"></i>
+                      <span>{savedJob.location || "Không xác định"}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-briefcase"></i>
+                      <span>{savedJob.field || "Không xác định"}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-clock"></i>
+                      <span>{savedJob.type || "Không xác định"}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-money-bill-wave"></i>
+                      <span>{savedJob.salary || "Thỏa thuận"}</span>
                     </div>
                   </div>
-                  <div className="card-footer bg-white border-top-0">
-                    <div className="d-flex justify-content-between">
-                      <Link to={`/jobs/${job.id}`} className="btn btn-primary">Xem chi tiết</Link>
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={() => handleRemoveSavedJob(job.id)}
-                      >
-                        <i className="fa fa-trash"></i> Xóa
-                      </button>
-                    </div>
+
+                  <div className="tags-container">
+                    {(savedJob.tags || []).map((tag, index) => (
+                      <span key={`${savedJob.id}-tag-${index}`} className="tag">
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
+
+                <div className="job-card-footer">
+                  <Link to={`/jobs/${savedJob.jobId}`} className="btn btn-primary">
+                    <i className="fas fa-info-circle me-2"></i>Chi tiết
+                  </Link>
+                  <button
+                    className="btn btn-outline-danger"
+                    onClick={() => handleRemoveSavedJob(savedJob.jobId)}
+                  >
+                    <i className="fas fa-trash-alt me-2"></i>Xóa
+                  </button>
+                </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
     </div>

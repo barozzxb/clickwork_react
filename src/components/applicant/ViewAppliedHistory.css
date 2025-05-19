@@ -4,7 +4,7 @@
   --primary-light: #48b585; /* Xanh lá nhạt */
   --secondary: #e8f5e9;     /* Nền xanh lá rất nhạt */
   --white: #feffff;
-  --status-pending: #ffd54f;
+  --status-pending: #ffa726;
   --status-rejected: #ef5350;
   --status-accepted: #66bb6a;
 }
@@ -83,11 +83,12 @@
   gap: 0.5rem;
 }
 
-.job-title {
+.history-card .job-title {
+  font-size: 1.35rem;
+  font-weight: 700;
   color: var(--primary-dark);
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin: 1rem 0;
+  line-height: 1.4;
 }
 
 .company-name {
@@ -101,26 +102,56 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.25rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge .status-icon {
+  position: relative;
+  top: 0;
+  right: 0;
+  font-size: 1.25rem;
 }
 
 .status-pending {
-  background-color: rgba(255, 213, 79, 0.1);
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.15) 0%, rgba(255, 167, 38, 0.3) 100%);
   color: var(--status-pending);
+  border: 1px solid rgba(255, 167, 38, 0.3);
 }
 
 .status-rejected {
-  background-color: rgba(239, 83, 80, 0.1);
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.15) 0%, rgba(239, 83, 80, 0.3) 100%);
   color: var(--status-rejected);
+  border: 1px solid rgba(239, 83, 80, 0.3);
 }
 
 .status-accepted {
-  background-color: rgba(102, 187, 106, 0.1);
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.15) 0%, rgba(102, 187, 106, 0.3) 100%);
   color: var(--status-accepted);
+  border: 1px solid rgba(102, 187, 106, 0.3);
+}
+
+.status-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-pending:hover {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.2) 0%, rgba(255, 167, 38, 0.4) 100%);
+}
+
+.status-rejected:hover {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.2) 0%, rgba(239, 83, 80, 0.4) 100%);
+}
+
+.status-accepted:hover {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.2) 0%, rgba(102, 187, 106, 0.4) 100%);
 }
 
 .view-details-btn {
