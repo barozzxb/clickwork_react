@@ -37,16 +37,7 @@ const ViewAppliedHistory = () => {
 
         console.log('Dữ liệu ứng tuyển:', response.data);
 
-        // Ánh xạ dữ liệu từ JobApplicationResponseDTO
-        const jobs = response.data.map(job => ({
-          id: job.jobId,
-          title: job.jobTitle,
-          company: job.company,
-          appliedDate: job.appliedAt ? new Date(job.appliedAt).toISOString().split('T')[0] : 'Unknown',
-          status: job.status === 'Đã được chấp nhận' ? 'Đã chấp nhận' : job.status
-        }));
-
-        setAppliedJobs(jobs);
+        setAppliedJobs(response.data.body);
         setError(null);
       } catch (err) {
         console.error('Lỗi khi lấy lịch sử ứng tuyển:', err);
@@ -79,7 +70,7 @@ const ViewAppliedHistory = () => {
   const getStatusClass = (status) => {
     switch (status) {
       case 'Đã chấp nhận':
-return 'status-accepted';
+        return 'status-accepted';
       case 'Đã bị từ chối':
         return 'status-rejected';
       case 'Đang chờ':
@@ -123,14 +114,20 @@ return 'status-accepted';
               <div className="card-content">
                 <div className="applied-date">
                   <CalendarTodayIcon fontSize="small" />
-                  {job.appliedDate}
+                  {new Date(job.appliedAt).toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </div>
 
-                <h3 className="job-title">{job.title}</h3>
+                <h3 className="job-title">{job.jobName}</h3>
 
                 <div className="company-name">
                   <BusinessIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
-                  {job.company}
+                  {job.companyName}
                 </div>
 
                 <div className={`status-badge ${getStatusClass(job.status)}`}>
@@ -138,7 +135,7 @@ return 'status-accepted';
                   <span>{job.status}</span>
                 </div>
 
-                <Link to={`/view-detail-job/${job.id}`} className="view-details-btn">
+                <Link to={`/jobs/${job.jobId}`} className="view-details-btn">
                   Xem chi tiết
                   <ArrowForwardIcon fontSize="small" />
                 </Link>
