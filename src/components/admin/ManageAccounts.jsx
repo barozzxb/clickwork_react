@@ -396,7 +396,11 @@ export default function ManageAccounts() {
                                                             ? 'admin-badge-warning'
                                                             : report.status === 'resolved'
                                                                 ? 'admin-badge-success'
-                                                                : 'admin-badge-secondary'
+                                                                : report.status === 'responded'
+                                                                    ? 'admin-badge-primary'
+                                                                    : report.status === 'dismissed'
+                                                                        ? 'admin-badge-secondary'
+                                                                        : 'admin-badge-light'
                                                             }`}>
                                                             {report.status}
                                                         </span>

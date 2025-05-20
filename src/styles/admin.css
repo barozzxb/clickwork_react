@@ -151,6 +151,11 @@
     color: #dc3545;
 }
 
+.admin-badge-secondary {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
 /* Table Styles */
 .admin-table {
     width: 100%;

@@ -111,6 +111,10 @@ function AppContent() {
           <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
             <Route path="/applicant" element={<Applicant />} />
             <Route path="/applicant/profile" element={<ApplicantProfile />} />
+            <Route path="/applicant/manage-saved-jobs" element={<ManageSavedJobs />} />
+            <Route path="/applicant/view-applied-history" element={<ViewAppliedHistory />} />
+            <Route path="/applicant/support" element={<SupportRequest />} />
+
           </Route>
 
 

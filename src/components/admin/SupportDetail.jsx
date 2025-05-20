@@ -98,8 +98,8 @@ export default function SupportDetail() {
             return {
                 ...data.body,
                 formattedDate: moment(data.body.sendat).format('DD/MM/YYYY HH:mm'),
-                statusDisplay: data.body.status === 'NO_RESPOND' ? 'Chưa phản hồi' : 'Đã phản hồi',
-                statusClass: data.body.status === 'NO_RESPOND' ? 'warning' : 'success',
+                statusDisplay: data.body.status === 'PENDING' ? 'Chưa phản hồi' : 'Đã phản hồi',
+                statusClass: data.body.status === 'PENDING' ? 'warning' : 'success',
                 userEmail: data.body.applicantEmail || data.body.employerEmail || 'Unknown',
                 userType: data.body.applicantEmail ? 'Ứng viên' : 'Nhà tuyển dụng',
                 userId: data.body.applicantId || data.body.employerId
@@ -224,11 +224,11 @@ export default function SupportDetail() {
                                             <h5 className="mb-0" style={{ color: '#17252a' }}>
                                                 #{ticketDetail.id}: {ticketDetail.title}
                                             </h5>
-                                            <span className={`badge ms-3 ${ticketDetail.statusDisplay === 'Chưa phản hồi'
+                                            <span className={`badge ms-3 ${ticketDetail.status === 'PENDING'
                                                 ? 'bg-warning bg-opacity-10 text-warning'
                                                 : 'bg-success bg-opacity-10 text-success'
                                                 } rounded-pill px-3 py-2`}>
-                                                {ticketDetail.statusDisplay === 'Chưa phản hồi' ? (
+                                                {ticketDetail.status === 'PENDING' ? (
                                                     <>
                                                         <FaClock className="me-1" />
                                                         Pending
@@ -305,10 +305,10 @@ export default function SupportDetail() {
                                                     required
                                                 />
                                             </Form.Group>
-                                            <div className="d-flex justify-content-end gap-2">
+                                            <div className="d-flex justify-content-end gap-3">
                                                 <Button
-                                                    variant="light"
-                                                    className="btn-custom-light rounded-pill px-4"
+                                                    variant="outline-secondary"
+                                                    className="btn-elegant btn-elegant-cancel rounded-pill px-4 py-2"
                                                     onClick={() => setResponse('')}
                                                     disabled={isSubmitting}
                                                 >
@@ -317,7 +317,7 @@ export default function SupportDetail() {
                                                 <Button
                                                     variant="primary"
                                                     type="submit"
-                                                    className="btn-custom rounded-pill px-4"
+                                                    className="btn-elegant btn-elegant-primary rounded-pill px-4 py-2"
                                                     disabled={isSubmitting}
                                                 >
                                                     {isSubmitting ? (
@@ -419,7 +419,7 @@ export default function SupportDetail() {
                                     </div>
                                     <div className="detail-item d-flex align-items-center p-3 rounded-3 bg-light">
                                         <div className="me-3">
-                                            <span className={`badge ${ticketDetail.statusDisplay === 'Chưa phản hồi'
+                                            <span className={`badge ${ticketDetail.status === 'PENDING'
                                                 ? 'bg-warning'
                                                 : 'bg-success'
                                                 } rounded-pill`}>
@@ -536,6 +536,51 @@ export default function SupportDetail() {
                 .alert-success {
                     background-color: rgba(43, 122, 120, 0.1);
                     color: #2b7a78;
+                }
+                /* Thiết kế chung cho các nút */
+                .card-body .btn-elegant {
+                    font-weight: 500;
+                    letter-spacing: 0.3px;
+                    transition: all 0.3s ease;
+                    border: 2px solid transparent;
+                    box-shadow: none;
+                }
+                .card-body .btn-elegant:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(43, 122, 120, 0.15);
+                }
+                .card-body .btn-elegant:active {
+                    transform: translateY(0);
+                    box-shadow: 0 2px 4px rgba(43, 122, 120, 0.1);
+                }
+                /* Nút primary - gửi response */
+                .card-body .btn-elegant-primary {
+                    background-color: #2b7a78;
+                    border-color: #2b7a78;
+                    color: white;
+                }
+                .card-body .btn-elegant-primary:hover {
+                    background-color: #256966;
+                    border-color: #256966;
+                    color: white;
+                }
+                .card-body .btn-elegant-primary:disabled {
+                    background-color: rgba(43, 122, 120, 0.6);
+                    border-color: rgba(43, 122, 120, 0.6);
+                }
+                /* Nút cancel */
+                .card-body .btn-elegant-cancel {
+                    background-color: transparent;
+                    border-color: #e0e0e0;
+                    color: #555;
+                }
+                .card-body .btn-elegant-cancel:hover {
+                    background-color: #f5f5f5;
+                    border-color: #2b7a78;
+                    color: #2b7a78;
+                }
+                .card-body .btn-elegant-cancel:disabled {
+                    opacity: 0.6;
                 }
             `}</style>
         </div>

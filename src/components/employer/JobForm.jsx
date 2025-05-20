@@ -131,9 +131,7 @@ const JobForm = () => {
                 // Tạo công việc mới
                 response = await axios.post(
                     `${API_PREFIX}/employer/job/add`,
-                    {
-                        job: jobData
-                    },
+                    { job: jobData },
                     {
                         headers: {
                             'Authorization': `Bearer ${token}`

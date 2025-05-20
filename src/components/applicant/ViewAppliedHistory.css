@@ -1,0 +1,192 @@
+:root {
+  --primary-dark: #1b4d3e;  /* Xanh lá đậm */
+  --primary: #34936c;       /* Xanh lá chính */
+  --primary-light: #48b585; /* Xanh lá nhạt */
+  --secondary: #e8f5e9;     /* Nền xanh lá rất nhạt */
+  --white: #feffff;
+  --status-pending: #ffa726;
+  --status-rejected: #ef5350;
+  --status-accepted: #66bb6a;
+}
+
+.applied-history-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.history-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.history-header h2 {
+  color: var(--primary-dark);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.history-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.history-header:hover::after {
+  width: 150px;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.history-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(23, 37, 42, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--secondary);
+  height: 100%;
+}
+
+.history-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(43, 122, 120, 0.2);
+  border-color: var(--primary-light);
+}
+
+.card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.applied-date {
+  color: var(--primary);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.history-card .job-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 1rem 0;
+  line-height: 1.4;
+}
+
+.company-name {
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge .status-icon {
+  position: relative;
+  top: 0;
+  right: 0;
+  font-size: 1.25rem;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.15) 0%, rgba(255, 167, 38, 0.3) 100%);
+  color: var(--status-pending);
+  border: 1px solid rgba(255, 167, 38, 0.3);
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.15) 0%, rgba(239, 83, 80, 0.3) 100%);
+  color: var(--status-rejected);
+  border: 1px solid rgba(239, 83, 80, 0.3);
+}
+
+.status-accepted {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.15) 0%, rgba(102, 187, 106, 0.3) 100%);
+  color: var(--status-accepted);
+  border: 1px solid rgba(102, 187, 106, 0.3);
+}
+
+.status-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-pending:hover {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.2) 0%, rgba(255, 167, 38, 0.4) 100%);
+}
+
+.status-rejected:hover {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.2) 0%, rgba(239, 83, 80, 0.4) 100%);
+}
+
+.status-accepted:hover {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.2) 0%, rgba(102, 187, 106, 0.4) 100%);
+}
+
+.view-details-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  justify-content: center;
+  margin-top: auto;
+  border: none;
+}
+
+.view-details-btn:hover {
+  background-color: var(--primary-dark);
+  color: var(--white);
+}
+
+.status-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .history-header h2 {
+    font-size: 1.5rem;
+  }
+}

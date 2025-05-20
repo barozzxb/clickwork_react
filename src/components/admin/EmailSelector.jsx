@@ -6,6 +6,7 @@ import { FaSearch, FaUsers, FaTimes, FaCheck } from 'react-icons/fa';
 import { API_ROOT } from '../../config';
 
 export default function EmailSelector({ onSelect, onClose, multiple = false }) {
+
     const [search, setSearch] = useState('');
     const [selectedRole, setSelectedRole] = useState('all');
     const [selectedEmails, setSelectedEmails] = useState([]);
