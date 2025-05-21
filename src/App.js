@@ -25,6 +25,7 @@ import ActiveAccount from './components/common/ActiveAccount.jsx';
 
 import JobDetail from './components/common/Jobdetail.jsx';
 import JobList from './components/common/Listjobs.jsx';
+import EmployerDetail from './components/common/EmployerDetail.jsx';
 
 import './components/assets/css/styles.css';
 
@@ -106,6 +107,8 @@ function AppContent() {
           <Route path="/search/:keyword" element={<Search />} />
 
           <Route path="/active-account" element={<ActiveAccount />} />
+
+          <Route path="/company-detail/:id" element={<EmployerDetail />} />
 
           {/* Các Route dành cho ứng viên */}
           <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
