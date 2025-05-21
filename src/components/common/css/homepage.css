@@ -25,7 +25,6 @@
   color: var(--text-dark);
 }
 
-/* Modern Hero Section */
 .hero-section {
   background: linear-gradient(135deg, #028618 0%, #085e00 100%);
   color: white;
@@ -72,9 +71,6 @@
   opacity: 0.9;
 }
 
-
-
-/* Quick filters */
 .quick-filters {
   display: flex;
   flex-wrap: wrap;
@@ -97,7 +93,6 @@
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Jobs Section */
 .jobs-section {
   margin: 3rem 0;
 }
@@ -132,7 +127,6 @@
 }
 
 
-/* Empty state */
 .empty-state {
   grid-column: 1 / -1;
   background-color: var(--background-light);
@@ -164,7 +158,6 @@
   background-color: var(--primary-hover);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2rem;
