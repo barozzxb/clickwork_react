@@ -151,7 +151,7 @@ const Register = () => {
                                 </label>
                             </div>
 
-                            <div className="form-check">
+                            {/* <div className="form-check">
                                 <input
                                     className="form-check-input"
                                     type="radio"
@@ -165,7 +165,7 @@ const Register = () => {
                                 <label className="form-check-label" htmlFor="employer">
                                     Quản trị viên
                                 </label>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 

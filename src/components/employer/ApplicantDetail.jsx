@@ -1,169 +1,241 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaCalendarPlus, FaCheck, FaTimes, FaFlag } from 'react-icons/fa';
-import axios from 'axios';
-import CreateAppointment from './CreateAppointment';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import {
+  FaArrowLeft,
+  FaCalendarPlus,
+  FaCheck,
+  FaTimes,
+  FaFlag,
+  FaFileAlt,
+  FaEnvelope,
+  FaPhone,
+} from "react-icons/fa";
+import axios from "axios";
+import CreateAppointment from "./CreateAppointment";
+import "./styles/employer.css";
 
 const ApplicantDetail = () => {
-    const { jobId, applicantId } = useParams();
-    const navigate = useNavigate();
-    const [application, setApplication] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const { jobId, applicantId } = useParams();
+  const navigate = useNavigate();
+  const [application, setApplication] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
-    useEffect(() => {
-        fetchApplicantDetails();
-        // eslint-disable-next-line
-    }, [applicantId]);
+  useEffect(() => {
+    fetchApplicantDetails();
+    // eslint-disable-next-line
+  }, [applicantId]);
 
-    const fetchApplicantDetails = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `http://localhost:9000/api/employer/applicants/${applicantId}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (response.data.status) {
-                setApplication(response.data.body);
-            }
-        } catch (error) {
-            setApplication(null);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleStatusUpdate = async (status) => {
-        const confirmMessage = status === 'ACCEPTED'
-            ? "Bạn có chắc chắn muốn duyệt ứng viên này?"
-            : "Bạn có chắc chắn muốn từ chối ứng viên này?";
-        if (window.confirm(confirmMessage)) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.patch(
-                    `http://localhost:9000/api/employer/applicants/${applicantId}/status?status=${status}`,
-                    {},
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                if (response.data.status) {
-                    fetchApplicantDetails();
-                }
-            } catch (error) { }
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="container py-4 text-center">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Đang tải...</span>
-                </div>
-            </div>
-        );
+  const fetchApplicantDetails = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:9000/api/employer/applicants/${applicantId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.data.status) {
+        setApplication(response.data.body);
+      }
+    } catch (error) {
+      setApplication(null);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const applicant = application?.applicant;
+  const handleStatusUpdate = async (status) => {
+    const confirmMessage =
+      status === "ACCEPTED"
+        ? "Bạn có chắc chắn muốn duyệt ứng viên này?"
+        : "Bạn có chắc chắn muốn từ chối ứng viên này?";
+    if (window.confirm(confirmMessage)) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.patch(
+          `http://localhost:9000/api/employer/applicants/${applicantId}/status?status=${status}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (response.data.status) {
+          fetchApplicantDetails();
+        }
+      } catch (error) {}
+    }
+  };
 
+  if (loading) {
     return (
-        <div className="container py-4">
-            {/* Nút trở về ở đầu trang */}
-            <button
-                onClick={() => navigate(`/employer/jobs/${jobId}/applicants`)}
-                className="btn btn-outline-secondary mb-3"
-            >
-                <FaArrowLeft /> Quay lại danh sách ứng viên
-            </button>
-
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="mb-0">Thông tin ứng viên</h2>
-            </div>
-
-            <div className="row">
-                <div className="col-md-8">
-                    <div className="card mb-4">
-                        <div className="card-body">
-                            <h3 className="card-title">{applicant?.fullname}</h3>
-                            <p className="text-muted">
-                                {applicant?.email} • {applicant?.phone}
-                            </p>
-                            <hr />
-                            {/* Thêm các thông tin khác nếu có */}
-                            {applicant?.defaultCV && (
-                                <div>
-                                    <a href={applicant.defaultCV.file} target="_blank" rel="noopener noreferrer">
-                                        Xem CV
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card mb-4">
-                        <div className="card-body">
-                            <h5 className="card-title">Trạng thái ứng tuyển</h5>
-                            <p className={`badge ${application?.status === 'ACCEPTED' ? 'bg-success' :
-                                application?.status === 'REJECTED' ? 'bg-danger' :
-                                    'bg-warning'
-                                }`}>
-                                {application?.status === 'ACCEPTED' ? 'Đã được chấp nhận' :
-                                    application?.status === 'REJECTED' ? 'Đã bị từ chối' :
-                                        'Đang chờ'}
-                            </p>
-                            {application?.status === 'PENDING' && (
-                                <div className="d-grid gap-2 mt-3">
-                                    <button
-                                        className="btn btn-success"
-                                        onClick={() => handleStatusUpdate('ACCEPTED')}
-                                    >
-                                        <FaCheck className="me-2" />
-                                        Duyệt ứng viên
-                                    </button>
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => handleStatusUpdate('REJECTED')}
-                                    >
-                                        <FaTimes className="me-2" />
-                                        Từ chối
-                                    </button>
-                                </div>
-                            )}
-                            {application?.status === 'ACCEPTED' && (
-                                <div className="d-grid mt-3">
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={() => setShowAppointmentModal(true)}
-                                    >
-                                        <FaCalendarPlus className="me-2" />
-                                        Đặt lịch hẹn
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {showAppointmentModal && (
-                <CreateAppointment
-                    applicationId={applicantId}
-                    onClose={() => setShowAppointmentModal(false)}
-                    onSuccess={() => {
-                        setShowAppointmentModal(false);
-                        fetchApplicantDetails();
-                    }}
-                />
-            )}
-            {applicant && applicant.user && (
-                <Link
-                    to={`/employer/report/${applicant.user.username}`}
-                    className="btn btn-outline-warning ms-2"
-                >
-                    <FaFlag className="me-1" /> Báo cáo người dùng
-                </Link>
-            )}
+      <div className="applicant-detail-container d-flex justify-content-center align-items-center">
+        <div className="spinner-border loading-spinner" role="status">
+          <span className="visually-hidden">Đang tải...</span>
         </div>
+      </div>
     );
+  }
+
+  const applicant = application?.applicant;
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "ACCEPTED":
+        return "bg-accepted accepted";
+      case "REJECTED":
+        return "bg-rejected rejected";
+      default:
+        return "bg-pending pending";
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "ACCEPTED":
+        return "Đã được chấp nhận";
+      case "REJECTED":
+        return "Đã bị từ chối";
+      default:
+        return "Đang chờ...";
+    }
+  };
+
+  return (
+    <div className="container" style={{ marginTop: "80px", padding: "20px" }}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex align-items-center">
+          <button
+            onClick={() => navigate(`/employer/jobs/${jobId}/applicants`)}
+            className="btn btn-outline-secondary me-3"
+          >
+            <FaArrowLeft /> Quay lại
+          </button>
+          <h2
+            className="mb-0 text-center"
+            style={{ fontSize: "2rem", color: "#595959" }}
+          >
+            THÔNG TIN ỨNG VIÊN
+          </h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-8">
+          <div className="applicant-card card mb-4">
+            <div className="card-body">
+              <strong
+                style={{
+                  fontSize: "1.5rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "8px",
+                }}
+              >
+                {applicant?.fullname}
+              </strong>
+              <div className="">
+                <p
+                  className="applicant-contact"
+                  style={{
+                    justifyContent: "center",
+                    textAlign: "center",
+                    marginTop: "8px",
+                    marginBottom: "6px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <FaEnvelope
+                    style={{ paddingBottom: "2px", marginRight: "10px" }}
+                  />
+                  {applicant?.email}
+                </p>
+                <p
+                  className="applicant-contact"
+                  style={{
+                    justifyContent: "center",
+                    textAlign: "center",
+                    marginTop: "4px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <FaPhone
+                    style={{ paddingBottom: "2px", marginRight: "10px" }}
+                  />
+                  {applicant?.phone}
+                </p>
+              </div>
+              <hr />
+              {applicant?.defaultCV && (
+                <div>
+                  <a
+                    href={applicant.defaultCV.file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cv-link"
+                  >
+                    <FaFileAlt /> Xem CV
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="status-card card mb-4">
+            <div className="card-body d-flex flex-column align-items-center text-center">
+              <h5 className="status-title mt-3 mb-2">TRẠNG THÁI ỨNG TUYỂN</h5>
+              <div className={getStatusBadgeClass(application?.status)}>
+                {getStatusText(application?.status)}
+              </div>
+
+              {application?.status === "PENDING" && (
+                <div className="d-grid gap-2 mt-3 w-100">
+                  <button
+                    className="btn-action schedule mt-2 mb-2 ms-3 me-3"
+                    onClick={() => handleStatusUpdate("ACCEPTED")}
+                  >
+                    <FaCheck /> Duyệt ứng viên
+                  </button>
+                  <button
+                    className="btn-reject schedule mb-3 ms-3 me-3"
+                    onClick={() => handleStatusUpdate("REJECTED")}
+                  >
+                    <FaTimes /> Từ chối
+                  </button>
+                </div>
+              )}
+
+              {application?.status === "ACCEPTED" && (
+                <div className="d-grid mt-3 w-100">
+                  <button
+                    className="btn-action schedule mt-2 mb-3 ms-3 me-3"
+                    onClick={() => setShowAppointmentModal(true)}
+                  >
+                    <FaCalendarPlus /> Đặt lịch hẹn
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          {applicant && applicant.user && (
+            <Link
+              to={`/employer/report/${applicant.user.username}`}
+              className="report-button"
+            >
+              <FaFlag /> Báo cáo người dùng
+            </Link>
+          )}
+        </div>
+      </div>
+      {showAppointmentModal && (
+        <CreateAppointment
+          applicationId={applicantId}
+          onClose={() => setShowAppointmentModal(false)}
+          onSuccess={() => {
+            setShowAppointmentModal(false);
+            fetchApplicantDetails();
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ApplicantDetail;
