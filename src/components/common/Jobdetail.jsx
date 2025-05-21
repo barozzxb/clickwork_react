@@ -212,8 +212,8 @@ const JobDetail = () => {
                             </div>
                             <div className="company-info d-flex flex-column text-center">
                                 <Link to={`/company-detail/${job.employer.username}`}><p>{job?.employer.fullname || 'Chưa cập nhật tên'}</p></Link>
-                                <p>{job?.company?.field || 'Lĩnh vực'}</p>
-                                <p>{job?.company?.datefounded || 'Ngày thành lập'}</p>
+                                <p>{job?.employer?.field || 'Lĩnh vực'}</p>
+                                <p>{job?.employer?.datefounded || 'Ngày thành lập'}</p>
                             </div>
                         </div>
                     </div>

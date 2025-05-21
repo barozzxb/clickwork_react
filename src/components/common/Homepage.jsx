@@ -148,7 +148,7 @@ const Homepage = () => {
             <section className="jobs-section">
                 <div className="section-header">
                     <h2 className="section-title">Được đề xuất cho bạn</h2>
-                    <a href="#" className="view-all">Xem tất cả <i className="fa fa-arrow-right"></i></a>
+                    <Link to="/jobs" className="view-all">Xem tất cả <i className="fa fa-arrow-right"></i></Link>
                 </div>
 
                 <div className="jobs-grid">
@@ -185,9 +185,9 @@ const Homepage = () => {
                                 </div>
 
                                 <div className="job-card-footer">
-                                    <button className="apply-btn">Ứng tuyển ngay</button>
-                                    <button className="save-job-btn">
-                                        <i className="fa fa-bookmark"></i>
+                                    {/* <button className="apply-btn">Ứng tuyển ngay</button> */}
+                                    <button className="apply-btn">
+                                        <i className="fa fa-bookmark"></i> Lưu công việc này
                                     </button>
                                 </div>
                             </div>
@@ -200,7 +200,7 @@ const Homepage = () => {
             <section className="jobs-section">
                 <div className="section-header">
                     <h2 className="section-title">Mới nhất</h2>
-                    <a href="#" className="view-all">Xem tất cả <i className="fa fa-arrow-right"></i></a>
+                    <a to="/jobs" className="view-all">Xem tất cả <i className="fa fa-arrow-right"></i></a>
                 </div>
 
                 <div className="jobs-grid">
@@ -239,9 +239,9 @@ const Homepage = () => {
                                 </div>
 
                                 <div className="job-card-footer">
-                                    <button className="apply-btn">Ứng tuyển ngay</button>
-                                    <button className="save-job-btn">
-                                        <i className="fa fa-bookmark"></i>
+                                    {/* <button className="apply-btn">Ứng tuyển ngay</button> */}
+                                    <button className="apply-btn">
+                                        <i className="fa fa-bookmark"></i> Lưu công việc này
                                     </button>
                                 </div>
                             </div>
