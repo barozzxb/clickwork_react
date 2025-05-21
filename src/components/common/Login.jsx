@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { API_ROOT } from '../../config.js';
 
 
+
 const Login = () => {
     const navigate = useNavigate();
 
@@ -49,13 +50,15 @@ const Login = () => {
             if (response.data.status === false) {
                 const message = response.data.message;
                 toast.error(message);
-                if (response.data.body.accStatus === 'INACTIVE') {
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('status', response.data.body.accStatus);
-                    navigate('/active-account');
-                }
-                else if (response.data.body.accStatus === 'SUSPENDED') {
-                    navigate('/403');
+                if (response.data.body.accStatus) {
+                    if (response.data.body.accStatus === 'INACTIVE') {
+                        localStorage.setItem('username', username);
+                        localStorage.setItem('accStatus', response.data.body.accStatus);
+                        navigate('/active-account');
+                    }
+                    else if (response.data.body.accStatus === 'SUSPENDED') {
+                        navigate('/403');
+                    }
                 }
             }
 
@@ -80,7 +83,7 @@ const Login = () => {
 
         } catch (error) {
             const message = "Error occurred while logging in";
-            toast.error(message);
+            console.error(message, error);
         } finally {
             setLoading(false);
         }
