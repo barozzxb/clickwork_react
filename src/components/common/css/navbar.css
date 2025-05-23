@@ -1,0 +1,10 @@
+.navbar-brand{
+    font-size: 2rem;
+}
+
+.logo-title{
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    font: var(--web-default-font);
+}

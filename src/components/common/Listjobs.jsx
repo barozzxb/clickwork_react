@@ -4,6 +4,7 @@ import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import OverlayLoading from '../effects/Loading.jsx';
 import { Link } from 'react-router-dom';
 import { API_ROOT } from '../../config.js';
+import { formatRelativeTime } from '../../functions/dayformatter';
 
 const EJobTypes = ['FULLTIME', 'PARTTIME', 'INTERNSHIP', 'ONLINE', 'FLEXIBLE'];
 
@@ -71,137 +72,171 @@ const JobList = () => {
             {loading && <OverlayLoading />}
             <Row>
                 {/* Sidebar lọc */}
-                <Col md={3}>
-                    <Card className="p-3 shadow-sm mb-4">
-                        <h5 className="mb-3 text-primary">🔎 Bộ lọc công việc</h5>
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Từ khóa tên</Form.Label>
-                                <Form.Control
-                                    name="name"
-                                    value={filters.name}
-                                    onChange={handleChange}
-                                    placeholder="Nhập từ khóa..."
-                                />
-                            </Form.Group>
+                <Card className="p-3 shadow-sm mb-4">
+  <h5 className="mb-3 text-primary">🔎 Bộ lọc công việc</h5>
+  <Form onSubmit={handleSubmit}>
+    <Row className="gy-2 gx-3 align-items-end">
+      <Col md={3}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Từ khóa</Form.Label>
+          <Form.Control
+            name="name"
+            value={filters.name}
+            onChange={handleChange}
+            placeholder="Tên công việc..."
+          />
+        </Form.Group>
+      </Col>
 
-                            <Form.Group className="mb-3">
-                                <Form.Label>Ngày đăng từ</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="dateFrom"
-                                    value={filters.dateFrom}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
+      <Col md={2}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Ngày từ</Form.Label>
+          <Form.Control
+            type="date"
+            name="dateFrom"
+            value={filters.dateFrom}
+            onChange={handleChange}
+          />
+        </Form.Group>
+      </Col>
 
-                            <Form.Group className="mb-3">
-                                <Form.Label>Đến</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="dateTo"
-                                    value={filters.dateTo}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
+      <Col md={2}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Đến</Form.Label>
+          <Form.Control
+            type="date"
+            name="dateTo"
+            value={filters.dateTo}
+            onChange={handleChange}
+          />
+        </Form.Group>
+      </Col>
 
-                            <Form.Group className="mb-3">
-                                <Form.Label>Mức lương (VNĐ)</Form.Label>
-                                <Row>
-                                    <Col>
-                                        <Form.Control
-                                            name="salaryMin"
-                                            type="number"
-                                            value={filters.salaryMin}
-                                            placeholder="Min"
-                                            onChange={handleChange}
-                                        />
-                                    </Col>
-                                    <Col>
-                                        <Form.Control
-                                            name="salaryMax"
-                                            type="number"
-                                            value={filters.salaryMax}
-                                            placeholder="Max"
-                                            onChange={handleChange}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Form.Group>
+      <Col md={2}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Lương từ</Form.Label>
+          <Form.Control
+            type="number"
+            name="salaryMin"
+            value={filters.salaryMin}
+            placeholder="Min"
+            onChange={handleChange}
+          />
+        </Form.Group>
+      </Col>
 
-                            <Form.Group className="mb-3">
-                                <Form.Label>Company</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="employerId"
-                                    value={filters.employerId}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Tất cả</option>
-                                    {employers.map(emp => (
-                                        <option key={emp.id} value={emp.id}>
-                                            {emp.name || emp.email}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
+      <Col md={2}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Đến</Form.Label>
+          <Form.Control
+            type="number"
+            name="salaryMax"
+            value={filters.salaryMax}
+            placeholder="Max"
+            onChange={handleChange}
+          />
+        </Form.Group>
+      </Col>
 
-                            <Form.Group className="mb-3">
-                                <Form.Label>Loại công việc</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="jobType"
-                                    value={filters.jobType}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Tất cả</option>
-                                    {EJobTypes.map(t => (
-                                        <option key={t} value={t}>{t}</option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
+      <Col md={3}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Công ty</Form.Label>
+          <Form.Control
+            as="select"
+            name="employerId"
+            value={filters.employerId}
+            onChange={handleChange}
+          >
+            <option value="">Tất cả</option>
+            {employers.map(emp => (
+              <option key={emp.id} value={emp.id}>
+                {emp.name || emp.email}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+      </Col>
 
-                            <Button variant="primary" type="submit" className="w-100">
-                                Lọc công việc
-                            </Button>
-                        </Form>
-                    </Card>
-                </Col>
+      <Col md={2}>
+        <Form.Group>
+          <Form.Label className="fw-semibold small">Loại việc</Form.Label>
+          <Form.Control
+            as="select"
+            name="jobType"
+            value={filters.jobType}
+            onChange={handleChange}
+          >
+            <option value="">Tất cả</option>
+            {EJobTypes.map(t => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+      </Col>
+
+      <Col md="auto">
+        <Button variant="primary" type="submit" className="mt-1">
+          Lọc
+        </Button>
+      </Col>
+    </Row>
+  </Form>
+</Card>
+
 
                 {/* Danh sách jobs */}
-                <Col md={9}>
-                    <h3 className="mb-4">🗂️ Danh sách công việc</h3>
-                    <Row xs={1} md={2} lg={3} className="g-4">
+                <section className="jobs-section">
+                    <div className="section-header">
+                        <h2 className="section-title">Tất cả việc làm</h2>
+                    </div>
+
+                    <div className="jobs-grid">
                         {jobs.length === 0 ? (
-                            <Col>
-                                <Card className="text-center p-3 shadow-sm">
-                                    <Card.Body>
-                                        <Card.Title>Không có công việc nào phù hợp</Card.Title>
-                                        <Card.Text>Vui lòng thử lại với bộ lọc khác.</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
+                            <div className="empty-state">
+                                <i className="fa fa-briefcase empty-icon"></i>
+                                <p>Không có công việc nào được đề xuất</p>
+                                <button className="update-profile-btn">Cập nhật hồ sơ</button>
+                            </div>
                         ) : (
                             jobs.map((job) => (
-                                <Col key={job.id}>
-                                    <Card className="p-3 shadow-sm h-100">
-                                        <Card.Body>
-                                            <p className="text-muted mb-1">{job.created_at}</p>
-                                            <Card.Title>
-                                                <Link to={`/jobs/${job.id}`} className="text-decoration-none text-dark fw-bold">
-                                                    {job.name}
-                                                </Link>
-                                            </Card.Title>
-                                            <Card.Text><i className="fa fa-location-dot me-2 text-primary"></i>{job.address}</Card.Text>
-                                            <Card.Text><i className="fa fa-bars me-2 text-info"></i>{job.field}</Card.Text>
-                                            <Card.Text><i className="fa fa-suitcase me-2 text-success"></i>{job.jobtype}</Card.Text>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
+                                <div className="job-card" key={job.id}>
+                                    <div className="job-card-header">
+                                        <div className="job-time">{formatRelativeTime(job.createdat)}</div>
+                                    </div>
+
+                                    <h3 className="job-title">
+                                        <Link to={`/jobs/${job.id}`}>{job.name}</Link>
+                                    </h3>
+
+                                    <div className="job-details">
+                                        <div className="job-detail">
+                                            <i className="fa fa-location-dot"></i>
+                                            <span>{job.address}</span>
+                                        </div>
+                                        <div className="job-detail">
+                                            <i className="fa fa-bars"></i>
+                                            <span>{job.field}</span>
+                                        </div>
+                                        <div className="job-detail">
+                                            <i className="fa fa-suitcase"></i>
+                                            <span>{job.jobtype}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="job-card-footer">
+                                        <button className="apply-btn">Ứng tuyển ngay</button>
+                                        <button className="save-job-btn">
+                                            <i className="fa fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             ))
                         )}
-                    </Row>
-                </Col>
+                    </div>
+                </section>
+
             </Row>
         </div>
     );

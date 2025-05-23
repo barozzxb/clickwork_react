@@ -111,10 +111,6 @@ const ManageSavedJobs = () => {
 
                   <div className="job-info">
                     <div className="info-item">
-                      <i className="fas fa-map-marker-alt"></i>
-                      <span>{savedJob.location || "Không xác định"}</span>
-                    </div>
-                    <div className="info-item">
                       <i className="fas fa-briefcase"></i>
                       <span>{savedJob.field || "Không xác định"}</span>
                     </div>

@@ -5,13 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { API_ROOT } from '../../config.js';
+import {API_ROOT} from '../../config.js';
 
 import Term from './Term.jsx'
 
 
 const Register = () => {
-    // const API_ROOT = 'http://localhost:9000/api';
 
     const [loading, setLoading] = useState(false);
 
@@ -58,12 +57,16 @@ const Register = () => {
                 });
 
                 const responseMessage = response.data.message;
-                toast.success(responseMessage);
 
                 const status = response.data.status;
                 if (status === true) {
                     localStorage.setItem('email', email);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('accStatus', 'INACTIVE');
                     navigate('/verify');
+                } else{
+                    toast.error(responseMessage);
+                    return;
                 }
             } catch (error) {
                 if (error.response?.data?.message) {
@@ -148,7 +151,7 @@ const Register = () => {
                                 </label>
                             </div>
 
-                            <div className="form-check">
+                            {/* <div className="form-check">
                                 <input
                                     className="form-check-input"
                                     type="radio"
@@ -162,7 +165,7 @@ const Register = () => {
                                 <label className="form-check-label" htmlFor="employer">
                                     Quản trị viên
                                 </label>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 

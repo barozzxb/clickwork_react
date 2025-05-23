@@ -1,13 +1,18 @@
 import React, {useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 const NavBar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
+        const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
+        if (confirmLogout) {
+            localStorage.removeItem("token");
+            navigate("/login");
+            toast.success("Đăng xuất thành công");
+        }
     };
 
     let username = null;

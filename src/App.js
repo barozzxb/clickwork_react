@@ -25,6 +25,7 @@ import ActiveAccount from './components/common/ActiveAccount.jsx';
 
 import JobDetail from './components/common/Jobdetail.jsx';
 import JobList from './components/common/Listjobs.jsx';
+import EmployerDetail from './components/common/EmployerDetail.jsx';
 
 import './components/assets/css/styles.css';
 
@@ -35,7 +36,6 @@ import ApplicantDetail from './components/employer/ApplicantDetail';
 import EmployerProfile from './components/employer/EmployerProfile';
 import SupportRequest from './components/employer/SupportRequest';
 import ReportUser from './components/employer/ReportUser';
-import Notifications from './components/employer/Notifications';
 import EmployerAddressManagement from './components/employer/EmployerAddressManagement';
 import EmployerChangePassword from './components/employer/EmployerChangePassword';
 
@@ -107,6 +107,8 @@ function AppContent() {
 
           <Route path="/active-account" element={<ActiveAccount />} />
 
+          <Route path="/company-detail/:id" element={<EmployerDetail />} />
+
           {/* Các Route dành cho ứng viên */}
           <Route element={<ProtectedRoute allowedRoles={['APPLICANT']} />}>
             <Route path="/applicant" element={<Applicant />} />
@@ -129,7 +131,7 @@ function AppContent() {
             <Route path="/employer/profile" element={<EmployerProfile />} />
             <Route path="/employer/profile/addresses" element={<EmployerAddressManagement />} />
             <Route path="/employer/profile/password" element={<EmployerChangePassword />} />
-            <Route path="/employer/notifications" element={<Notifications />} />
+            {/* <Route path="/employer/notifications" element={<Notifications />} /> */}
             <Route path="/employer/support" element={<SupportRequest />} />
             <Route path="/employer/report" element={<ReportUser />} />
             <Route path="/employer/report/:username" element={<ReportUser />} />

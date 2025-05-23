@@ -10,7 +10,7 @@ export default function useOtp(onSuccessPath) {
   const navigate = useNavigate();
 
   const username = localStorage.getItem('username');
-  const accstatus = localStorage.getItem('status');
+  const accstatus = localStorage.getItem('accStatus');
 
   // Countdown timer
   useEffect(() => {
@@ -54,8 +54,10 @@ export default function useOtp(onSuccessPath) {
         if (username && accstatus === 'INACTIVE') {
           try {
             const response = await activeAccount(username);
-            if (response.data.status === true) {
+            if (response.status === true) {
               toast.success(response.message);
+              localStorage.removeItem('username');
+              localStorage.removeItem('accStatus');
             } else {
               toast.error(response.message);
             }
