@@ -11,6 +11,9 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 
+import {API_ROOT} from "../../config";
+import { BACK_END_HOST } from "../../config";
+
 const EmployerNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,7 +56,7 @@ const EmployerNavbar = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
       const response = await axios.get(
-        "http://localhost:9000/api/employer/profile/notifications",
+        `${API_ROOT}/employer/profile/notifications`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +76,7 @@ const EmployerNavbar = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
       const response = await axios.get(
-        "http://localhost:9000/api/employer/profile",
+        `${API_ROOT}/employer/profile`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -92,7 +95,7 @@ const EmployerNavbar = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       await axios.patch(
-        `http://localhost:9000/api/employer/profile/notifications/${id}/read`,
+        `${API_ROOT}/employer/profile/notifications/${id}/read`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -118,7 +121,7 @@ const EmployerNavbar = () => {
   };
 
   const avatarUrl = profileImage
-    ? `http://localhost:9000${profileImage}`
+    ? `${BACK_END_HOST}${profileImage}`
     : "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?semt=ais_hybrid&w=740";
 
   return (

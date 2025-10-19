@@ -9,6 +9,8 @@ import {
 import axios from "axios";
 import "./styles/employer.css";
 
+import {API_ROOT} from "../../config"
+
 const CreateAppointment = ({ applicationId, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     time: "",
@@ -25,7 +27,7 @@ const CreateAppointment = ({ applicationId, onClose, onSuccess }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:9000/api/employer/applicants/${applicationId}/appointment`,
+        `${API_ROOT}/employer/applicants/${applicationId}/appointment`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

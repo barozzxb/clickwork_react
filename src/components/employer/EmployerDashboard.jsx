@@ -18,6 +18,8 @@ import {
 import axios from "axios";
 import "./styles/employer.css";
 
+import { API_ROOT } from "../../config";
+
 const EmployerDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ const EmployerDashboard = () => {
 
       // GỌI API KHÔNG CẦN EMAIL PARAMETER
       const response = await axios.get(
-        `http://localhost:9000/api/employer/job/by-employer`,
+        `${API_ROOT}/employer/job/by-employer`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -129,7 +131,7 @@ const EmployerDashboard = () => {
 
       setLoading(true);
       const response = await axios.patch(
-        `http://localhost:9000/api/employer/job/${jobId}/toggle`,
+        `${API_ROOT}/employer/job/${jobId}/toggle`,
         {},
         {
           headers: {

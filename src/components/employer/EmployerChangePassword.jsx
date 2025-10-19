@@ -4,7 +4,9 @@ import { FaArrowLeft, FaKey } from "react-icons/fa";
 import axios from "axios";
 import EmployerNavbar from "./EmployerNavbar";
 
-const API_PREFIX = "http://localhost:9000/api";
+import { API_ROOT } from "../../config";
+
+const API_PREFIX = API_ROOT;
 
 const EmployerChangePassword = () => {
   const navigate = useNavigate();

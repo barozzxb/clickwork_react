@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import JobList from "./JobList";
 import JobForm from "./JobForm";
-import api from "../../services/api"; // ✅ import API wrapper có Bearer token
+import api from "../../services/api.js"; // ✅ import API wrapper có Bearer token
 
 const ManageJobs = () => {
   const [jobs, setJobs] = useState([]);

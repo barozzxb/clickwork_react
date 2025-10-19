@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 
 import EmployerNavbar from "./EmployerNavbar";
 
-const API_PREFIX = "http://localhost:9000/api";
+import { API_ROOT } from "../../config";
+
+const API_PREFIX = API_ROOT;
 
 const EmployerAddressManagement = () => {
   const navigate = useNavigate();

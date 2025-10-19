@@ -11,6 +11,8 @@ import {
 import axios from "axios";
 import "./styles/employer.css";
 
+import {API_ROOT} from "../../config"
+
 const ApplicantList = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
@@ -39,7 +41,7 @@ const ApplicantList = () => {
       // Xử lý dateRange nếu cần
       const query = params.length ? `?${params.join("&")}` : "";
       const response = await axios.get(
-        `http://localhost:9000/api/employer/applicants/by-job/${jobId}${query}`,
+        `${API_ROOT}/employer/applicants/by-job/${jobId}${query}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.status) {
