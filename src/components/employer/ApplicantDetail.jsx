@@ -14,6 +14,8 @@ import axios from "axios";
 import CreateAppointment from "./CreateAppointment";
 import "./styles/employer.css";
 
+import { API_ROOT } from "../../config";
+
 const ApplicantDetail = () => {
   const { jobId, applicantId } = useParams();
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ const ApplicantDetail = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:9000/api/employer/applicants/${applicantId}`,
+        `${API_ROOT}/employer/applicants/${applicantId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.status) {
@@ -53,7 +55,7 @@ const ApplicantDetail = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.patch(
-          `http://localhost:9000/api/employer/applicants/${applicantId}/status?status=${status}`,
+          `${API_ROOT}/employer/applicants/${applicantId}/status?status=${status}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

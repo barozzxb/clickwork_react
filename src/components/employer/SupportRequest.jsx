@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { API_ROOT } from '../../config';
 
 const SupportRequest = () => {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ const SupportRequest = () => {
       }
 
       const response = await fetch(
-        "http://localhost:9000/api/support/request",
+        `${API_ROOT}/support/request`,
         {
           method: "POST",
           headers: {

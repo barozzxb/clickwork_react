@@ -38,7 +38,7 @@ const ReportUser = () => {
         return;
       }
 
-      const response = await fetch(`${API_ROOT}/api/report`, {
+      const response = await fetch(`${API_ROOT}/report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

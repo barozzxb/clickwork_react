@@ -5,7 +5,9 @@ import { FaArrowLeft, FaSave } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API_PREFIX = "http://localhost:9000/api";
+import { API_ROOT } from "../../config";
+
+const API_PREFIX = API_ROOT;
 
 const JobForm = () => {
   const navigate = useNavigate();

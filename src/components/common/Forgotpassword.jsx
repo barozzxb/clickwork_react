@@ -5,7 +5,9 @@ import { toast } from 'react-toastify';
 
 import useOtp from '../../hook/otpHook.jsx';
 
-const host = 'http://localhost:9000/api';
+import { API_ROOT } from '../../config.js';
+
+const host = API_ROOT;
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');

@@ -15,7 +15,9 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 
-const API_PREFIX = "http://localhost:9000/api";
+import { API_ROOT } from "../../config";
+
+const API_PREFIX = API_ROOT;
 
 const JobDetail = () => {
   const { id } = useParams();
