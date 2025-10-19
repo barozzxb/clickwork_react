@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft, FaExclamationTriangle } from "react-icons/fa";
 
+import { API_ROOT } from '../../config';
+
 const ReportUser = () => {
   const { username } = useParams();
   const [formData, setFormData] = useState({
@@ -36,7 +38,7 @@ const ReportUser = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:9000/api/report", {
+      const response = await fetch(`${API_ROOT}/api/report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
